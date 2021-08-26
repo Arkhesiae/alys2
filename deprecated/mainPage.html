@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1, maximum-scale=1">
+        <link href="style.css" rel="stylesheet" type="text/css">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+        <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+        <title>Title</title>
+</head>
+<body>
+<div id="app">
+
+
+        <router-link to="/">
+        <div id="home-button"></div>
+        </router-link>
+                <div id="background">
+                        <div id="upper-circle"></div>
+                        <div id="lower-circle"></div>
+                </div>
+
+
+        <router-view></router-view>
+
+<script type="text/x-template" id="mainMenu">
+        <div id="tile-container">
+                <router-link to="/static">
+                        <div id="static-tile" class="tile">
+
+                                <div class="tile-lower-container">
+                                        <div class="tile-title-decoration"></div>
+                                        <p>Static</p>
+                                </div>
+                                <div class="tile-bubble-container">
+                                        <div class="bubble" id="bubble1"></div>
+                                        <div class="bubble" id="bubble2"></div>
+                                        <div class="bubble" id="bubble3"></div>
+                                </div>
+                        </div>
+                </router-link>
+                <div id="dynamic-tile" class="tile">
+                        <div class="tile-lower-container">
+                                <div class="tile-title-decoration"></div>
+                                <p>Dynamic</p>
+                        </div>
+                        <div class="tile-bubble-container">
+                                <div class="bubble" id="bubble1"></div>
+                                <div class="bubble" id="bubble2"></div>
+                                <div class="bubble" id="bubble3"></div>
+                        </div>
+                </div>
+        </div>
+</script>
+
+
+
+        <div class="page-container" >
+                <div class="page">
+                        <div class="page-content">
+
+                                <div id="searchbar">
+                                        <label for="search"></label>
+                                        <input placeholder="Search..." id="search" v-model="search">
+                                        <div class="search-icon"><img src="clear_black_24dp.svg" alt=""></div>
+                                </div>
+                                <ul class="wrapper">
+                                        <li class="card" v-for="post in filteredList">
+                                                <div class="text-container">
+                                                        <p>
+                                                                {{ post.title.slice(0, post.title.indexOf(search.toUpperCase())) }}</p>
+                                                        <p class="highlight"> {{ search.toUpperCase() }}</p>
+                                                        <p>
+                                                                {{ post.title.slice(post.title.indexOf(search.toUpperCase()) + search.length, 8) }}</p>
+                                                        <a v-bind:href="post.link" target="_blank">
+
+                                                        </a>
+                                                </div>
+                                        </li>
+                                </ul>
+
+                        </div>
+
+                </div>
+
+                <div class="page">
+                        <div class="page-content">
+                                <div class="searchbar-container">
+                                        <div id="searchbar">
+                                                <label for="search"></label><input placeholder="Search..." id="search">
+                                        </div>
+                                </div>
+                        </div>
+                </div>
+                <div class="page">
+                        <div class="page-content"></div>
+                </div>
+        </div>
+
+
+</div>
+<script>
+    class Post {
+        constructor(title, link, author, img) {
+            this.title = title;
+            this.link = link;
+            this.author = author;
+            this.img = img;
+        }
+    }
+
+    const app2 = new Vue({
+        el: '.page',
+        data: {
+            search: '',
+            postList: [
+                new Post(
+                    'A318',
+                ),
+                new Post(
+                    'A320',
+                ),
+                new Post(
+                    'A321',
+                ),
+                new Post(
+                    'B747',
+                ),
+                new Post(
+                    'B744',
+                ),
+                new Post(
+                    'B764',
+                ),
+                new Post(
+                    'B789',
+                ),
+                new Post(
+                    'B756',
+                ),
+                new Post(
+                    'B73M',
+                ),
+            ]
+        },
+        computed: {
+            filteredList() {
+                if (this.search == "") {
+                    return
+                }
+                return this.postList.filter(post => {
+                    return post.title.toLowerCase().includes(this.search.toLowerCase())
+                })
+            }
+        }
+    })
+</script>
+<script>
+
+
+    Vue.use(VueRouter)
+
+    const Static = {
+        template : "<h1>Static</h1>",
+        name:"Static"
+    }
+    const MainMenu = {
+        template : "#mainMenu",
+        name:"MainMenu"
+    }
+
+    const Dynamic = {
+        template : "<h1>Dynamic</h1>",
+        name:"Dynamic"
+    }
+
+    const router = new VueRouter({
+        routes:[
+            {path:'/',component:MainMenu},
+            {path:'/static',component:Static},
+            {path:'/dynamic',component:Dynamic},
+        ]
+    })
+
+    const vue = new Vue({
+        router : router,
+        el: '#app',
+        data: {
+            showMenu: true,
+        },
+    })
+</script>
+<script src="hammer.js"></script>
+<script src="swipeControl.js"></script>
+<script src="http://hammerjs.github.io/dist/hammer.js"></script>
+
+
+
+</body>
+</html>
