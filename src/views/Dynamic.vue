@@ -2,6 +2,7 @@
 <!--  <MenuButton/>-->
 <!--  <Background/>-->
   <div>
+    <div></div>
     <transition name="search-in" appear>
     <div class="page-container" >
       <div class="page">
