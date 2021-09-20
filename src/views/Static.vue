@@ -4,7 +4,6 @@
   <!---->
   <!--  <Background/>-->
   <div >
-
     <div class="page-container">
       <div class="page">
         <div class="searchbar-container">
@@ -29,9 +28,12 @@
             </li>
           </ul>
         </div>
-        <div id="browse">
-          Browse
-        </div>
+        <router-link :to="{ name: 'TestView'}">
+          <div id="browse">
+            Browse
+          </div>
+        </router-link>
+
       </div>
 
       <!--      <div class="page">-->

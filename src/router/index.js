@@ -3,6 +3,7 @@ import Home from '../views/Home.vue'
 // import Static from "../views/Static.vue"
 import SelectScreen from "../views/SelectScreen"
 import Test from "../views/Test"
+import TestView from "../views/TestView"
 // import SelectScreen from "../views/SelectScreen.vue"
 
 const routes = [
@@ -24,6 +25,12 @@ const routes = [
     path: '/test',
     name: 'Test',
     component: Test
+  },
+
+  {
+    path: '/testView',
+    name: 'TestView',
+    component: TestView
   },
 
   {
