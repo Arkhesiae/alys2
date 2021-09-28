@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import SelectScreen from "../views/SelectScreen"
 import Test from "../views/Test"
 import TestView from "../views/TestView"
+import Graphe from "../views/graphe"
 // import SelectScreen from "../views/SelectScreen.vue"
 
 const routes = [
@@ -25,6 +26,11 @@ const routes = [
     path: '/test',
     name: 'Test',
     component: Test
+  },
+  {
+    path: '/graph',
+    name: 'Graphe',
+    component: Graphe
   },
 
   {

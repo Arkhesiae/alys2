@@ -9,6 +9,7 @@ const forceGraph = document.getElementById('force')?.getContext('2d');
 const ROCDGraph = document.getElementById('ROCD')?.getContext('2d');
 const machGraph = document.getElementById('mach')?.getContext('2d');
 
+// eslint-disable-next-line no-unused-vars
 let dataSets = {
     time: {
         data: [],
@@ -47,47 +48,96 @@ let dataSets = {
     },
 }
 
+let plane = new PhysicalPlane()
+plane.setParameters(54000)
+plane.setInitialState(255*100/3.28084, 111, 0, 0)
+plane.loiChelou(msToKnot(111))
+for (let x=0; x<120; x ++){
+    plane.monteeCASConstant()
+    console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
+}
+
+plane.setInitialState(255*100/3.28084, 111, 0, 0)
+for (let x=0; x<280; x ++){
+    plane.climbAtROCD(2276/197)
+    console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
+}
 
 
-export function calcPerf(FL){
+export function calcPerf(FL, loi){
     let plane = new PhysicalPlane()
-    // let FLreturn = 0
     plane.setParameters(54000)
     plane.setInitialState(FL*100/3.28084, knotToMs(250), 0, 0)
-    // console.log("MinSpeed : ", msToKnot(plane.minSpeed))
-    // console.log("MaxSpeed : ", msToKnot(plane.maxSpeed))
     let minSpeed = msToKnot(plane.minSpeed)
     let maxSpeed = msToKnot(plane.maxSpeed)
     let maxROCD = 0
-    let speedY = minSpeed
-    // console.log(maxSpeed-minSpeed)
-    for (let speed = minSpeed; speed<maxSpeed; speed++){
-        plane.setInitialState(FL*100/3.28084, knotToMs(speed), 0, 0)
-        plane.loiChelou(speed)
+    if (loi){
+
+        plane.setInitialState(FL*100/3.28084, knotToMs(loi.speed), 0, 0)
+        plane.setLoi(loi.speed, loi.mach)
         plane.monteeCASConstant()
-        if(plane.flightParams.ROCD > maxROCD){
-            maxROCD = plane.flightParams.ROCD
-            speedY = speed
+        maxROCD = plane.flightParams.ROCD
+        return {rate : Math.floor(maxROCD*196.85039/100)*100, speed :'', maxFL : '', absoluteMaxFL : ''}
+    }
+    else{
+        let speedY = minSpeed
+        console.warn('c parti')
+        for (let speed = minSpeed; speed<maxSpeed; speed++){
+            plane.setInitialState((FL)*100/3.28084, knotToMs(speed), 0, 0)
+            //console.warn("AVANT")
+            //console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
+
+
+            plane.loiChelou(speed)
+            plane.monteeCASConstant()
+            console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
+
+            plane.monteeCASConstant()
+            //console.warn("APRES")
+            console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
+
+            //console.log(speed, plane.flightParams.ROCD*197)
+            if(plane.flightParams.ROCD > maxROCD){
+                maxROCD = plane.flightParams.ROCD
+                speedY = speed
+            }
         }
+
+        plane.setInitialState((FL-5)*100/3.28084, knotToMs(speedY), 0, 0)
+        plane.loiChelou(speedY)
+        let maxThrustFL
+        let minSpeedFL
+        for (let x=0; x<300; x ++){
+         //   console.log("%Poussée : ", plane.force.thrust/plane.maxThrust)
+            let limit = plane.climbAtROCD(maxROCD)
+            //console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
+           // console.log("%Poussée : ", plane.force.thrust/plane.maxThrust)
+            // console.log(limit)
+            // console.log(plane.flightParams.Hp)
+            if (limit === "thrustLimit" && !maxThrustFL){
+                maxThrustFL = Math.floor(plane.flightParams.Hp*3.28084/100)
+                console.log("Niveau max poussée : ",maxThrustFL)
+
+            }
+            else if (limit === "speedLimit"){
+                minSpeedFL = Math.floor(plane.flightParams.Hp*3.28084/100)
+                console.log("Niveau max vitesse : ",maxThrustFL)
+                // console.log(x)
+                break
+            }
+        }
+        return {rate : Math.floor(maxROCD*196.85039/100)*100, speed :'', maxFL : '', absoluteMaxFL : minSpeedFL}
     }
 
-    plane.setInitialState(FL*100/3.28084, knotToMs(speedY), 0, 0)
-    plane.loiChelou(speedY)
-    let maxThrustFL
-    let minSpeedFL
-    for (let x=0; x<300; x ++){
-        let limit = plane.climbAtROCD(maxROCD)
-        // console.log(limit)
-        // console.log(plane.flightParams.Hp)
-        if (limit === "thrustLimit" && !maxThrustFL){
-            maxThrustFL = Math.floor(plane.flightParams.Hp*3.2084/100)
-        }
-        else if (limit === "speedLimit"){
-            minSpeedFL = Math.floor(plane.flightParams.Hp*3.2084/100)
-            // console.log(x)
-            break
-        }
-    }
+    // let FLreturn = 0
+
+    // console.log("MinSpeed : ", msToKnot(plane.minSpeed))
+    // console.log("MaxSpeed : ", msToKnot(plane.maxSpeed))
+
+
+
+
+
 
     // console.log(maxThrustFL, minSpeedFL)
     // for (let fl=FL; fl<490; fl++){
@@ -102,7 +152,7 @@ export function calcPerf(FL){
     // }
 
     // console.log(speedY)
-    return {rate : Math.floor(maxROCD*196.85039/100)*100, speed : Math.floor(speedY), maxFL : maxThrustFL, absoluteMaxFL : minSpeedFL }
+
 }
 calcPerf(200)
 
@@ -127,7 +177,7 @@ export function speedRange(FL){
     plane.setInitialState(FL*100/3.28084, knotToMs(250), 0, 0)
     let minSpeed = plane.minSpeed
     let maxSpeed = plane.maxSpeed
-    let unit = FL>290 ? " M": ' kts'
+    let unit = FL>=290 ? " M": ' kts'
     if (FL<290){
         // eslint-disable-next-line no-unused-vars
         minSpeed = Math.floor(msToKnot(minSpeed))
@@ -140,38 +190,38 @@ export function speedRange(FL){
     return {minSpeed: minSpeed+unit, maxSpeed: maxSpeed+unit}
 }
 
-let plane = new PhysicalPlane()
-plane.setParameters(68000)
-plane.setInitialState(8000, knotToMs(280), 0, 0)
-plane.setLoi(280, 0.78)
-
-let currentTime = 0
-let initialTime = 0
-let finalTime = 500
-// let timeLoop
-let increment = 1
-for (let time = initialTime ; time<=finalTime ; time+=increment){
-    currentTime++
-    if (time<100){
-        plane.monteeCASConstant()
-    } else if (time<600){
-        // plane.accel()
-    } else {
-        plane.palier()
-    }
-
-    dataSets.time.data.push(currentTime)
-    dataSets.altitude.data.push(Math.floor(plane.flightParams.Hp*3.28084))
-    dataSets.speed.data.CAS.push(msToKnot(plane.flightParams.speed.CAS))
-    dataSets.speed.data.TAS.push(msToKnot(plane.flightParams.speed.TAS))
-    dataSets.ROCD.data.push(plane.flightParams.ROCD*196.85)
-    dataSets.force.data.thrust.push(plane.force.thrust)
-    dataSets.force.data.drag.push(plane.force.drag)
-    dataSets.force.data.maxThrust.push(plane.maxThrust)
-    dataSets.mach.data.buffet.push(plane.lowSpeedBuffetingLimit)
-    dataSets.mach.data.mach.push(plane.flightParams.speed.Mach)
-    dataSets.mach.data.maxMach.push(plane.maxMach)
-}
+// let plane = new PhysicalPlane()
+// plane.setParameters(68000)
+// plane.setInitialState(8000, knotToMs(280), 0, 0)
+// plane.setLoi(280, 0.78)
+//
+// let currentTime = 0
+// let initialTime = 0
+// let finalTime = 500
+// // let timeLoop
+// let increment = 1
+// for (let time = initialTime ; time<=finalTime ; time+=increment){
+//     currentTime++
+//     if (time<100){
+//         plane.monteeCASConstant()
+//     } else if (time<600){
+//         // plane.accel()
+//     } else {
+//         plane.palier()
+//     }
+//
+//     dataSets.time.data.push(currentTime)
+//     dataSets.altitude.data.push(Math.floor(plane.flightParams.Hp*3.28084))
+//     dataSets.speed.data.CAS.push(msToKnot(plane.flightParams.speed.CAS))
+//     dataSets.speed.data.TAS.push(msToKnot(plane.flightParams.speed.TAS))
+//     dataSets.ROCD.data.push(plane.flightParams.ROCD*196.85)
+//     dataSets.force.data.thrust.push(plane.force.thrust)
+//     dataSets.force.data.drag.push(plane.force.drag)
+//     dataSets.force.data.maxThrust.push(plane.maxThrust)
+//     dataSets.mach.data.buffet.push(plane.lowSpeedBuffetingLimit)
+//     dataSets.mach.data.mach.push(plane.flightParams.speed.Mach)
+//     dataSets.mach.data.maxMach.push(plane.maxMach)
+// }
 
 // let charts = createCharts(dataSets)
 // function addAllData(){

@@ -50,7 +50,7 @@
                     <img src="../assets/vertical_align_top_black_24dp.svg"/>
                     <span class="information__label">Rate of Climb</span>
                     <div class="information__value">{{climbPerf.rate}} ft/min</div>
-                    <div class="information__context">Vy : {{climbPerf.speed}} kts FLmax : {{climbPerf.maxFL}}</div>
+                    <div class="information__context" v-show="checked">Vy : {{climbPerf.speed}} kts FLmax : {{climbPerf.maxFL}}</div>
                   </div>
                   <div class="information__content">
                     <img src="../assets/vertical_align_bottom_black_24dp.svg"/>
@@ -66,10 +66,23 @@
                   <div class="information__content">
                     <img src="../assets/vertical_align_top_black_24dp.svg"/>
                     <span class="information__label">Speed range</span>
-                    <div class="information__value__contener">
+
+                  </div>
+                  <div class="speed slidecontainer">
+                    <input type="range" min="60" max="410" step="10" class="slider" >
+                  </div>
+                  <div class="information__value__contener">
+
+                    <div class="min">
+                      <div class="stopbar"></div>
                       <span class="information__value speed-value">{{speedRange.minSpeed}}</span>
+                    </div>
+
+                    <div class="max">
+                      <div class="stopbar"></div>
                       <span class="information__value speed-value">{{speedRange.maxSpeed}}</span>
                     </div>
+
                   </div>
                 </div>
               </div>
@@ -80,7 +93,7 @@
               <div class="text2" v-bind:style="{ bottom: computedBottom }">{{climbPerf.absoluteMaxFL}}</div>
               <div class="bar2" v-bind:style="{ height: computedHeight2 , bottom : computedBottom }"></div>
               <div id="fl-value">FL{{this.FLinput}}</div>
-              <div class="slidecontainer">
+              <div class="fl slidecontainer">
                 <input type="range" min="60" max="410" step="10" class="slider" orient="vertical" id="myRange" v-model="FLinput">
               </div>
             </div>
@@ -97,6 +110,9 @@
 <!--            </div>-->
 <!--          </div>-->
         </div>
+        <div class="law-edit">Loi de montée</div>
+        <input type="checkbox" v-model="checked"/>
+        <div>{{checked}}</div>
 <!--        <div class = "lower-frame"></div>-->
       </div>
 
@@ -166,6 +182,8 @@ export default {
     return {
       // climbROCD: 0,
       FLinput: 0,
+      checked:false,
+      law : {speed: 280, mach:0.75},
     }
   },
 
@@ -195,7 +213,11 @@ export default {
     },
 
     climbPerf: function () {
-      return calcPerf(this.FLinput)
+      if (this.checked){
+        console.log("hi")
+        return calcPerf(this.FLinput, this.law)
+      }
+      else return calcPerf(this.FLinput)
     },
     descentPerf: function () {
       return calcPerfbis(this.FLinput)
@@ -242,7 +264,13 @@ export default {
   margin-top: 20px;
   width: 100%;
   padding: 20px;
+}
 
+.law-edit{
+  width: 200px;
+  height: 50px;
+  border-radius: 30px;
+  background: #2B2F37;
 }
 
 .bar1{
@@ -284,7 +312,7 @@ export default {
 
 
 /* The slider itself */
-input[type=range] {
+.fl input[type=range] {
   /*transform-origin: center;*/
 
   width: 200px;
@@ -292,6 +320,27 @@ input[type=range] {
   /*margin: 10px;*/
   transform-origin: 100px 100px;
   transform: rotate(-90deg);
+  /*transform: rotateZ(270deg);*/
+  /*padding: 0 5px;*/
+  /*-webkit-appearance: slider-vertical;  !* Override default CSS styles *!*/
+  appearance: none;
+  background: #3d4048; /* Grey background */
+  border-radius: 50px;
+  outline: none; /* Remove outline */
+  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+
+/* The slider itself */
+.speed input[type=range]{
+  /*transform-origin: center;*/
+
+  width: 400px;
+  height: 3px;
+  left: 20px;
+  /*margin: 10px;*/
+
   /*transform: rotateZ(270deg);*/
   /*padding: 0 5px;*/
   /*-webkit-appearance: slider-vertical;  !* Override default CSS styles *!*/
@@ -500,8 +549,9 @@ input[type=range] {
 }
 
 .information__value__contener{
-  width : 210px;
+  width : 400px;
   display: flex;
+  font-size: 10px;
   justify-content: space-between;
 }
 
@@ -527,7 +577,18 @@ input[type=range] {
 }
 
 .information__value.speed-value {
+  position: relative;
+  top :-25px;
   width: 90px;
+}
+
+.gauge{
+  width: 200px;
+  background: #4e535e;}
+
+.stopbar{
+  width: 2px;
+  background: #2b2d33;
 }
 
 .information__context{

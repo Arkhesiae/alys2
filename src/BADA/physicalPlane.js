@@ -134,10 +134,16 @@ export class PhysicalPlane {
         this.flightParams.Hp = altitude
         this.flightParams.speed.CAS = speed
         this.atmosphereParams.deltaT = deltaT
+        this.dVTAS = 0
         this.setAtmosphere()
         this.flightParams.speed.TAS = CAStoTAS(this.flightParams.speed.CAS, this.atmosphereParams.pressure, this.atmosphereParams.temperature)
         this.flightParams.ROCD = ROCD
+        if (ROCD ===0) {
+            this.force.thrust = 0
+        }
+
         this.computeSpeed()
+
         this.computeAerodynamics()
 
     }
@@ -215,11 +221,12 @@ export class PhysicalPlane {
         this.computeAerodynamics()
         this.computeThrust()
         let ESFValue = ESF(this.flightParams.speed.Mach, this.loiMontee.Mach, knotToMs(this.loiMontee.CAS), this.atmosphereParams.temperature, this.atmosphereParams.deltaT, this.flightParams.Hp, "constant", 0)
+        console.log(ESFValue)
         let ROCDV = ROCD(this.atmosphereParams.temperature, this.force.thrust, this.force.drag, this.flightParams.speed.TAS, ESFValue, this.flightParams.mass, this.atmosphereParams.deltaT)
         this.flightParams.ROCD = ROCDV
 
-        let dVTAS = (1 / ESFValue - 1) * Constante.g0 / this.flightParams.speed.TAS * this.flightParams.ROCD * (this.atmosphereParams.temperature / (this.atmosphereParams.temperature - this.atmosphereParams.deltaT))
-        this.flightParams.speed.TAS += dVTAS
+        this.dVTAS = (1 / ESFValue - 1) * Constante.g0 / this.flightParams.speed.TAS * this.flightParams.ROCD * (this.atmosphereParams.temperature / (this.atmosphereParams.temperature - this.atmosphereParams.deltaT))
+        this.flightParams.speed.TAS += this.dVTAS
         this.updateFlightParams()
     }
 
@@ -250,8 +257,8 @@ export class PhysicalPlane {
         let ROCDV = ROCD(this.atmosphereParams.temperature, this.force.thrust, this.force.drag, this.flightParams.speed.TAS, ESFValue, this.flightParams.mass, 0)
         this.flightParams.ROCD = ROCDV
         // console.log(this.flightParams.ROCD*196)
-        let dVTAS = (1 / ESFValue - 1) * Constante.g0 / this.flightParams.speed.TAS * this.flightParams.ROCD
-        this.flightParams.speed.TAS += dVTAS
+        this.dVTAS = (1 / ESFValue - 1) * Constante.g0 / this.flightParams.speed.TAS * this.flightParams.ROCD
+        this.flightParams.speed.TAS += this.dVTAS
         this.updateFlightParams()
     }
 
@@ -346,13 +353,16 @@ export class PhysicalPlane {
         let state
         let ESFValue
         let thrustToReachTarget = this.force.drag + targetROCD / this.flightParams.speed.TAS * this.flightParams.mass * Constante.g0 + this.dVTAS * this.flightParams.mass
+       // console.log(thrustToReachTarget/this.maxThrust)
         this.force.thrust = Math.max(Math.min(thrustToReachTarget, this.maxThrust), 0)
-
-
+        //console.log("%Poussée : ", this.force.thrust/this.maxThrust)
+        //console.log("%ROCD : ", this.flightParams.ROCD/targetROCD)
         // console.log(thrustToReachTarget, this.maxThrust)
         if (thrustToReachTarget >= this.maxThrust) {
             // Thrust et Vitesse limitantes
-            if (Math.abs(this.flightParams.speed.TAS - CAStoTAS(this.minSpeed*1.23, this.atmosphereParams.pressure, this.atmosphereParams.temperature)) < .5) {
+
+            if (Math.abs(this.flightParams.speed.TAS - CAStoTAS(this.minSpeed, this.atmosphereParams.pressure, this.atmosphereParams.temperature)) < .5) {
+                console.error(1)
                 // console.log(msToKnot(this.minSpeed*1.23))
                 // console.log("STALL LIMIT")
                 ESFValue = ESF(this.flightParams.speed.Mach, this.loiMontee.Mach, knotToMs(this.loiMontee.CAS), this.atmosphereParams.temperature, 0, this.flightParams.Hp, "constant", 1)
@@ -360,25 +370,30 @@ export class PhysicalPlane {
                 let dVTAS = (1 / ESFValue - 1) * Constante.g0 / this.flightParams.speed.TAS * this.flightParams.ROCD
                 this.dVTAS = dVTAS
                 this.flightParams.speed.TAS += dVTAS
-                this.flightParams.speed.TAS = Math.max(this.flightParams.speed.TAS, CAStoTAS(80, this.atmosphereParams.pressure, this.atmosphereParams.temperature))
+                this.flightParams.speed.TAS = Math.max(this.flightParams.speed.TAS, CAStoTAS(this.minSpeed, this.atmosphereParams.pressure, this.atmosphereParams.temperature))
                 state = "speedLimit"
             }
             // Thrust limitant, déceleration nécessaire
             else {
+                console.error(2)
                 // console.log('CAS 2')
                 let ROCD
-                let dVTAS = (this.force.thrust - this.force.drag) / this.flightParams.mass - this.flightParams.ROCD * Constante.g0 / this.flightParams.speed.TAS
-                this.dVTAS = dVTAS
+
                 // ESFValue = ESF(this.flightParams.speed.Mach, this.loiMontee.Mach, knotToMs(this.loiMontee.CAS), this.atmosphereParams.temperature, 0, this.flightParams.Hp, "decel", 1)
                 if (this.flightParams.ROCD === 0){
-                   ESFValue = ESF(this.flightParams.speed.Mach, this.loiMontee.Mach, knotToMs(this.loiMontee.CAS), this.atmosphereParams.temperature, 0, this.flightParams.Hp, "decel", 1)
+                    // ESFValue = ESF(this.flightParams.speed.Mach, this.loiMontee.Mach, knotToMs(this.loiMontee.CAS), this.atmosphereParams.temperature, 0, this.flightParams.Hp, "decel", 1)
                     ROCD = targetROCD
                 }
-                else {
-                    ROCD = ((this.force.thrust - this.force.drag)*this.flightParams.speed.TAS - this.flightParams.mass*this.flightParams.speed.TAS*this.dVTAS)/this.flightParams.mass/Constante.g0
-                }
+                //else {
+
+               // }
+                ROCD = ((this.force.thrust - this.force.drag)*this.flightParams.speed.TAS - this.flightParams.mass*this.flightParams.speed.TAS*this.dVTAS)/this.flightParams.mass/Constante.g0
+                ROCD = targetROCD
+
                 // ESFValue =  (1+this.flightParams.speed.TAS/Constante.g0*this.dVTAS/this.flightParams.ROCD)**(-1)
                 this.flightParams.ROCD = ROCD
+                let dVTAS = (this.force.thrust - this.force.drag) / this.flightParams.mass - this.flightParams.ROCD * Constante.g0 / this.flightParams.speed.TAS
+                this.dVTAS = dVTAS
                 this.flightParams.speed.TAS += dVTAS
                 this.flightParams.speed.TAS = Math.max(this.flightParams.speed.TAS, CAStoTAS(this.minSpeed, this.atmosphereParams.pressure, this.atmosphereParams.temperature))
                 state = "thrustLimit"
@@ -387,6 +402,7 @@ export class PhysicalPlane {
             // console.log("maxThrust")
             // ESFValue = ESF(this.flightParams.speed.Mach, this.loiMontee.Mach, knotToMs(this.loiMontee.CAS), this.atmosphereParams.temperature, 0, this.flightParams.Hp, "decel", 1)
         } else {
+            console.error(3)
             ESFValue = ESF(this.flightParams.speed.Mach, this.loiMontee.Mach, knotToMs(this.loiMontee.CAS), this.atmosphereParams.temperature, 0, this.flightParams.Hp, "constant", 1)
             this.flightParams.ROCD = ROCD( this.atmosphereParams.temperature, this.force.thrust, this.force.drag, this.flightParams.speed.TAS, ESFValue, this.flightParams.mass, 0)
             let dVTAS = (1 / ESFValue - 1) * Constante.g0 / this.flightParams.speed.TAS * this.flightParams.ROCD
@@ -394,7 +410,7 @@ export class PhysicalPlane {
             this.flightParams.speed.TAS += dVTAS
             state = "noLimit"
         }
-        // console.log(this.flightParams.Hp)
+        console.log(this.flightParams.Hp*3.28084/100)
         this.updateFlightParams()
         return state
 
