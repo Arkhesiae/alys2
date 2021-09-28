@@ -117,8 +117,6 @@ export default {
         return post.title.toLowerCase().includes(this.search.toLowerCase())
       })
     },
-
-
   },
   methods : {
     erase(){
