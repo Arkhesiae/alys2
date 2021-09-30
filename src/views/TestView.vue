@@ -45,12 +45,14 @@
             <div class="section value">
               <div class="information">
                 <span class="information__title">RATES</span>
-                <div class="information__general">
-                  <div class="information__content">
+                <div class="information__general rates">
+                  <div class="information__content" :class="{active: isSelected}" v-on:click="select()">
                     <img src="../assets/vertical_align_top_black_24dp.svg"/>
                     <span class="information__label">Rate of Climb</span>
                     <div class="information__value">{{climbPerf.rate}} ft/min</div>
-                    <div class="information__context" v-show="checked">Vy : {{climbPerf.speed}} kts FLmax : {{climbPerf.maxFL}}</div>
+
+                    <div class="information__value selectedValue" v-on:wheel="changeSelection">{{ selectedClimbRate }} ft/min</div>
+                    <div class="information__context" v-show="!checked">Vy : {{climbPerf.speed}} kts FLmax : {{maxFLROCD}}</div>
                   </div>
                   <div class="information__content">
                     <img src="../assets/vertical_align_bottom_black_24dp.svg"/>
@@ -62,34 +64,49 @@
               </div>
               <div class="information">
                 <span class="information__title">SPEEDS</span>
-                <div class="information__general">
-                  <div class="information__content">
-                    <img src="../assets/vertical_align_top_black_24dp.svg"/>
-                    <span class="information__label">Speed range</span>
+                <div class="information__general speed">
 
-                  </div>
-                  <div class="speed slidecontainer">
-                    <input type="range" min="60" max="410" step="10" class="slider" >
-                  </div>
-                  <div class="information__value__contener">
+                  <div class="information-container">
+                    <div class="information__content">
+                      <img src="../assets/vertical_align_top_black_24dp.svg"/>
+                      <span class="information__label">Speed range</span>
 
-                    <div class="min">
-                      <div class="stopbar"></div>
-                      <span class="information__value speed-value">{{speedRange.minSpeed}}</span>
+
                     </div>
+                    <div class="speed-slider">
+                      <div class="information__value__contener">
+                        <div>{{displayedSpeed}}</div>
+                        <div class="stopbar-container" v-bind:style="{ width : sliderWidthInPx+'px', marginLeft : sliderMarginLeftInPx+'px'  }">
+                          <div class="min">
+                            <div class="stopbar"></div>
+                            <span class="speed-value">{{speedRange.minSpeed}}</span>
+                          </div>
 
-                    <div class="max">
-                      <div class="stopbar"></div>
-                      <span class="information__value speed-value">{{speedRange.maxSpeed}}</span>
+                          <div class="max">
+                            <div class="stopbar"></div>
+                            <span class="speed-value">{{speedRange.maxSpeed}}</span>
+                          </div>
+                        </div>
+
+
+                      </div>
+                      <div class="slider-background"></div>
+                      <div class="speed slidecontainer">
+
+                        <input type="range" :min="minSpeed" :max="maxSpeed" v-bind:style="{ width : sliderWidthInPx+'px', marginLeft : sliderMarginLeftInPx+'px'  }" step="1" class="slider" v-model="speed">
+                      </div>
                     </div>
-
                   </div>
+
+
+
                 </div>
               </div>
             </div>
             <div class="section fl">
               <div class="text1" v-bind:style="{ bottom: computedHeight }">{{climbPerf.maxFL}}</div>
               <div class="bar1" v-bind:style="{ height: computedHeight }"></div>
+              <div class="bar3" v-bind:style="{ bottom: computedHeightScale(computedHpTrans(this.checked ? this.law : '')) }"></div>
               <div class="text2" v-bind:style="{ bottom: computedBottom }">{{climbPerf.absoluteMaxFL}}</div>
               <div class="bar2" v-bind:style="{ height: computedHeight2 , bottom : computedBottom }"></div>
               <div id="fl-value">FL{{this.FLinput}}</div>
@@ -169,6 +186,9 @@ import Background from "@/components/Background"
 import {calcPerf, speedRange} from "@/BADA/perfomanceFile"
 import {calcPerfbis} from "@/BADA/perfomanceFile"
 import AppButton from "@/components/appButton"
+import {HpTrans, knotToMs} from "../BADA/func";
+import {getPlaneMach, maxFLAtROCD, range} from "../BADA/perfomanceFile";
+
 
 export default {
   name: "TestView",
@@ -182,6 +202,11 @@ export default {
     return {
       // climbROCD: 0,
       FLinput: 0,
+      minFL:60,
+      maxFL:350,
+      speed : 0,
+      isSelected : false,
+      selectedClimbRate: 0,
       checked:false,
       law : {speed: 280, mach:0.75},
     }
@@ -199,29 +224,91 @@ export default {
     // }
   },
 
+  methods : {
+    select : function (){
+        this.isSelected = !this.isSelected
+    },
+
+    changeSelection : function(event){
+      if (event.deltaY<0){
+        this.selectedClimbRate = Math.min(this.selectedClimbRate+100, this.climbPerf.rate)
+      }
+      else {
+        this.selectedClimbRate = Math.max(this.selectedClimbRate-100, 0)
+      }
+
+    },
+
+    computedHpTrans : function (law) {
+        if (law){
+        console.log( Math.floor(HpTrans(knotToMs(law.speed), law.mach)/100))
+        return Math.floor(HpTrans(knotToMs(law.speed), law.mach)/100)
+
+      }
+      else return 290
+    },
+
+    computedHeightScale : function (FL) {
+      return (FL-this.minFL)/(this.maxFL - this.minFL)*200+15+"px"
+    },
+  },
+
   computed: {
-    computedHeight : function () {
-      return (calcPerf(this.FLinput).maxFL-60)/350*200+"px"
+    speedRangeAtZero : function (){
+        return range(0)
     },
 
-    computedHeight2 : function () {
-      return (calcPerf(this.FLinput).absoluteMaxFL-60)/350*200 - (calcPerf(this.FLinput).maxFL-60)/350*200 - 2 +"px"
+    displayedSpeed : function (){
+        if (this.FLinput>this.computedHpTrans(this.law)){
+            return Math.round(getPlaneMach(this.FLinput, this.speed)*100) / 100
+        }
+        else return this.speed
     },
 
-    computedBottom : function () {
-      return (calcPerf(this.FLinput).maxFL-60)/350*200 + 34 +"px"
+    minSpeed : function (){
+      return range(this.FLinput).minSpeed
+    },
+
+    maxSpeed : function (){
+      return range(this.FLinput).maxSpeed
+    },
+
+    sliderWidthInPx : function (){
+        return 400*(range(this.FLinput).maxSpeed-range(this.FLinput).minSpeed)/(this.speedRangeAtZero.maxSpeed -this.speedRangeAtZero.minSpeed)
+    },
+
+    sliderMarginLeftInPx : function (){
+      return 400*(range(this.FLinput).minSpeed-this.speedRangeAtZero.minSpeed)/(this.speedRangeAtZero.maxSpeed -this.speedRangeAtZero.minSpeed)
     },
 
     climbPerf: function () {
       if (this.checked){
         console.log("hi")
-        return calcPerf(this.FLinput, this.law)
+        return calcPerf(this.FLinput, this.law, this.speed)
       }
-      else return calcPerf(this.FLinput)
+      else return calcPerf(this.FLinput, "", this.speed)
     },
+
+    computedHeight : function () {
+      return (this.maxFLROCD-60)/350*200+"px"
+    },
+
+    computedHeight2 : function () {
+      return (this.climbPerf.absoluteMaxFL-60)/350*200 - (this.climbPerf.maxFL-60)/350*200 - 2 +"px"
+    },
+
+    computedBottom : function () {
+      return (this.climbPerf.maxFL-60)/350*200 + 34 +"px"
+    },
+
+    maxFLROCD : function (){
+      return maxFLAtROCD(this.FLinput, this.speed, this.law, this.selectedClimbRate/197)
+    },
+
     descentPerf: function () {
-      return calcPerfbis(this.FLinput)
+      return calcPerfbis(this.FLinput, this.law, this.speed)
     },
+
     speedRange: function () {
       return speedRange(this.FLinput)
     },
@@ -250,6 +337,19 @@ export default {
   /*flex: 0 0 auto;*/
 }
 
+.slider-background{
+  background: #5f303d;
+  position: relative;
+  margin-top: 15px;
+  width: 400px;
+  border-radius: 30px;
+  height: 2px;
+}
+
+.speed-slider{
+  height: 100%;
+}
+
 .slidecontainer {
   display: inline-block;
   width: 20px;
@@ -257,6 +357,14 @@ export default {
   margin: 15px;
   height: 90%;
   /*width: 100%; !* Width of the outside container *!*/
+}
+
+.speed.slidecontainer{
+  margin: 0;
+  position: absolute;
+  top: 3px;
+  height: 100%;
+  z-index: 999;
 }
 
 .content-container__app-button-container{
@@ -310,6 +418,13 @@ export default {
   background: #713a43;
 }
 
+.bar3{
+  position: absolute;
+  height: 2px;
+  width: 50px;
+  background: #ff6f86;
+}
+
 
 /* The slider itself */
 .fl input[type=range] {
@@ -338,17 +453,17 @@ export default {
 
   width: 400px;
   height: 3px;
-  left: 20px;
+
   /*margin: 10px;*/
 
   /*transform: rotateZ(270deg);*/
   /*padding: 0 5px;*/
   /*-webkit-appearance: slider-vertical;  !* Override default CSS styles *!*/
   appearance: none;
-  background: #3d4048; /* Grey background */
+  background: #6f7689; /* Grey background */
   border-radius: 50px;
   outline: none; /* Remove outline */
-  opacity: 0.7; /* Set transparency (for mouse-over effects on hover) */
+  opacity: 1; /* Set transparency (for mouse-over effects on hover) */
   -webkit-transition: .2s; /* 0.2 seconds transition on hover */
   transition: opacity .2s;
 }
@@ -480,7 +595,31 @@ export default {
   justify-content: space-around;
 }
 
+.stopbar-container{
+  display: flex;
+  width: 400px;
+  top :-20px;
+  justify-content: space-between;
+  position: absolute;
+  left:0;
+}
 
+.information__value.speed-value {
+  position: relative;
+
+  width: 100px;
+}
+
+.min {
+  height: 20px;
+  width : 50px;
+  border: 1px solid rgba(200,200,200,0.3);
+}
+.max {
+  height: 20px;
+  width : 50px;
+  border: 1px solid rgba(200,200,200,0.3);
+}
 
 .information{
   width: 100%;
@@ -498,6 +637,15 @@ export default {
   padding-top: 20px;
 }
 
+.information__general.speed{
+  align-content: center;
+}
+
+.information-container{
+  display: flex;
+  position: relative;
+}
+
 .information__content{
   position: relative;
   margin-right: 15px;
@@ -506,6 +654,27 @@ export default {
   height: 35px;
   width: min-content;
   display: flex;
+  align-content: center;
+}
+
+.information__content.active{
+  border: #2f7fff 1px solid;
+}
+
+.information__content .information__value.selectedValue{
+  opacity: 0;
+}
+
+.information__content.active .information__value.selectedValue{
+  position: relative;
+  opacity: 1;
+  top : 0px;
+}
+
+
+.information__content.active .information__value{
+  position: relative;
+  top : -30px;
 }
 
 .information__label{
@@ -550,6 +719,7 @@ export default {
 
 .information__value__contener{
   width : 400px;
+  position: absolute;
   display: flex;
   font-size: 10px;
   justify-content: space-between;
@@ -576,11 +746,7 @@ export default {
   background: #c79179;
 }
 
-.information__value.speed-value {
-  position: relative;
-  top :-25px;
-  width: 90px;
-}
+
 
 .gauge{
   width: 200px;

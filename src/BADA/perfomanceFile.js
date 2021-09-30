@@ -48,23 +48,23 @@ let dataSets = {
     },
 }
 
-let plane = new PhysicalPlane()
-plane.setParameters(54000)
-plane.setInitialState(255*100/3.28084, 111, 0, 0)
-plane.loiChelou(msToKnot(111))
-for (let x=0; x<120; x ++){
-    plane.monteeCASConstant()
-    console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
-}
+// let plane = new PhysicalPlane()
+// plane.setParameters(54000)
+// plane.setInitialState(255*100/3.28084, 111, 0, 0)
+// plane.loiChelou(msToKnot(111))
+// for (let x=0; x<120; x ++){
+//     plane.monteeCASConstant()
+//     console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
+// }
+//
+// plane.setInitialState(255*100/3.28084, 111, 0, 0)
+// for (let x=0; x<280; x ++){
+//     plane.climbAtROCD(2276/197)
+//     console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
+// }
 
-plane.setInitialState(255*100/3.28084, 111, 0, 0)
-for (let x=0; x<280; x ++){
-    plane.climbAtROCD(2276/197)
-    console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
-}
 
-
-export function calcPerf(FL, loi){
+export function calcPerf(FL, loi, speed){
     let plane = new PhysicalPlane()
     plane.setParameters(54000)
     plane.setInitialState(FL*100/3.28084, knotToMs(250), 0, 0)
@@ -74,14 +74,14 @@ export function calcPerf(FL, loi){
     if (loi){
 
         plane.setInitialState(FL*100/3.28084, knotToMs(loi.speed), 0, 0)
-        plane.setLoi(loi.speed, loi.mach)
+        plane.setLoiMontee(loi.speed, loi.mach)
         plane.monteeCASConstant()
         maxROCD = plane.flightParams.ROCD
         return {rate : Math.floor(maxROCD*196.85039/100)*100, speed :'', maxFL : '', absoluteMaxFL : ''}
     }
     else{
         let speedY = minSpeed
-        console.warn('c parti')
+        // console.warn('c parti')
         for (let speed = minSpeed; speed<maxSpeed; speed++){
             plane.setInitialState((FL)*100/3.28084, knotToMs(speed), 0, 0)
             //console.warn("AVANT")
@@ -89,12 +89,12 @@ export function calcPerf(FL, loi){
 
 
             plane.loiChelou(speed)
-            plane.monteeCASConstant()
-            console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
+            //plane.monteeCASConstant()
+            //console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
 
             plane.monteeCASConstant()
             //console.warn("APRES")
-            console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
+            // console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
 
             //console.log(speed, plane.flightParams.ROCD*197)
             if(plane.flightParams.ROCD > maxROCD){
@@ -103,11 +103,13 @@ export function calcPerf(FL, loi){
             }
         }
 
-        plane.setInitialState((FL-5)*100/3.28084, knotToMs(speedY), 0, 0)
-        plane.loiChelou(speedY)
+
+        plane.setInitialState((FL-5)*100/3.28084, knotToMs(speed), 0, 0)
+        plane.loiChelou(speed, 0.78)
         let maxThrustFL
         let minSpeedFL
-        for (let x=0; x<300; x ++){
+
+        for (let x=0; x<0; x ++){
          //   console.log("%Poussée : ", plane.force.thrust/plane.maxThrust)
             let limit = plane.climbAtROCD(maxROCD)
             //console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
@@ -116,17 +118,21 @@ export function calcPerf(FL, loi){
             // console.log(plane.flightParams.Hp)
             if (limit === "thrustLimit" && !maxThrustFL){
                 maxThrustFL = Math.floor(plane.flightParams.Hp*3.28084/100)
-                console.log("Niveau max poussée : ",maxThrustFL)
+                // console.log("Niveau max poussée : ",maxThrustFL)
 
             }
             else if (limit === "speedLimit"){
                 minSpeedFL = Math.floor(plane.flightParams.Hp*3.28084/100)
-                console.log("Niveau max vitesse : ",maxThrustFL)
+                // console.log("Niveau max vitesse : ",maxThrustFL)
                 // console.log(x)
                 break
             }
         }
-        return {rate : Math.floor(maxROCD*196.85039/100)*100, speed :'', maxFL : '', absoluteMaxFL : minSpeedFL}
+        plane.setInitialState((FL)*100/3.28084, knotToMs(speed), 0, 0)
+        plane.loiChelou(speed, 0.78)
+        plane.monteeCASConstant()
+        return {rate : Math.floor(plane.flightParams.ROCD*196.85039/100)*100, speed :speedY, maxFL : '', absoluteMaxFL : minSpeedFL}
+
     }
 
     // let FLreturn = 0
@@ -154,21 +160,63 @@ export function calcPerf(FL, loi){
     // console.log(speedY)
 
 }
-calcPerf(200)
 
-export function calcPerfbis(FL){
+
+export function maxFLAtROCD(FL, speed, loi, ROCD){
     let plane = new PhysicalPlane()
     plane.setParameters(54000)
-    //let minSpeed = msToKnot(plane.minSpeed)
-    plane.setInitialState(FL*100/3.28084, knotToMs(250), 0, 0)
-    let maxSpeed = msToKnot(plane.maxSpeed)
-    plane.setInitialState(FL*100/3.28084, knotToMs(maxSpeed), 0, 0)
-    plane.setLoi(maxSpeed, parseFloat(plane.flightCoefficients.aircraftFlightEnvelope.maxOperatingMachNumber))
-    plane.desCASConstant()
-    let maxROCD = plane.flightParams.ROCD
-    return {rate : Math.floor(maxROCD*196.85039/100)*100, speed: Math.floor(maxSpeed)}
+    plane.setInitialState((FL-5)*100/3.28084, knotToMs(speed), 0, 0)
+    plane.setLoiMontee(loi.speed, loi.mach)
+    let maxThrustFL
+
+    for (let x=0; x<4000; x ++){
+        //   console.log("%Poussée : ", plane.force.thrust/plane.maxThrust)
+        let limit = plane.climbAtROCD(ROCD)
+        console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
+        // console.log("%Poussée : ", plane.force.thrust/plane.maxThrust)
+        // console.log(limit)
+        // console.log(plane.flightParams.Hp)
+        if (limit === "thrustLimit" && !maxThrustFL){
+            maxThrustFL = Math.floor(plane.flightParams.Hp*3.28084/100)
+            break
+            // console.log("Niveau max poussée : ",maxThrustFL)
+
+        }
+        // else if (limit === "speedLimit"){
+        //     minSpeedFL = Math.floor(plane.flightParams.Hp*3.28084/100)
+        //     // console.log("Niveau max vitesse : ",maxThrustFL)
+        //     // console.log(x)
+        //     break
+        // }
+    }
+    console.log(maxThrustFL)
+    return maxThrustFL
 }
 
+
+export function calcPerfbis(FL, loi, speed){
+    let plane = new PhysicalPlane()
+    plane.setParameters(54000)
+    plane.setInitialState(FL*100/3.28084, knotToMs(250), 0, 0)
+
+    let maxROCD = 0
+    if (loi){
+
+        plane.setInitialState(FL*100/3.28084, knotToMs(speed), 0, 0)
+        plane.setLoiMontee(loi.speed, loi.mach)
+        plane.desCASConstant()
+        maxROCD = plane.flightParams.ROCD
+        return {rate : Math.floor(maxROCD*196.85039/100)*100, speed :'', maxFL : '', absoluteMaxFL : ''}
+    }
+
+}
+
+export function getPlaneMach(FL, CAS){
+    let plane = new PhysicalPlane()
+    plane.setParameters(54000)
+    plane.setInitialState(FL*100/3.28084, knotToMs(CAS), 0, 0)
+    return plane.flightParams.speed.Mach
+}
 
 // eslint-disable-next-line no-unused-vars
 export function speedRange(FL){
@@ -177,7 +225,7 @@ export function speedRange(FL){
     plane.setInitialState(FL*100/3.28084, knotToMs(250), 0, 0)
     let minSpeed = plane.minSpeed
     let maxSpeed = plane.maxSpeed
-    let unit = FL>=290 ? " M": ' kts'
+    // let unit = FL>=290 ? " M": ' kts'
     if (FL<290){
         // eslint-disable-next-line no-unused-vars
         minSpeed = Math.floor(msToKnot(minSpeed))
@@ -187,7 +235,23 @@ export function speedRange(FL){
         minSpeed = Math.round(TAStoMach(CAStoTAS(minSpeed, plane.atmosphereParams.pressure, plane.atmosphereParams.temperature),plane.atmosphereParams.temperature)*100)/100
         maxSpeed = Math.round(TAStoMach(CAStoTAS(maxSpeed, plane.atmosphereParams.pressure, plane.atmosphereParams.temperature),plane.atmosphereParams.temperature)*100)/100
     }
-    return {minSpeed: minSpeed+unit, maxSpeed: maxSpeed+unit}
+    return {minSpeed: minSpeed, maxSpeed: maxSpeed}
+}
+
+export function range(FL){
+    let plane = new PhysicalPlane()
+    plane.setParameters(54000)
+    plane.setInitialState(FL*100/3.28084, knotToMs(250), 0, 0)
+    let minSpeed = plane.minSpeed
+    let maxSpeed = plane.maxSpeed
+    // let unit = FL>=290 ? " M": ' kts'
+
+        // eslint-disable-next-line no-unused-vars
+        minSpeed = Math.floor(msToKnot(minSpeed))
+        maxSpeed = Math.floor(msToKnot(maxSpeed))
+
+
+    return {minSpeed: minSpeed, maxSpeed: maxSpeed}
 }
 
 // let plane = new PhysicalPlane()

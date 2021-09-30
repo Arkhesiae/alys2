@@ -102,7 +102,6 @@ export function ESF(M, Mloi, CASloi, T, deltaT, Hp, State, Vertical) {
         case "constant":
             // CONSTANT SPEED
             if (Hp > HpTrans(CASloi, Mloi) / 3.28084) {
-                console.log("un")
                 //      Constant Mach Number
                 //          Above Tropopause
                 if (Hp > Constante.HpTrop) {
@@ -114,7 +113,6 @@ export function ESF(M, Mloi, CASloi, T, deltaT, Hp, State, Vertical) {
                     return (1 + ((Constante.K * Constante.R * Constante.Bt) / (2 * Constante.g0)) * (M ** 2) * ((T - deltaT) / T)) ** (-1)
                 }
             } else {
-                console.log("deux")
                 let A
                 let B = (1 + (Constante.K - 1) / 2 * M ** 2) ** (-1 / (Constante.K - 1))
                 let C = (1 + (Constante.K - 1) / 2 * M ** 2) ** (1 / Constante.mu) - 1
