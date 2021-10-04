@@ -99,7 +99,7 @@ export function ROCD(T, Thrust, Drag, TAS, ESF, m, deltaT) {
 
 export function ESF(M, Mloi, CASloi, T, deltaT, Hp, State, Vertical) {
     switch (State) {
-        case "constant":
+        case "CONSTANT":
             // CONSTANT SPEED
             if (Hp > HpTrans(CASloi, Mloi) / 3.28084) {
                 //      Constant Mach Number
@@ -128,7 +128,7 @@ export function ESF(M, Mloi, CASloi, T, deltaT, Hp, State, Vertical) {
                 }
                 return (A + B * C) ** (-1)
             }
-        case "accel":
+        case "ACCELERATION":
             // ACCELERATION
             if (Vertical > 0) {
                 return 0.3
@@ -136,7 +136,7 @@ export function ESF(M, Mloi, CASloi, T, deltaT, Hp, State, Vertical) {
                 return 1.7
             }
 
-        case "decel":
+        case "DECELERATION":
             // DECELERATION
             if (Vertical < 0) {
                 return 0.3

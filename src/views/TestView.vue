@@ -33,14 +33,14 @@
 
     <div class="content-container">
       <div class="frame-container">
-        <div class="current-frame frame">
+        <div id="perf" class="current-frame frame">
 <!--          <div class = "switch"></div>-->
-          <div class="frame__title">
-            <div class="frame__icon-title">
-              <img src="../assets/insert_chart_black_24dp.svg" alt=""/>
-            </div>
-            <span class="frame__text-title">Expected Performances</span>
-          </div>
+<!--          <div class="frame__title">-->
+<!--            <div class="frame__icon-title">-->
+<!--              <img src="../assets/insert_chart_black_24dp.svg" alt=""/>-->
+<!--            </div>-->
+<!--            <span class="frame__text-title">Expected Performances</span>-->
+<!--          </div>-->
           <div class="frame__content">
             <div class="section value">
               <div class="information">
@@ -116,20 +116,37 @@
             </div>
           </div>
         </div>
-        <div class="content-container__app-button-container">
-          <AppButton text="Profil de Vol" icon="show_chart_black_24dp.svg"/>
-          <AppButton text="Paramètres avancés" icon="settings_black_24dp.svg"/>
-
-<!--          <div class="content__app-button">-->
-<!--            <div class="content-container__app-button-text">Paramètres avancés</div>-->
-<!--            <div class="content-container__app-button-icon-container">-->
-<!--              <img src="../assets/settings_black_24dp.svg"/>-->
+        <div id="flightProfile" class="current-frame frame">
+          <!--          <div class = "switch"></div>-->
+<!--          <div class="frame__title">-->
+<!--            <div class="frame__icon-title">-->
+<!--              <img src="../assets/insert_chart_black_24dp.svg" alt=""/>-->
 <!--            </div>-->
+<!--            <span class="frame__text-title">Profil de vol</span>-->
 <!--          </div>-->
+          <div class="frame__content">
+                <canvas id="flightProfile-canvas"></canvas>
+          </div>
         </div>
-        <div class="law-edit">Loi de montée</div>
-        <input type="checkbox" v-model="checked"/>
-        <div>{{checked}}</div>
+
+
+        <div class="footer">
+          <div class="content-container__app-button-container">
+            <AppButton text="Profil de Vol" icon="show_chart_black_24dp.svg"/>
+            <AppButton text="Paramètres avancés" icon="settings_black_24dp.svg"/>
+
+            <!--          <div class="content__app-button">-->
+            <!--            <div class="content-container__app-button-text">Paramètres avancés</div>-->
+            <!--            <div class="content-container__app-button-icon-container">-->
+            <!--              <img src="../assets/settings_black_24dp.svg"/>-->
+            <!--            </div>-->
+            <!--          </div>-->
+          </div>
+          <div class="law-edit">Loi de montée</div>
+          <input type="checkbox" v-model="checked"/>
+          <div>{{checked}}</div>
+        </div>
+
 <!--        <div class = "lower-frame"></div>-->
       </div>
 
@@ -178,8 +195,9 @@
 
   </div>
 </template>
-
+<!--<script src=></script>-->
 <script>
+
 
 import MenuButton from "@/components/MenuButton"
 import Background from "@/components/Background"
@@ -188,7 +206,7 @@ import {calcPerfbis} from "@/BADA/perfomanceFile"
 import AppButton from "@/components/appButton"
 import {HpTrans, knotToMs} from "../BADA/func";
 import {getPlaneMach, maxFLAtROCD, range} from "../BADA/perfomanceFile";
-
+require('fabric')
 
 export default {
   name: "TestView",
@@ -209,6 +227,7 @@ export default {
       selectedClimbRate: 0,
       checked:false,
       law : {speed: 280, mach:0.75},
+
     }
   },
 
@@ -216,12 +235,22 @@ export default {
     let slider = document.getElementById("myRange");
     let output = document.getElementById("fl-value");
     output.innerHTML = slider.value; // Display the default slider value
+    // eslint-disable-next-line no-undef
+    let canvas = new fabric.Canvas("canvas", {
+          preserveObjectStacking: true,
+          selection: false,
+          renderOnAddRemove: false,
+          uniformScaling: true,
+          fireRightClick: true,
+          fireMiddleClick: true,
+        } //Prevent proportions conservation when resizing with the corner button})
+    )
+    console.log(canvas)
+  },
 
-    // slider.oninput = function() {
-    //   // this.climbROCD = calcPerf(FLInput)
-    //   // console.log(this.climbROCD)
-    //   output.innerHTML = "FL" ;
-    // }
+  created() {
+
+
   },
 
   methods : {
@@ -320,6 +349,10 @@ export default {
 
 <style scoped>
 
+#perf{
+  display: none;
+}
+
 .content-container{
   display: flex;
   position: relative;
@@ -330,11 +363,21 @@ export default {
 
 .frame-container{
   position: relative;
+  padding-top: 104px;
+  /*width: 100%;*/
+  box-sizing: border-box;
+  height: 100%;
   flex: 1 1 auto;
 }
 
 .sideBar{
   /*flex: 0 0 auto;*/
+}
+
+.footer{
+  position: absolute;
+  bottom: 0;
+  display: flex;
 }
 
 .slider-background{
@@ -368,6 +411,7 @@ export default {
 }
 
 .content-container__app-button-container{
+
   display: flex;
   margin-top: 20px;
   width: 100%;
@@ -519,13 +563,13 @@ export default {
 }
 
 .current-frame{
-  /*position: absolute;*/
-  margin: 0px auto auto;
+  position: absolute;
+  /*margin: 20px;*/
   box-shadow: rgba(5, 5, 5, 0.1) 0px 1px 3px 1px;
   width: calc(100% - 40px);
-  /*top: 15%;*/
+  /*top: 0%;*/
   height: max-content;
-  position: relative;
+  /*position: relative;*/
   /*left: 1%;*/
   /*background: rgba(10,10,10,0.1);*/
   border:1px solid rgba(169, 163, 163, 0.1);
@@ -533,6 +577,12 @@ export default {
   display: flex;
   flex-direction: column;
   flex-grow: inherit;
+}
+
+#flightProfile{
+  /*display: none;*/
+  height: 100%;
+  width: 100%;
 }
 
 
@@ -571,6 +621,12 @@ export default {
   display: flex;
   /*border: #2f7fff 1px solid;*/
   justify-content: space-between;
+}
+
+canvas{
+  background: rgba(1,1,1,0.1);
+  height: 100%;
+  width: 100%;
 }
 
 .section{
