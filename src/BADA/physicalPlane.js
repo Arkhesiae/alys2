@@ -147,6 +147,8 @@ export class PhysicalPlane {
 
 
     setInitialState(altitude, speed, ROCD, deltaT) {
+        this.idleState = true
+        this.distanceFromStartPoint = 0
         this.flightParams.Hp = altitude
         this.flightParams.speed.CAS = speed
         this.atmosphereParams.deltaT = deltaT
@@ -288,39 +290,77 @@ export class PhysicalPlane {
                 this.descent()
                 break
         }
+        if (this.targetTime){
+            this.targetTime--
+        }
+    }
+
+    levelInstruction(time){
+        this.idleState = false
+        this.flightPhase = 'LEVELLED'
+        this.setTarget('', time, '', '')
     }
 
     level() {
+        let reachTarget
+        if (this.targetTime) {
+            reachTarget = (this.targetTime === 0)
+            if (reachTarget) this.targetTime = null
+        }
+        if (!reachTarget){
+            this.computeThrustForPallier(this.flightParams.speed.TAS)
+            let ESFValue = ESF(this.flightParams.speed.Mach, this.loiMontee.Mach, knotToMs(this.loiMontee.CAS), this.atmosphereParams.temperature, this.atmosphereParams.deltaT, this.flightParams.Hp, "CONSTANT", 0)
+            this.flightParams.ROCD = ROCD(this.atmosphereParams.temperature, this.force.thrust, this.force.drag, this.flightParams.speed.TAS, ESFValue, this.flightParams.mass, this.atmosphereParams.deltaT)
+            this.dVTAS = (this.force.thrust - this.force.drag) / this.flightParams.mass
+            console.log("hi")
+            this.updateFlightParams()
+        } else this.idleState = true
 
     }
 
     climbInstruction(target, time, ROCD, speedInstruction) {
+        this.idleState = false
         this.flightPhase = 'CLIMB'
         this.speedInstruction = this.computeSpeedInstruction(speedInstruction)
-        this.setTarget(target, time, ROCD)
+        console.log(this.speedInstruction)
+        this.setTarget(target, time, ROCD, speedInstruction)
     }
 
     descentInstruction(target, time, ROCD, speedInstruction) {
+        this.idleState = false
         this.flightPhase = 'DESCENT'
         this.speedInstruction = this.computeSpeedInstruction(speedInstruction)
-        this.setTarget(target, time, ROCD)
+        this.setTarget(target, time, ROCD, speedInstruction)
     }
 
-    setTarget(target, time, ROCD) {
+    setTarget(target, time, ROCD, speedInstruction) {
         this.targetROCD = ROCD
         if (target) {
             this.targetFL = target
-        } else if (time) {
+        }
+        if (time) {
             this.targetTime = time
+        }
+        if (speedInstruction){
+            this.speedInstructionValue = speedInstruction
         }
     }
 
     climb() {
+
         let reachTarget
         if (this.targetFL) {
-            reachTarget = (this.flightParams.Hp >= this.targetFL)
-        } else if (this.targetTime) {
+            reachTarget = (this.flightParams.Hp >= this.targetFL*100/3.28084)
+            if (reachTarget) this.targetFL= null
+        }
+        if (this.targetTime) {
             reachTarget = (this.targetTime === 0)
+            if (reachTarget) this.targetTime = null
+        }
+        if (this.speedInstructionValue) {
+            console.log('checkSpeed')
+            reachTarget = (Math.abs(this.flightParams.speed.CAS - knotToMs(this.speedInstructionValue))<1)
+            if (reachTarget) this.speedInstructionValue = null
         }
         if (!reachTarget) {
             if (this.targetROCD) {
@@ -332,7 +372,7 @@ export class PhysicalPlane {
                 this.computedVTAS(ESFValue)
                 this.updateFlightParams()
             }
-        } else console.log(reachTarget)
+        } else this.idleState = true
     }
 
     descent() {
@@ -341,6 +381,8 @@ export class PhysicalPlane {
             reachTarget = (this.flightParams.Hp <= this.targetFL)
         } else if (this.targetTime) {
             reachTarget = (this.targetTime === 0)
+        } else if (this.speedInstructionValue) {
+            reachTarget = (Math.abs(this.flightParams.speed.CAS - knotToMs(this.speedInstructionValue))<1)
         }
         if (!reachTarget) {
             if (this.targetROCD) {
@@ -352,7 +394,7 @@ export class PhysicalPlane {
                 this.computedVTAS(ESFValue)
                 this.updateFlightParams()
             }
-        } else console.log(reachTarget)
+        } else  this.idleState = true
     }
 
     computeSpeedInstruction(speedInstruction) {
@@ -508,6 +550,7 @@ export class PhysicalPlane {
 
     updateFlightParams() {
         this.flightParams.speed.TAS += this.dVTAS
+        this.distanceFromStartPoint += this.flightParams.speed.TAS*Math.sqrt(1-(this.flightParams.ROCD/this.flightParams.speed.TAS)**2)
         this.flightParams.Hp += this.flightParams.ROCD
         this.flightParams.Hp = Math.max(this.flightParams.Hp, 0)
         if (this.flightParams.Hp === 0) {

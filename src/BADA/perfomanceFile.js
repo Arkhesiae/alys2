@@ -195,6 +195,46 @@ export function maxFLAtROCD(FL, speed, loi, ROCD) {
 }
 
 
+
+
+export function flightProfile(sequence) {
+    let plane = new PhysicalPlane()
+    plane.setParameters(54000)
+    plane.setLoiMontee(300, 0.78)
+    plane.setInitialState(0 * 100 / 3.28084, knotToMs(180), 0, 0)
+    let profile = []
+    let X = 0
+    for (let instruction of sequence){
+        if (plane.idleState) {
+            X = 0
+            console.error('SHIFT')
+            let current = instruction
+            if (current.type === 'climb'){
+                plane.climbInstruction(current.FLTarget, current.time, '', current.speedInstruction)
+            }
+            else if (current.type === 'level'){
+                plane.levelInstruction(current.time)
+            }
+        }
+        while (!plane.idleState) {
+            X ++
+            if (X>800){
+                break
+            }
+            plane.flyLoop()
+            profile.push({
+                alt : plane.flightParams.Hp*3.28084/100,
+                dist : plane.distanceFromStartPoint
+            })
+            console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
+        }
+
+    }
+    return profile
+}
+
+
+
 export function calcPerfbis(FL, loi, speed) {
     let plane = new PhysicalPlane()
     plane.setParameters(54000)

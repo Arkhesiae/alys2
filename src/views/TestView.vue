@@ -34,13 +34,13 @@
     <div class="content-container">
       <div class="frame-container">
         <div id="perf" class="current-frame frame">
-<!--          <div class = "switch"></div>-->
-<!--          <div class="frame__title">-->
-<!--            <div class="frame__icon-title">-->
-<!--              <img src="../assets/insert_chart_black_24dp.svg" alt=""/>-->
-<!--            </div>-->
-<!--            <span class="frame__text-title">Expected Performances</span>-->
-<!--          </div>-->
+          <!--          <div class = "switch"></div>-->
+          <!--          <div class="frame__title">-->
+          <!--            <div class="frame__icon-title">-->
+          <!--              <img src="../assets/insert_chart_black_24dp.svg" alt=""/>-->
+          <!--            </div>-->
+          <!--            <span class="frame__text-title">Expected Performances</span>-->
+          <!--          </div>-->
           <div class="frame__content">
             <div class="section value">
               <div class="information">
@@ -118,14 +118,14 @@
         </div>
         <div id="flightProfile" class="current-frame frame">
           <!--          <div class = "switch"></div>-->
-<!--          <div class="frame__title">-->
-<!--            <div class="frame__icon-title">-->
-<!--              <img src="../assets/insert_chart_black_24dp.svg" alt=""/>-->
-<!--            </div>-->
-<!--            <span class="frame__text-title">Profil de vol</span>-->
-<!--          </div>-->
+          <!--          <div class="frame__title">-->
+          <!--            <div class="frame__icon-title">-->
+          <!--              <img src="../assets/insert_chart_black_24dp.svg" alt=""/>-->
+          <!--            </div>-->
+          <!--            <span class="frame__text-title">Profil de vol</span>-->
+          <!--          </div>-->
           <div class="frame__content">
-                <canvas id="flightProfile-canvas"></canvas>
+            <canvas id="flightProfile-canvas"></canvas>
           </div>
         </div>
 
@@ -147,7 +147,7 @@
           <div>{{checked}}</div>
         </div>
 
-<!--        <div class = "lower-frame"></div>-->
+        <!--        <div class = "lower-frame"></div>-->
       </div>
 
       <div class ="sideBar">
@@ -205,7 +205,7 @@ import {calcPerf, speedRange} from "@/BADA/perfomanceFile"
 import {calcPerfbis} from "@/BADA/perfomanceFile"
 import AppButton from "@/components/appButton"
 import {HpTrans, knotToMs} from "../BADA/func";
-import {getPlaneMach, maxFLAtROCD, range} from "../BADA/perfomanceFile";
+import {flightProfile, getPlaneMach, maxFLAtROCD, range} from "../BADA/perfomanceFile";
 require('fabric')
 
 export default {
@@ -234,9 +234,12 @@ export default {
   mounted() {
     let slider = document.getElementById("myRange");
     let output = document.getElementById("fl-value");
+    //let canvasElement = document.getElementById("flightProfile-canvas");
+    let frame = document.getElementsByClassName('frame__content')[1]
+
     output.innerHTML = slider.value; // Display the default slider value
     // eslint-disable-next-line no-undef
-    let canvas = new fabric.Canvas("canvas", {
+    let canvas = new fabric.Canvas("flightProfile-canvas", {
           preserveObjectStacking: true,
           selection: false,
           renderOnAddRemove: false,
@@ -245,7 +248,108 @@ export default {
           fireMiddleClick: true,
         } //Prevent proportions conservation when resizing with the corner button})
     )
-    console.log(canvas)
+
+    canvas.setHeight(frame.offsetHeight)
+    canvas.setWidth(frame.offsetWidth)
+    let marginVertical = 200
+    let marginHorizontal= 200
+    let sequence = [
+      {
+        type: 'climb',
+        speedInstruction: 250,
+        treshold: 'speed',
+        FLTarget: 100,
+      },
+      {
+        type: 'climb',
+        treshold: 'speed',
+        FLTarget : 100,
+      },
+      {
+        type: 'climb',
+        treshold: 'speed',
+        speedInstruction: 300,
+        FLTarget : 360,
+      },
+      {
+        type: 'climb',
+        treshold: 'speed',
+        //speedInstruction: 300,
+        FLTarget : 360,
+      },
+      {
+        type: 'level',
+        treshold: 'speed',
+        //speedInstruction: 300,
+        time : 300,
+      },
+    ]
+
+    let points = [
+      {
+        x: canvas.width,
+        y: canvas.height - marginVertical,
+      },
+      {
+        x: canvas.width,
+        y: canvas.height,
+      },
+      {
+        x: 0,
+        y: canvas.height,
+      },
+      {
+        x: 0,
+        y: canvas.height-marginVertical,
+      },
+
+    ]
+
+    let profile = flightProfile(sequence)
+    let DTotal = profile[profile.length-1].dist
+    for (let point of profile){
+      points.push({
+        x : marginHorizontal + (canvas.width-2*marginHorizontal)/DTotal * point.dist,
+        y : -point.alt * (canvas.height - 2*marginVertical)/410 - marginVertical + canvas.height
+      })
+
+
+    }
+    // eslint-disable-next-line no-undef
+    var grad = new fabric.Gradient({
+      type: 'linear',
+      coords: {
+        x1: canvas.width/2,
+        y1: 0,
+        x2: canvas.width/2,
+        y2: canvas.height,
+      },
+      colorStops: [
+        {
+          color: 'rgb(255,166,109,0.3)',
+          offset: 0,
+        },
+        {
+          color: 'rgba(0, 0, 0, 0.0)',
+          offset: 1,
+        },
+
+      ]});
+    // eslint-disable-next-line no-undef
+    let pointObject = new fabric.Polygon(points, {
+      stroke : 'rgb(255,148,79)',
+      radius :1,
+      fill : grad,
+
+    })
+
+
+
+
+    canvas.add(pointObject)
+
+    canvas.requestRenderAll()
+
   },
 
   created() {
@@ -255,7 +359,7 @@ export default {
 
   methods : {
     select : function (){
-        this.isSelected = !this.isSelected
+      this.isSelected = !this.isSelected
     },
 
     changeSelection : function(event){
@@ -269,7 +373,7 @@ export default {
     },
 
     computedHpTrans : function (law) {
-        if (law){
+      if (law){
         console.log( Math.floor(HpTrans(knotToMs(law.speed), law.mach)/100))
         return Math.floor(HpTrans(knotToMs(law.speed), law.mach)/100)
 
@@ -284,14 +388,14 @@ export default {
 
   computed: {
     speedRangeAtZero : function (){
-        return range(0)
+      return range(0)
     },
 
     displayedSpeed : function (){
-        if (this.FLinput>this.computedHpTrans(this.law)){
-            return Math.round(getPlaneMach(this.FLinput, this.speed)*100) / 100
-        }
-        else return this.speed
+      if (this.FLinput>this.computedHpTrans(this.law)){
+        return Math.round(getPlaneMach(this.FLinput, this.speed)*100) / 100
+      }
+      else return this.speed
     },
 
     minSpeed : function (){
@@ -303,7 +407,7 @@ export default {
     },
 
     sliderWidthInPx : function (){
-        return 400*(range(this.FLinput).maxSpeed-range(this.FLinput).minSpeed)/(this.speedRangeAtZero.maxSpeed -this.speedRangeAtZero.minSpeed)
+      return 400*(range(this.FLinput).maxSpeed-range(this.FLinput).minSpeed)/(this.speedRangeAtZero.maxSpeed -this.speedRangeAtZero.minSpeed)
     },
 
     sliderMarginLeftInPx : function (){
@@ -581,7 +685,7 @@ export default {
 
 #flightProfile{
   /*display: none;*/
-  height: 100%;
+  height: calc(100% - 104px);
   width: 100%;
 }
 
@@ -617,14 +721,17 @@ export default {
 
 .frame__content{
   height: 100%;
+  width: 100%;
   position: relative;
-  display: flex;
+
   /*border: #2f7fff 1px solid;*/
   justify-content: space-between;
 }
 
 canvas{
-  background: rgba(1,1,1,0.1);
+  background: rgba(1,1,1,0.001);
+  box-sizing: border-box;
+  border : 1px blue solid;
   height: 100%;
   width: 100%;
 }
