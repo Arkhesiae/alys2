@@ -258,7 +258,7 @@ export class PhysicalPlane {
     }
 
     computeROCD(ESFValue) {
-        this.flightParams.ROCD = ROCD(this.atmosphereParams.temperature, this.force.thrust, this.force.drag, this.flightParams.speed.TAS, ESFValue, this.flightParams.mass, 0)
+        this.flightParams.ROCD = (ROCD(this.atmosphereParams.temperature, this.force.thrust, this.force.drag, this.flightParams.speed.TAS, ESFValue, this.flightParams.mass, 0)+ 3*this.flightParams.ROCD)/4
     }
 
     computedVTAS(ESFValue) {
@@ -303,14 +303,16 @@ export class PhysicalPlane {
 
     level() {
         let reachTarget
-        if (this.targetTime) {
+        console.log(this.targetTime)
+        if (this.targetTime != null) {
             reachTarget = (this.targetTime === 0)
+            console.log('reach', reachTarget)
             if (reachTarget) this.targetTime = null
         }
         if (!reachTarget){
             this.computeThrustForPallier(this.flightParams.speed.TAS)
             let ESFValue = ESF(this.flightParams.speed.Mach, this.loiMontee.Mach, knotToMs(this.loiMontee.CAS), this.atmosphereParams.temperature, this.atmosphereParams.deltaT, this.flightParams.Hp, "CONSTANT", 0)
-            this.flightParams.ROCD = ROCD(this.atmosphereParams.temperature, this.force.thrust, this.force.drag, this.flightParams.speed.TAS, ESFValue, this.flightParams.mass, this.atmosphereParams.deltaT)
+            this.flightParams.ROCD = (ROCD(this.atmosphereParams.temperature, this.force.thrust, this.force.drag, this.flightParams.speed.TAS, ESFValue, this.flightParams.mass, this.atmosphereParams.deltaT) + 9*this.flightParams.ROCD)/10
             this.dVTAS = (this.force.thrust - this.force.drag) / this.flightParams.mass
             console.log("hi")
             this.updateFlightParams()

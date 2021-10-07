@@ -205,6 +205,7 @@ export function flightProfile(sequence) {
     let profile = []
     let X = 0
     for (let instruction of sequence){
+        console.log(instruction)
         if (plane.idleState) {
             X = 0
             console.error('SHIFT')
@@ -215,13 +216,20 @@ export function flightProfile(sequence) {
             else if (current.type === 'level'){
                 plane.levelInstruction(current.time)
             }
+            else if (current.type === 'descent'){
+                console.log("DESCENT")
+                plane.descentInstruction(current.FLTarget, current.time, '', current.speedInstruction)
+            }
         }
+
         while (!plane.idleState) {
             X ++
-            if (X>800){
+            if (X>900){
+                console.log('FIN')
                 break
             }
             plane.flyLoop()
+            console.log(plane.idleState)
             profile.push({
                 alt : plane.flightParams.Hp*3.28084/100,
                 dist : plane.distanceFromStartPoint

@@ -117,6 +117,16 @@
           </div>
         </div>
         <div id="flightProfile" class="current-frame frame">
+          <div class="information-box">
+            <div class="box__border"></div>
+            <div class="box__container">
+               <div class="box__label">Climb</div>
+            </div>
+            <div class="box__control-container">
+                  <div class="control">250kts</div>
+                  <div class="control">3000ft/min</div>
+            </div>
+          </div>
           <!--          <div class = "switch"></div>-->
           <!--          <div class="frame__title">-->
           <!--            <div class="frame__icon-title">-->
@@ -248,11 +258,17 @@ export default {
           fireMiddleClick: true,
         } //Prevent proportions conservation when resizing with the corner button})
     )
-
+    window.addEventListener('resize', function () {
+      // canvas.width = frame.offsetWidth
+      // canvas.height = frame.offsetHeight
+      canvas.setWidth(frame.offsetWidth);
+      canvas.setHeight(frame.offsetHeight);
+      // canvas.calcOffset();
+    });
     canvas.setHeight(frame.offsetHeight)
     canvas.setWidth(frame.offsetWidth)
     let marginVertical = 200
-    let marginHorizontal= 200
+    let marginHorizontal= canvas.width/10
     let sequence = [
       {
         type: 'climb',
@@ -281,25 +297,43 @@ export default {
         type: 'level',
         treshold: 'speed',
         //speedInstruction: 300,
+        time : 600,
+      },
+      {
+        type: 'climb',
+        treshold: 'speed',
+        //speedInstruction: 300,
+        FLTarget: 380,
+      },
+      {
+        type: 'level',
+        treshold: 'speed',
+        //speedInstruction: 300,
         time : 300,
+      },
+      {
+        type: 'descent',
+        treshold: 'speed',
+        //speedInstruction: 300,
+        FLTarget: 0,
       },
     ]
 
     let points = [
       {
-        x: canvas.width,
+        x: canvas.width+1,
         y: canvas.height - marginVertical,
       },
       {
-        x: canvas.width,
+        x: canvas.width+1,
         y: canvas.height,
       },
       {
-        x: 0,
+        x: -1,
         y: canvas.height,
       },
       {
-        x: 0,
+        x: -1,
         y: canvas.height-marginVertical,
       },
 
@@ -312,8 +346,6 @@ export default {
         x : marginHorizontal + (canvas.width-2*marginHorizontal)/DTotal * point.dist,
         y : -point.alt * (canvas.height - 2*marginVertical)/410 - marginVertical + canvas.height
       })
-
-
     }
     // eslint-disable-next-line no-undef
     var grad = new fabric.Gradient({
@@ -322,31 +354,58 @@ export default {
         x1: canvas.width/2,
         y1: 0,
         x2: canvas.width/2,
-        y2: canvas.height,
+        y2: 2*canvas.height/4,
       },
       colorStops: [
         {
-          color: 'rgb(255,166,109,0.3)',
+          color: 'rgba(170,100,78,0.7)',
           offset: 0,
         },
         {
-          color: 'rgba(0, 0, 0, 0.0)',
+          color: 'rgba(80,50,39, 0.0)',
           offset: 1,
         },
 
       ]});
     // eslint-disable-next-line no-undef
     let pointObject = new fabric.Polygon(points, {
-      stroke : 'rgb(255,148,79)',
+      stroke : '#AA644E',
       radius :1,
+      hoverCursor: 'pointer',
+      selectable:false,
       fill : grad,
 
     })
 
+    // eslint-disable-next-line no-undef
+    let cursor = new fabric.Circle({
+      // stroke : '#AA644E',
+      radius :10,
+      hoverCursor: 'pointer',
+      selectable:false,
+      fill : '#ea8c6f',
+    })
 
 
+    canvas.on("mouse:move", (event) => {
+      let pointer = canvas.getPointer(event.e);
+
+      let minVert = Infinity
+      let pt
+      for (let point of points){
+
+        if (Math.abs(pointer.x - point.x)<minVert){
+          minVert = Math.abs(pointer.x - point.x)
+          pt = point
+
+        }
+      }
+      cursor.set({left : pointer.x-10, top : pt.y-10})
+      canvas.requestRenderAll()
+    })
 
     canvas.add(pointObject)
+    canvas.add(cursor)
 
     canvas.requestRenderAll()
 
@@ -455,6 +514,70 @@ export default {
 
 #perf{
   display: none;
+}
+
+.information-box{
+  position: absolute;
+  /*border: #2f7fff 1px solid;*/
+  top : 40px;
+  margin: 60px;
+  width: 210px;
+  height: 115px;
+}
+
+.box__label{
+  right: 0px;
+  padding-right: 15px;
+  padding-top: 15px;
+  position: absolute;
+  color: rgba(38,42,46,1);
+  font-weight: bold;
+}
+
+.box__control-container{
+  display: flex;
+  position: absolute;
+  bottom: 15px;
+  width: 100%;
+  padding-left: 10px;
+  padding-right: 10px;
+  box-sizing: border-box;
+  justify-content: space-around;
+}
+
+.control{
+  background: rgba(38,42,46,1);
+  color: rgba(168,98,77,1);
+  font-weight: bold;
+  font-size: 12px;
+  border-radius: 9px;
+  height: 34px;
+  box-shadow: rgba(5, 5, 5, 0.1) 0px 1px 2px 0px;
+  padding-left: 14px;
+  padding-right: 14px;
+  box-sizing: border-box;
+  padding-top: 9px;
+}
+
+.box__container{
+  background: linear-gradient(45deg, rgba(72, 55, 48, 1) -0%, rgba(166, 98, 77, 1) 110%);
+  box-shadow: rgba(5, 5, 5, 0.1) 0px 1px 3px 1px;
+  width: calc(100% - 10px);
+  border-radius: 14px;
+  margin: 5px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  transform: translateY(-10px);
+}
+
+.box__border{
+  width: 100%;
+  height: 100%;
+  border-radius: 14px;
+  filter: ;
+  border: #282828 1px solid;
 }
 
 .content-container{
@@ -676,7 +799,7 @@ export default {
   /*position: relative;*/
   /*left: 1%;*/
   /*background: rgba(10,10,10,0.1);*/
-  border:1px solid rgba(169, 163, 163, 0.1);
+  border:1px solid rgba(169, 163, 163, 0.001);
   border-radius: 16px;
   display: flex;
   flex-direction: column;
@@ -731,7 +854,7 @@ export default {
 canvas{
   background: rgba(1,1,1,0.001);
   box-sizing: border-box;
-  border : 1px blue solid;
+  /*border : 1px blue solid;*/
   height: 100%;
   width: 100%;
 }
