@@ -9,6 +9,7 @@ import {
     temperature
 } from "@/BADA/func.js"
 import {Constante} from "@/BADA/constantes.js"
+import {msToKnot} from "./func";
 
 export class PhysicalPlane {
     flightCoefficients = {
@@ -332,6 +333,7 @@ export class PhysicalPlane {
         this.idleState = false
         this.flightPhase = 'DESCENT'
         this.speedInstruction = this.computeSpeedInstruction(speedInstruction)
+        console.error(speedInstruction)
         this.setTarget(target, time, ROCD, speedInstruction)
     }
 
@@ -346,6 +348,8 @@ export class PhysicalPlane {
         if (speedInstruction){
             this.speedInstructionValue = speedInstruction
         }
+
+        console.log()
     }
 
     climb() {
@@ -360,7 +364,7 @@ export class PhysicalPlane {
             if (reachTarget) this.targetTime = null
         }
         if (this.speedInstructionValue) {
-            console.log('checkSpeed')
+            //console.log('checkSpeed')
             reachTarget = (Math.abs(this.flightParams.speed.CAS - knotToMs(this.speedInstructionValue))<1)
             if (reachTarget) this.speedInstructionValue = null
         }
@@ -380,17 +384,24 @@ export class PhysicalPlane {
     descent() {
         let reachTarget
         if (this.targetFL) {
-            reachTarget = (this.flightParams.Hp <= this.targetFL)
-        } else if (this.targetTime) {
+            reachTarget = (this.flightParams.Hp <= this.targetFL*100/3.28084)
+            if (reachTarget) this.targetFL= null
+        }
+        if (this.targetTime) {
             reachTarget = (this.targetTime === 0)
-        } else if (this.speedInstructionValue) {
+            if (reachTarget) this.targetTime = null
+        }
+        if (this.speedInstructionValue) {
             reachTarget = (Math.abs(this.flightParams.speed.CAS - knotToMs(this.speedInstructionValue))<1)
+            if (reachTarget) this.speedInstructionValue = null
         }
         if (!reachTarget) {
             if (this.targetROCD) {
                 this.descentAtROCD(this.targetROCD / 197)
             } else {
+                //console.log(this.speedInstruction)
                 let ESFValue = ESF(this.flightParams.speed.Mach, this.loiMontee.Mach, knotToMs(this.loiMontee.CAS), this.atmosphereParams.temperature, this.atmosphereParams.deltaT, this.flightParams.Hp, this.speedInstruction, -1)
+                console.log(ESFValue)
                 this.force.thrust = this.minimumDescentThrust
                 this.computeROCD(ESFValue)
                 this.computedVTAS(ESFValue)
@@ -412,11 +423,14 @@ export class PhysicalPlane {
                 return 'DECELERATION'
             }
         } else {
-            if (this.flightParams.speed.CAS < speedInstruction) {
+            console.log( msToKnot(this.flightParams.speed.CAS))
+            console.log(speedInstruction)
+            if (msToKnot(this.flightParams.speed.CAS) < speedInstruction) {
                 return 'ACCELERATION'
-            } else if (this.flightParams.speed.CAS === speedInstruction) {
+            } else if (msToKnot(this.flightParams.speed.CAS) === speedInstruction) {
                 return 'CONSTANT'
             } else {
+                console.log('MDR')
                 return 'DECELERATION'
             }
         }

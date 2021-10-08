@@ -229,12 +229,16 @@ export function flightProfile(sequence) {
                 break
             }
             plane.flyLoop()
-            console.log(plane.idleState)
+            console.log('IDLE STATE : ',plane.idleState)
             profile.push({
+                speed : Math.round(msToKnot(plane.flightParams.speed.CAS)),
+                mach : plane.flightParams.speed.Mach,
+                rate : Math.round(plane.flightParams.ROCD*197/100)*100,
                 alt : plane.flightParams.Hp*3.28084/100,
-                dist : plane.distanceFromStartPoint
+                dist : plane.distanceFromStartPoint,
+                hpTrans : plane.loiMontee.HpTrans
             })
-            console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
+            //console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
         }
 
     }

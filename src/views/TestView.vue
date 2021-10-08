@@ -123,8 +123,8 @@
                <div class="box__label">Climb</div>
             </div>
             <div class="box__control-container">
-                  <div class="control">250kts</div>
-                  <div class="control">3000ft/min</div>
+                  <div class="control">{{currentProfilePoint.speed}} kts</div>
+                  <div class="control">{{currentProfilePoint.rate}} ft/min</div>
             </div>
           </div>
           <!--          <div class = "switch"></div>-->
@@ -152,7 +152,10 @@
             <!--            </div>-->
             <!--          </div>-->
           </div>
-          <div class="law-edit">Loi de montée</div>
+          <div class="law-edit">
+            <img src="../assets/edit_black_24dp.svg"/>
+            <span>Loi de montée</span>
+          </div>
           <input type="checkbox" v-model="checked"/>
           <div>{{checked}}</div>
         </div>
@@ -235,6 +238,7 @@ export default {
       speed : 0,
       isSelected : false,
       selectedClimbRate: 0,
+      currentProfilePoint : 0,
       checked:false,
       law : {speed: 280, mach:0.75},
 
@@ -313,6 +317,21 @@ export default {
       },
       {
         type: 'descent',
+
+
+        //speedInstruction: 300,
+        FLTarget: 110,
+      },
+      {
+        type: 'descent',
+        speedInstruction: 250,
+        treshold: 'speed',
+        //speedInstruction: 300,
+        FLTarget: 0,
+      },
+      {
+        type: 'descent',
+
         treshold: 'speed',
         //speedInstruction: 300,
         FLTarget: 0,
@@ -343,6 +362,7 @@ export default {
     let DTotal = profile[profile.length-1].dist
     for (let point of profile){
       points.push({
+        profilePoint : point,
         x : marginHorizontal + (canvas.width-2*marginHorizontal)/DTotal * point.dist,
         y : -point.alt * (canvas.height - 2*marginVertical)/410 - marginVertical + canvas.height
       })
@@ -370,13 +390,56 @@ export default {
     // eslint-disable-next-line no-undef
     let pointObject = new fabric.Polygon(points, {
       stroke : '#AA644E',
+      evented:false,
       radius :1,
       hoverCursor: 'pointer',
       selectable:false,
       fill : grad,
 
     })
+    // eslint-disable-next-line no-undef
+    let groundLabel = new fabric.Text('GROUND', {
 
+      left : 10,
+      fontSize:10,
+      top : canvas.height - marginVertical,
+      fontFamily : 'Product Sans',
+      radius :1,
+      hoverCursor: 'pointer',
+      selectable:false,
+      fill : 'rgba(100,100,100,1)',
+    })
+    canvas.add(groundLabel)
+    // eslint-disable-next-line no-undef
+    let verticalScale = new fabric.Rect({
+      fill : 'rgba(100,100,100,1)',
+      width : 1,
+      height : canvas.height - 2 * marginVertical,
+      left : canvas.width - 10,
+      top : marginVertical,
+    })
+    canvas.add(verticalScale)
+    // eslint-disable-next-line no-undef
+    let verticalCursor = new fabric.Rect({
+      fill : 'rgb(255,148,79)',
+      width : 10,
+      height : 2,
+      left : canvas.width - 10,
+      top : marginVertical,
+    })
+    canvas.add(verticalCursor)
+    // eslint-disable-next-line no-undef
+    let verticalCursorText =new fabric.Text('400', {
+      left : canvas.width - 40,
+      fontSize:10,
+      top : canvas.height - marginVertical,
+      fontFamily : 'Product Sans',
+      radius :1,
+      hoverCursor: 'pointer',
+      selectable:false,
+      fill : 'rgb(255,148,79)',
+    })
+    canvas.add(verticalCursorText)
     // eslint-disable-next-line no-undef
     let cursor = new fabric.Circle({
       // stroke : '#AA644E',
@@ -386,26 +449,101 @@ export default {
       fill : '#ea8c6f',
     })
 
+    canvas.add(pointObject)
+    canvas.add(cursor)
 
-    canvas.on("mouse:move", (event) => {
+    // eslint-disable-next-line no-undef
+    let hpTrans = new fabric.Rect({
+      fill : 'rgba(137,207,255,0.98)',
+      height: 1,
+      width : canvas.width/3.69,
+      left : 0,
+      top : -profile[0].hpTrans/100 * (canvas.height - 2*marginVertical)/410 - marginVertical + canvas.height,
+    })
+    canvas.add(hpTrans)
+
+    // eslint-disable-next-line no-undef
+    let hpTransText = new fabric.Text('CONJONCTION',{
+      fill : 'rgba(137,207,255,0.98)',
+
+      fontSize:10,
+      objectCaching :false,
+      fontFamily : 'Product Sans',
+      fontWeight : 'Bold',
+
+      left : 2,
+      top : -profile[0].hpTrans/100 * (canvas.height - 2*marginVertical)/410 - marginVertical + canvas.height+2,
+    })
+    canvas.add(hpTransText)
+// eslint-disable-next-line no-undef
+    let hpTransLevel = new fabric.Text('FL'+(Math.round(profile[0].hpTrans/100).toString()),{
+      fill : 'rgba(137,207,255,0.98)',
+
+      fontSize:10,
+      objectCaching :false,
+      fontFamily : 'Product Sans',
+      fontWeight : 'Bold',
+
+      left : 2,
+      top : -profile[0].hpTrans/100 * (canvas.height - 2*marginVertical)/410 - marginVertical + canvas.height-12,
+    })
+    canvas.add(hpTransLevel)
+
+    let GRABBING = false
+    canvas.on("mouse:down", (event) => {
+      console.log(event)
+      if (event.target === cursor){
+        GRABBING = true
+      }
       let pointer = canvas.getPointer(event.e);
 
       let minVert = Infinity
+      // eslint-disable-next-line no-unused-vars
       let pt
       for (let point of points){
-
         if (Math.abs(pointer.x - point.x)<minVert){
           minVert = Math.abs(pointer.x - point.x)
           pt = point
-
         }
       }
-      cursor.set({left : pointer.x-10, top : pt.y-10})
+     // verticalCursor.set({top : pt.y-2})
+      //verticalCursorText.set({top : pt.y-6})
+      //cursor.set({left : pointer.x-10, top : pt.y-10})
       canvas.requestRenderAll()
     })
 
-    canvas.add(pointObject)
-    canvas.add(cursor)
+    canvas.on("mouse:up", () => {
+      GRABBING = false
+
+    })
+
+
+
+    canvas.on("mouse:move", (event) => {
+      if (GRABBING){
+        let pointer = canvas.getPointer(event.e);
+
+        let minVert = Infinity
+        // eslint-disable-next-line no-unused-vars
+        let pt
+        for (let point of points){
+          if (Math.abs(pointer.x - point.x)<minVert){
+            minVert = Math.abs(pointer.x - point.x)
+            pt = point
+
+          }
+        }
+        this.currentProfilePoint = pt.profilePoint
+        verticalCursor.set({top : pt.y-2})
+        verticalCursorText.set({top : pt.y-6, text :Math.round(this.currentProfilePoint.alt).toString()})
+        cursor.set({left : pointer.x-10, top : pt.y-10})
+        cursor.setCoords()
+        canvas.requestRenderAll()
+      }
+
+    })
+
+
 
     canvas.requestRenderAll()
 
@@ -511,6 +649,11 @@ export default {
 </script>
 
 <style scoped>
+
+@font-face {
+  font-family: "Product Sans";
+  src: url("../assets/fonts/ProductSansRegular.ttf") format("truetype");
+}
 
 #perf{
   display: none;
@@ -646,10 +789,34 @@ export default {
 }
 
 .law-edit{
-  width: 200px;
+  margin-top: 40px;
+  width: 300px;
   height: 50px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
   border-radius: 30px;
-  background: #2B2F37;
+  background: #493630;
+  transition: all 0.2s ease-in-out;
+  box-shadow: rgba(5, 5, 5, 0.3) 0px 1px 2px 1px;
+}
+
+.law-edit:hover{
+  background: #6d5449;
+  box-shadow: rgba(5, 5, 5, 0.3) 0px 1px 10px 1px;
+}
+
+.law-edit span {
+  color: #d09e7f;
+
+  padding-right: 20px;
+  padding-top : 14px;
+}
+
+.law-edit img{
+  margin:13px;
+  filter: invert(97%) sepia(97%) saturate(2849%) hue-rotate(297deg) brightness(92%) contrast(80%);
+  height: 24px;
 }
 
 .bar1{
