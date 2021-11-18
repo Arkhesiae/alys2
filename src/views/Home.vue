@@ -9,6 +9,7 @@
       <HelloWorld  v-if="show"/>
     </transition>
   </div>
+  <router-view></router-view>
 <div class="truc" @click="show=!show"></div>
 </template>
 

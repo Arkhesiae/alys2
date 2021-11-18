@@ -21,8 +21,8 @@ export default {
   height: 48px;
   box-sizing: border-box;
   padding: 12px;
-  background: #D59D84;
-  box-shadow: rgba(5, 5, 5, 0.1) 0px 1px 3px 1px;
+  background: rgba(204,134,113,1);
+  box-shadow: rgba(5, 5, 5, 0.5) 0px 2px 4px 0px;
   margin-left: 20px;
   margin-right: 20px;
 }
@@ -40,11 +40,12 @@ export default {
   align-items: center;
   border-radius: 20px;
   width: max-content;
-  background: #323640;
+  transition: 0.2s all ease-in-out;
+  background: rgb(69, 59, 58);
 }
 
 .app-button:hover{
-  background: #2f333c;
+  background: #413735;
 }
 
 </style>

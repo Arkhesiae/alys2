@@ -1,11 +1,15 @@
 <template>
-
+  <div>
+    <Background/>
+  </div>
   <!--    <MenuButton/>-->
   <!---->
   <!--  <Background/>-->
-  <div >
+
+  <div>
     <div class="page-container">
       <div class="page">
+        <div class="logo"><img src="../assets/alice_logo.png" alt=""/></div>
         <div class="searchbar-container">
           <div id="searchbar">
             <!--              STATIC-->
@@ -15,20 +19,21 @@
           </div>
           <ul class="wrapper">
             <li class="card" v-bind:key="post.title" v-for="post in filteredList">
+              <router-link style="text-decoration: none; color: inherit" :to="{ name: 'Plane', params:{id : post.link}}">
               <div class="text-container">
                 <p>
                   {{ post.title.slice(0, post.title.indexOf(search.toUpperCase())) }}</p>
                 <p class="highlight"> {{ search.toUpperCase() }}</p>
                 <p>
                   {{ post.title.slice(post.title.indexOf(search.toUpperCase()) + search.length, 8) }}</p>
-                <a v-bind:href="post.link" target="_blank">
+                <p class="fullName">{{ post.fullname }}</p>
 
-                </a>
               </div>
+              </router-link>
             </li>
           </ul>
         </div>
-        <router-link :to="{ name: 'TestView'}">
+        <router-link style="text-decoration: none; color: inherit" :to="{ name: 'TestView'}">
           <div id="browse">
             Browse
           </div>
@@ -60,26 +65,33 @@
 
 <script>
 // @ is an alias to /src
-// import Background from "../components/Background"
+import Background from "../components/Background"
+
 // import MenuButton from "../components/MenuButton"
 class Post {
   constructor(title, link, author, img) {
     this.title = title;
-    this.link = link;
+    this.fullname = link;
+    this.link = title;
     this.author = author;
     this.img = img;
   }
 }
 export default {
 
-  name: 'Static',
+  name: 'HomePage',
+
+  components: {
+    Background,
+  },
+
   data (){
     return{
       // empty:true,
       search: '',
       postList: [
         new Post(
-            'A318',
+            'A318', 'Airbus A318-200'
         ),
         new Post(
             'A320',
@@ -130,10 +142,7 @@ export default {
     //    this.empty = document.getElementById('search').value === "";
     // }
   },
-  components: {
-    // MenuButton,
-    // Background,
-  }
+
 }
 
 
@@ -167,6 +176,16 @@ export default {
 
 .page-container:nth-child(2) .page-content {
 
+}
+
+.logo {
+  position: absolute;
+  top : 5%;
+
+}
+
+.logo img{
+  width: 200px;
 }
 
 .page {
@@ -206,9 +225,11 @@ export default {
   position: relative;
   /*box-shadow: rgba(5, 5, 5, 0.3) 0px 1px 3px 1px;*/
   /*width: 500px;*/
+  box-sizing: border-box;
+  border: 1px rgba(86, 86, 86, 0.04) solid;
   height: 60px;
   overflow: hidden;
-  background: #2B2F37;
+  background: rgba(43, 47, 55, 0.06);
   /*display: inline;*/
   width: min-content;
   display: flex;
@@ -250,6 +271,7 @@ export default {
   width: 30px;
   height: 30px;
   margin: 15px;
+  filter : invert(70%);
   /*display: inline;*/
   cursor: pointer;
 }
@@ -260,14 +282,15 @@ export default {
   top: 0;
   list-style: none;
   display: flex;
+  border: 1px #3b3e41 solid;
+  box-sizing: border-box;
   /*z-index: 1000;*/
   box-shadow: rgba(5, 5, 5, 0.3) 0px 1px 3px 1px;
   transition: all 0.7s ease-in-out;
   width: 560px;
   height: auto;
-  box-sizing: border-box;
   flex-direction: column;
-  border-radius: 8px 8px 8px 8px;
+  border-radius: 12px;
   overflow: hidden;
   background: #2B2F37;
   padding-top: 60px;
@@ -309,11 +332,22 @@ export default {
 
 }
 
+p.fullName{
+
+
+
+  color: #a0624e;
+  font-size: 14px !important;
+  padding-left: 20px !important;
+  padding-top: 5px !important;
+}
+
 .card .highlight {
   color: #afafaf;
 }
 
 #browse{
+  text-decoration: none;
   margin-left: 50px;
   width: 200px;
   cursor: pointer;

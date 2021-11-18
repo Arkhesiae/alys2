@@ -119,7 +119,8 @@ export function ESF(M, Mloi, CASloi, T, deltaT, Hp, State, Vertical) {
                 //      Constant CAS
                 //          Above Tropopause
                 if (Hp > Constante.HpTrop) {
-                    A = 0
+                    A = 1
+                    console.error('HIIIIIIIIIIIIIIIII')
                 }
                     //      Constant CAS
                 //          Below Tropopause

@@ -25,7 +25,7 @@
 import Background from "../components/Background"
 import MenuButton from "../components/MenuButton"
 // import router from "../router"
-import Static from "./Static"
+import Static from "./HomePage"
 import Dynamic from "./Dynamic"
 
 export default {
@@ -173,6 +173,8 @@ export default {
   height: 100px;
   font-size: 22px;
 }
+
+
 
 .nav-bar div{
   cursor: pointer;

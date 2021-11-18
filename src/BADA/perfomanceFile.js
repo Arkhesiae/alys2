@@ -197,51 +197,77 @@ export function maxFLAtROCD(FL, speed, loi, ROCD) {
 
 
 
-export function flightProfile(sequence) {
-    let plane = new PhysicalPlane()
-    plane.setParameters(54000)
-    plane.setLoiMontee(300, 0.78)
-    plane.setInitialState(0 * 100 / 3.28084, knotToMs(180), 0, 0)
-    let profile = []
-    let X = 0
-    for (let instruction of sequence){
-        console.log(instruction)
-        if (plane.idleState) {
-            X = 0
-            console.error('SHIFT')
-            let current = instruction
-            if (current.type === 'climb'){
-                plane.climbInstruction(current.FLTarget, current.time, '', current.speedInstruction)
-            }
-            else if (current.type === 'level'){
-                plane.levelInstruction(current.time)
-            }
-            else if (current.type === 'descent'){
-                console.log("DESCENT")
-                plane.descentInstruction(current.FLTarget, current.time, '', current.speedInstruction)
-            }
-        }
-
-        while (!plane.idleState) {
-            X ++
-            if (X>900){
-                console.log('FIN')
-                break
-            }
-            plane.flyLoop()
-            console.log('IDLE STATE : ',plane.idleState)
-            profile.push({
-                speed : Math.round(msToKnot(plane.flightParams.speed.CAS)),
-                mach : plane.flightParams.speed.Mach,
-                rate : Math.round(plane.flightParams.ROCD*197/100)*100,
-                alt : plane.flightParams.Hp*3.28084/100,
-                dist : plane.distanceFromStartPoint,
-                hpTrans : plane.loiMontee.HpTrans
-            })
-            //console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
-        }
-
+export function flightProfile(climbSequence, cruiseSequence, descentSequence, law) {
+    let fullSequence = {
+        climb : climbSequence,
+        cruise : cruiseSequence,
+        descent : descentSequence,
     }
+    let plane = new PhysicalPlane()
+    plane.setParameters(64000)
+
+    if (law){
+        plane.setLoiMontee(law.speed, law.mach)
+    } else plane.setLoiMontee(280, 0.74)
+
+    plane.setInitialState(0 * 100 / 3.28084, knotToMs(180), 0, 0)
+    let profile = {
+        climb : [],
+        cruise : [],
+        descent : [],
+        full : [],
+    }
+    let index = 0
+    let X = 0
+    Object.keys(fullSequence).forEach((sequence)=>{
+        let currentSequence = fullSequence[sequence]
+        for (let instruction of currentSequence){
+            if (plane.idleState) {
+                X = 0
+                console.error('SHIFT')
+                let current = instruction
+                if (current.type === 'climb'){
+                    plane.climbInstruction(current.FLTarget, current.time, '', current.speedInstruction)
+                }
+                else if (current.type === 'level'){
+                    plane.levelInstruction(current.time)
+                }
+                else if (current.type === 'descent'){
+                    plane.descentInstruction(current.FLTarget, current.time, '', current.speedInstruction)
+                }
+            }
+            while (!plane.idleState) {
+                X ++
+                if (X>8000){
+                    console.log('FIN')
+                    break
+                }
+                plane.flyLoop()
+                // console.log('IDLE STATE : ',plane.idleState)
+                let profilePoint = {
+                    index : index,
+                    speed : Math.round(msToKnot(plane.flightParams.speed.CAS)),
+                    speedTAS : Math.round(msToKnot(plane.flightParams.speed.TAS)),
+                    mach : plane.flightParams.speed.Mach,
+                    rate : Math.round(plane.flightParams.ROCD*197/100)*100,
+                    alt : plane.flightParams.Hp*3.28084/100,
+                    dist : plane.distanceFromStartPoint,
+                    hpTrans : plane.loiMontee.HpTrans,
+                    SAT : plane.atmosphereParams.temperature,
+                    atmPressure : plane.atmosphereParams.pressure,
+                    phase : sequence
+                }
+                index++
+                profile[sequence].push(profilePoint)
+                profile.full.push(profilePoint)
+                // console.log("FUEL FLOW : ", plane.fuelFlow)
+                // console.log("MASS : ", plane.flightParams.mass)
+                // console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
+            }
+        }
+    })
+
+
     return profile
 }
 

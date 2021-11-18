@@ -141,6 +141,7 @@
 
 
         <div class="footer">
+
           <div class="content-container__app-button-container">
             <AppButton text="Profil de Vol" icon="show_chart_black_24dp.svg"/>
             <AppButton text="Paramètres avancés" icon="settings_black_24dp.svg"/>
@@ -224,6 +225,8 @@ require('fabric')
 export default {
   name: "TestView",
   components: {
+    HButton,
+    LawEdit,
     AppButton,
     MenuButton,
     Background,
@@ -245,6 +248,10 @@ export default {
     }
   },
 
+  beforeMount() {
+
+  },
+
   mounted() {
     let slider = document.getElementById("myRange");
     let output = document.getElementById("fl-value");
@@ -262,6 +269,10 @@ export default {
           fireMiddleClick: true,
         } //Prevent proportions conservation when resizing with the corner button})
     )
+
+    this.canvas = canvas
+
+
     window.addEventListener('resize', function () {
       // canvas.width = frame.offsetWidth
       // canvas.height = frame.offsetHeight
@@ -460,7 +471,7 @@ export default {
       left : 0,
       top : -profile[0].hpTrans/100 * (canvas.height - 2*marginVertical)/410 - marginVertical + canvas.height,
     })
-    canvas.add(hpTrans)
+    canvas.add(this.hpTrans)
 
     // eslint-disable-next-line no-undef
     let hpTransText = new fabric.Text('CONJONCTION',{
@@ -494,9 +505,51 @@ export default {
       console.log(event)
       if (event.target === cursor){
         GRABBING = true
-      }
-      let pointer = canvas.getPointer(event.e);
+        if (!PRESSED) {
+          cursor1.animate({
+            radius: 20,
+            left: this.currentPoint.x - 20,
+            top: this.currentPoint.y - 20,
+            fill: "rgba(188,123,100,0.52)"
 
+          }, {
+            onChange: function () {
+              canvas.requestRenderAll()
+            },
+
+            easing: // eslint-disable-next-line no-unused-vars,no-undef
+                fabric.util.ease['easeOutQuad'],
+            duration: 100
+          });
+          // cursor1.set({'radius' : 20, 'left': this.currentPoint.x - 20, 'top': this.currentPoint.y - 20})
+          cursor1.setCoords()
+          canvas.requestRenderAll()
+          PRESSED = true
+        }
+
+        // if (!HOVER){
+        //   cursor1.animate({
+        //     radius: 20,
+        //     left: this.currentPoint.x - 20,
+        //     top: this.currentPoint.y - 20
+        //     // text : trackObject.ETA.toString()
+        //
+        //   }, {
+        //     onChange: function () {
+        //       canvas.requestRenderAll()
+        //     },
+        //
+        //     easing: // eslint-disable-next-line no-unused-vars,no-undef
+        //         fabric.util.ease['easeOutQuad'],
+        //     duration: 500
+        //   });
+        //   // cursor1.set({'radius' : 20, 'left': this.currentPoint.x - 20, 'top': this.currentPoint.y - 20})
+        //   cursor1.setCoords()
+        //   canvas.requestRenderAll()
+        // }
+      }
+
+      let pointer = canvas.getPointer(event.e);
       let minVert = Infinity
       // eslint-disable-next-line no-unused-vars
       let pt
@@ -543,6 +596,34 @@ export default {
 
     })
 
+    let HOVER = false
+
+    canvas.on("mouse:over", (event) => {
+      console.log(event)
+
+
+      if (event.target === this.pointObject || event.target === cursor2 || event.target === cursor1) {
+        if (HOVER) {
+          return
+        }
+        HOVER = true
+        if (GRABBING) {
+          return
+        }
+        cursor1.animate({
+          radius: 20,
+          left: this.currentPoint.x - 20,
+          top: this.currentPoint.y - 20
+          // text : trackObject.ETA.toString()
+
+        }, {
+          onChange: function () {
+            canvas.requestRenderAll()
+          },
+
+          // onComplete : function(){
+          //   cursor1.set({'left': 'this.currentPoint.x - 20', 'top' : 'this.currentPoint.y - 20',})
+          // },
 
 
     canvas.requestRenderAll()
@@ -650,6 +731,12 @@ export default {
 
 <style scoped>
 
+
+@font-face {
+  font-family: "Product Sans";
+  src: url("../assets/fonts/ProductSansRegular.ttf") format("truetype");
+}
+
 @font-face {
   font-family: "Product Sans";
   src: url("../assets/fonts/ProductSansRegular.ttf") format("truetype");
@@ -659,7 +746,204 @@ export default {
   display: none;
 }
 
-.information-box{
+
+.h-button-container {
+  display: flex;
+  justify-content: flex-start;
+  width: 200px;
+  margin-bottom: 10px;
+}
+
+.h-button-container .container {
+  margin-right: 10px;
+}
+
+
+.information-box-container {
+  position: absolute;
+  padding: 20px;
+  z-index: 999;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  height: calc(100% - 160px)
+}
+
+.unit-selector-container {
+  width: 100%;
+  margin-top: 0px;
+  height: 20px;
+  display: flex;
+  position: relative;
+  top: -4px;
+  padding-right: 10px;
+  box-sizing: border-box;
+  justify-content: flex-end;
+}
+
+.unit-selector {
+  /*width: 50px;*/
+  margin-left: 5px;
+  border-radius: 50px;
+  background: #353a40;
+  border: 1px solid rgba(101, 143, 206, 0);
+  height: 18px;
+  font-size: 11px;
+  font-weight: bold;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 4px;
+  color: #658fce;
+  cursor: pointer;
+}
+
+.unit-selector.selected {
+  /*width: 50px;*/
+  margin-left: 5px;
+  border-radius: 50px;
+  border: 1px solid #658fce;
+  background: #222428;
+  height: 18px;
+  font-size: 11px;
+  font-weight: bold;
+  padding-left: 12px;
+  padding-right: 12px;
+  padding-top: 4px;
+  color: #658fce;
+  cursor: pointer;
+}
+
+.unit-selector:hover {
+  background: #282c31;
+}
+
+.flight-state-info {
+  display: flex;
+  margin-top: 20px;
+  flex-direction: column;
+}
+
+.information-box {
+  position: relative;
+  /*border: #6b6f71 1px solid;*/
+  /*top: 40px;*/
+  /*margin: 60px;*/
+  margin-bottom: 10px;
+  width: 210px;
+  min-height: 100px;
+  height: auto;
+}
+
+.infoboxType {
+  margin-top: 15px;
+  padding-left: 15px;
+  display: flex;
+  height: 55px;
+  flex-direction: column;
+  font-family: "Roboto", sans-serif;
+  font-weight: 400;
+  color: #c0aea9;
+  font-size: 15px;
+}
+
+.infoboxTypeValue {
+  margin-top: 5px;
+  display: flex;
+  text-align: right;
+  padding-right: 15px;
+  flex-direction: column;
+  font-family: "Product Sans", sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  color: #d1836b;
+}
+
+.infoboxTypeValueBis {
+  margin-top: 5px;
+  display: flex;
+  text-align: right;
+  padding-right: 17px;
+  flex-direction: column;
+  font-family: "Product Sans", sans-serif;
+  font-weight: bold;
+  font-size: 11px;
+  color: #6f747f;
+}
+
+.information-box-otherInfo {
+
+  border-radius: 9px;
+  display: flex
+}
+
+.information-box.information-box--active .box__container {
+  box-shadow: rgba(5, 5, 5, 0.45) 0px 1px 3px 1px;
+  width: calc(100% - 10px);
+  transform: translateY(-5px);
+  margin: 5px;
+}
+
+.information-box.information-box--active .box__border {
+  opacity: 1;
+}
+
+.information-box.information-box--brown .box__container {
+  background: linear-gradient(45deg, rgba(72, 55, 48, 1) -0%, rgba(166, 98, 77, 1) 110%);
+}
+
+.information-box.information-box--blue.information-box--active .box__container {
+  background: linear-gradient(45deg, rgb(50, 68, 97) -0%, rgb(139, 170, 216) 110%);
+}
+
+.information-box.information-box--blue .flight-state-value {
+  background: rgb(86, 124, 176);
+}
+
+.information-box.information-box--brown .flight-state-value {
+  background: rgba(166, 98, 77, 1);
+}
+
+.information-box.information-box--active .flight-state-value {
+  background: rgba(38, 42, 46, 1);
+}
+
+.information-box.information-box--brown.information-box--active .color-text {
+  color: rgba(166, 98, 77, 1);
+}
+
+.information-box.information-box--blue.information-box--active .color-text {
+  color: rgb(86, 124, 176);
+}
+
+.information-box.information-box--blue.information-box--active .flight-state-value {
+  color: rgb(86, 124, 176);
+}
+
+.information-box.information-box--brown.information-box--active .flight-state-value {
+  color: rgba(166, 98, 77, 1);
+}
+
+.law-edit-circle {
+  position: absolute;
+  background: #2b2d33;
+  right: 10px;
+  box-shadow: rgba(5, 5, 5, 0.5) 0px 1px 2px 0px;
+  bottom: 35px;
+  height: 40px;
+  width: 40px;
+  border-radius: 30px;
+  cursor: pointer;
+}
+
+.law-edit-circle:hover {
+  background: #202227;
+}
+
+
+.law-edit-circle input {
+  height: 100%;
+  z-index: 99;
   position: absolute;
   /*border: #2f7fff 1px solid;*/
   top : 40px;
@@ -788,6 +1072,12 @@ export default {
   padding: 20px;
 }
 
+.law-edit {
+  width: 300px;
+  margin-right: 20px;
+  margin-top: 40px;
+}
+
 .law-edit{
   margin-top: 40px;
   width: 300px;
@@ -806,7 +1096,7 @@ export default {
   box-shadow: rgba(5, 5, 5, 0.3) 0px 1px 10px 1px;
 }
 
-.law-edit span {
+.law-edit-box span {
   color: #d09e7f;
 
   padding-right: 20px;
@@ -941,8 +1231,10 @@ export default {
 
 .sideBar{
   /*position: absolute;*/
-  width: 380px;
+  width: 320px;
   box-shadow: rgba(5, 5, 5, 0.3) 0px 1px 3px 1px;
+  border-left: 1px solid #3c3c3c;
+  background: rgba(40, 43, 51, 0.99);
   /*top:0;*/
   height: 100%;
   display: flex;
@@ -952,7 +1244,6 @@ export default {
   box-sizing: border-box;
   justify-content: space-around;
   flex-direction: column;
-  background: #282b33;
   /*right: 0px;*/
 }
 
@@ -1428,28 +1719,30 @@ canvas{
 
 .searchbar-container{
   position: relative;
+  margin-right: 20px;
 }
 
 #searchbar {
   transition: all 0.7s ease-in-out;
   position: relative;
-  /*box-shadow: rgba(5, 5, 5, 0.3) 0px 1px 3px 1px;*/
+  box-shadow: rgba(5, 5, 5, 0.3) 0px 0px 1px 1px;
   /*width: 500px;*/
   height: 60px;
   overflow: hidden;
-  background: #A4A8B1;
+  border: 1px solid #3c3c3c;
+  background: rgba(40, 43, 51, 0.99);
   /*display: inline;*/
   width: min-content;
   display: flex;
   z-index: 400;
-  border-radius: 8px;
+  border-radius: 16px;
 }
 
 #searchbar input {
   position: relative;
   border: none;
   background: none;
-  color: #4f4e4e;
+  color: #979696;
   font-family: inherit;
   font-size: inherit;
   /*font-weight: bold;*/
@@ -1479,6 +1772,7 @@ canvas{
   width: 30px;
   height: 30px;
   margin: 15px;
+  filter: invert(55%);
   /*display: inline;*/
   cursor: pointer;
 }

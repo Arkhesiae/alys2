@@ -1,17 +1,19 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Home from '../views/Home.vue'
-// import Static from "../views/Static.vue"
+import HomePage from '../views/HomePage.vue'
+// import Static from "../views/HomePage.vue"
 import SelectScreen from "../views/SelectScreen"
 import Test from "../views/Test"
 import TestView from "../views/TestView"
 import Graphe from "../views/graphe"
+import Home from "@/views/Home"
+
 // import SelectScreen from "../views/SelectScreen.vue"
 
 const routes = [
   {
     path: '/',
-    name: 'Home',
-    component: Home
+    name: 'HomePage',
+    component: HomePage
   },
   // {
   //   path: '/static',
@@ -20,7 +22,7 @@ const routes = [
   //   // this generates a separate chunk (about.[hash].js) for this route
   //   // which is lazy-loaded when the route is visited.
   //   component: Static
-  //       // () => import(/* webpackChunkName: "about" */ '../views/Static.vue')
+  //       // () => import(/* webpackChunkName: "about" */ '../views/HomePage.vue')
   // },
   {
     path: '/test',
@@ -31,6 +33,32 @@ const routes = [
     path: '/graph',
     name: 'Graphe',
     component: Graphe
+  },
+
+  {
+    path: '/plane/:id/',
+    name: 'Plane',
+    component: Home,
+    children: [
+      {
+        // UserProfile will be rendered inside User's <router-view>
+        // when /user/:id/profile is matched
+        path: 'static',
+        component: TestView
+      },
+      {
+        // UserPosts will be rendered inside User's <router-view>
+        // when /user/:id/posts is matched
+        path: 'dynamic',
+        component: TestView
+      }
+    ]
+  },
+
+  {
+    path: '/testView',
+    name: 'TestView',
+    component: TestView
   },
 
   {
@@ -53,7 +81,7 @@ const routes = [
     //     b: Home
     //   }
     // }]
-        // () => import(/* webpackChunkName: "about" */ '../views/Static.vue')
+        // () => import(/* webpackChunkName: "about" */ '../views/HomePage.vue')
   }
 ]
 

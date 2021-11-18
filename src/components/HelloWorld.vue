@@ -1,9 +1,9 @@
 <template>
   <div id="tile-container">
-    <router-link :to="{ name: 'SelectScreen', params: { type:'static' }}">
+    <router-link :to="$route.fullPath+'static'">
       <Tile type="static"></Tile>
     </router-link>
-    <router-link :to="{ name: 'SelectScreen', params: { type:'dynamic' }}">
+    <router-link :to="$route.fullPath+'dynamic'">
       <Tile type="dynamic"></Tile>
     </router-link>
   </div>
