@@ -187,7 +187,8 @@ export default {
   margin: 0;
   list-style: none;
   display: flex;
-  width: 560px;
+  flex-basis: 200px;
+  /*width: 560px;*/
   flex-direction: column;
   border-radius: 0 0  8px 8px;
   overflow: hidden;

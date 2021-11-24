@@ -218,7 +218,7 @@ import Background from "@/components/Background"
 import {calcPerf, speedRange} from "@/BADA/perfomanceFile"
 import {calcPerfbis} from "@/BADA/perfomanceFile"
 import AppButton from "@/components/appButton"
-import {HpTrans, knotToMs} from "../BADA/func";
+import {_getPhotoByQueryANET, HpTrans, knotToMs} from "../BADA/func";
 import {flightProfile, getPlaneMach, maxFLAtROCD, range} from "../BADA/perfomanceFile";
 require('fabric')
 
@@ -253,6 +253,7 @@ export default {
   },
 
   mounted() {
+    console.log(_getPhotoByQueryANET('A320'))
     let slider = document.getElementById("myRange");
     let output = document.getElementById("fl-value");
     //let canvasElement = document.getElementById("flightProfile-canvas");

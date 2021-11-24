@@ -1,3 +1,6 @@
+const axios = require("axios");
+
+const cheerio = require("cheerio");
 
 // Definitions
 
@@ -13,6 +16,44 @@ export function knotToMs(speed) {
 
 export function airDensity(p, T) {
     return p / (Constante.R * T)
+}
+
+export async function _getPhotoByQueryANET(query) {
+    const url = "https://www.airliners.net/search?keywords="+query;
+
+    const html = await axios.get(url);
+    console.log(url)
+
+    if (!html) {
+        return null;
+    }
+
+    let $ = cheerio.load(html.data);
+
+    let imageContainers = $(".ps-v2-results-photo");
+
+    if (!imageContainers) {
+        return null;
+    }
+
+    let imageContainer = imageContainers[0];
+
+    if (!imageContainer) {
+        return null;
+    }
+
+    let imageSrc = $(imageContainer).find("img").attr("src");
+
+    if (!imageSrc) {
+        return null;
+    }
+
+    let imgURL = imageSrc.match("^[^-]*")[0] + ".jpg";
+
+    return {
+        url: imgURL,
+        cr: "Airliners.net",
+    };
 }
 
 // eslint-disable-next-line no-unused-vars

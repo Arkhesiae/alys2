@@ -1,7 +1,7 @@
 <template>
   <div id="background">
     <div id="upper-circle"></div>
-    <div id="lower-circle"></div>
+<!--    <div id="lower-circle"></div>-->
   </div>
 </template>
 

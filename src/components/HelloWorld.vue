@@ -30,6 +30,7 @@ export default {
   }
 }
 
+
 #tile-container {
   transition: all 0.4s ease-in-out;
   width: 100%;

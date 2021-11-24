@@ -385,16 +385,27 @@ export class PhysicalPlane {
         if (speedInstruction){
             this.speedInstructionValue = speedInstruction
         }
+    }
 
-        console.log()
+    startInterception(){
+        this.t = 0
+        this.Tx = Math.abs(this.flightParams.ROCD/Constante.Gmax)
+        this.h = this.flightParams.ROCD * this.Tx
+        this.INTERCEPTION = true
     }
 
     climb() {
 
         let reachTarget
         if (this.targetFL != null) {
-            reachTarget = (this.flightParams.Hp >= this.targetFL*100/3.28084)
-            if (reachTarget) this.targetFL= null
+            let Tx = this.flightParams.ROCD/Constante.Gmax
+            let h = this.flightParams.ROCD * Tx
+            let altIntcpt = this.targetFL*100/3.28084 - h
+            if (this.flightParams.Hp > altIntcpt && !this.INTERCEPTION){
+                this.startInterception()
+            }
+            reachTarget = Math.abs(this.flightParams.Hp - this.targetFL*100/3.28084)<10
+            if (reachTarget) {this.targetFL= null ; this.INTERCEPTION = false}
         }
         if (this.targetTime) {
             reachTarget = (this.targetTime === 0)
@@ -405,6 +416,15 @@ export class PhysicalPlane {
             reachTarget = (Math.abs(this.flightParams.speed.CAS - knotToMs(this.speedInstructionValue))<1)
             if (reachTarget) this.speedInstructionValue = null
         }
+
+        if (this.INTERCEPTION){
+            let t = this.t
+            let ROCDbis = (this.h)/ this.Tx * (Math.exp(-t/this.Tx))
+            this.t ++
+            this.climbAtROCD(ROCDbis)
+            return
+        }
+
         if (!reachTarget) {
             if (this.targetROCD) {
                 this.climbAtROCD(this.targetROCD / 197)
@@ -421,8 +441,14 @@ export class PhysicalPlane {
     descent() {
         let reachTarget
         if (this.targetFL != null) {
-            reachTarget = (this.flightParams.Hp <= this.targetFL*100/3.28084)
-            if (reachTarget) this.targetFL= null
+            let Tx = Math.abs(this.flightParams.ROCD/Constante.Gmax)
+            let h = this.flightParams.ROCD * Tx
+            let altIntcpt = this.targetFL*100/3.28084 - h
+            if (this.flightParams.Hp < altIntcpt && !this.INTERCEPTION){
+                this.startInterception()
+            }
+            reachTarget = Math.abs(this.flightParams.Hp - this.targetFL*100/3.28084)<10
+            if (reachTarget) {this.targetFL= null ; this.INTERCEPTION = false}
         }
         if (this.targetTime) {
             reachTarget = (this.targetTime === 0)
@@ -432,6 +458,15 @@ export class PhysicalPlane {
             reachTarget = (Math.abs(this.flightParams.speed.CAS - knotToMs(this.speedInstructionValue))<1)
             if (reachTarget) this.speedInstructionValue = null
         }
+
+        if (this.INTERCEPTION){
+            let t = this.t
+            let ROCDbis = this.h/ this.Tx * (Math.exp(-t/this.Tx))
+            this.t ++
+            this.descentAtROCD(ROCDbis)
+            return
+        }
+
         if (!reachTarget) {
             if (this.targetROCD) {
                 this.descentAtROCD(this.targetROCD / 197)
@@ -603,14 +638,54 @@ export class PhysicalPlane {
 
     }
 
-    descentAtROCD() {
-
+    descentAtROCD(targetROCD) {
+        this.updateConditions()
+        let state
+        let ESFValue
+        let thrustToReachTarget = this.force.drag + targetROCD / this.flightParams.speed.TAS * this.flightParams.mass * Constante.g0 + this.dVTAS * this.flightParams.mass
+        this.minThrust = 0
+        this.force.thrust = Math.max(thrustToReachTarget, 0)
+        if (thrustToReachTarget <= this.minThrust) {
+            // Thrust et Vitesse limitantes
+            if (Math.abs(this.flightParams.speed.TAS - CAStoTAS(this.maxSpeed, this.atmosphereParams.pressure, this.atmosphereParams.temperature)) < .5) {
+                ESFValue = ESF(this.flightParams.speed.Mach, this.loiMontee.Mach, knotToMs(this.loiMontee.CAS), this.atmosphereParams.temperature, 0, this.flightParams.Hp, "CONSTANT", -1)
+                this.flightParams.ROCD = ROCD(this.atmosphereParams.temperature, this.force.thrust, this.force.drag, this.flightParams.speed.TAS, ESFValue, this.flightParams.mass, 0)
+                let dVTAS = (1 / ESFValue - 1) * Constante.g0 / this.flightParams.speed.TAS * this.flightParams.ROCD
+                this.dVTAS = dVTAS
+                state = "speedLimit"
+            }
+            // Thrust limitant, accéleration nécessaire
+            else {
+                let ROCD
+                if (this.flightParams.ROCD === 0) {
+                    ROCD = targetROCD
+                }
+                ROCD = ((this.force.thrust - this.force.drag) * this.flightParams.speed.TAS - this.flightParams.mass * this.flightParams.speed.TAS * this.dVTAS) / this.flightParams.mass / Constante.g0
+                ROCD = targetROCD
+                // ESFValue =  (1+this.flightParams.speed.TAS/Constante.g0*this.dVTAS/this.flightParams.ROCD)**(-1)
+                this.flightParams.ROCD = ROCD
+                let dVTAS = (this.force.thrust - this.force.drag) / this.flightParams.mass - this.flightParams.ROCD * Constante.g0 / this.flightParams.speed.TAS
+                this.dVTAS = dVTAS
+                state = "thrustLimit"
+            }
+        } else {
+            ESFValue = ESF(this.flightParams.speed.Mach, this.loiMontee.Mach, knotToMs(this.loiMontee.CAS), this.atmosphereParams.temperature, 0, this.flightParams.Hp, "CONSTANT", -1)
+            this.flightParams.ROCD = ROCD(this.atmosphereParams.temperature, this.force.thrust, this.force.drag, this.flightParams.speed.TAS, ESFValue, this.flightParams.mass, 0)
+            let dVTAS = (1 / ESFValue - 1) * Constante.g0 / this.flightParams.speed.TAS * this.flightParams.ROCD
+            this.dVTAS = dVTAS
+            state = "noLimit"
+        }
+        this.updateFlightParams()
+        this.flightParams.speed.TAS = Math.max(this.flightParams.speed.TAS, CAStoTAS(this.minSpeed, this.atmosphereParams.pressure, this.atmosphereParams.temperature))
+        this.ROCDLimit = state
+        return state
     }
 
 
     updateFlightParams() {
         this.flightParams.speed.TAS += this.dVTAS
         this.distanceFromStartPoint += this.flightParams.speed.TAS*Math.sqrt(1-(this.flightParams.ROCD/this.flightParams.speed.TAS)**2)
+        this.flightParams.lastHp = this.flightParams.Hp
         this.flightParams.Hp += this.flightParams.ROCD
         this.flightParams.Hp = Math.max(this.flightParams.Hp, 0)
         if (this.flightParams.Hp === 0) {
