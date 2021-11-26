@@ -71,7 +71,7 @@ export class PhysicalPlane {
             wingSpan: "34.1"
         },
         aircraftFuelConsumption: {
-            firstThrustConsumption:  "0.72891",
+            firstThrustConsumption: "0.72891",
             secondThrustConsumption: "1729.8",
             cruiseConsumption: "0.99224",
             firstDescentConsumption: "11.114",
@@ -142,31 +142,31 @@ export class PhysicalPlane {
         this.loiDescente.HpTrans = HpTrans(knotToMs(CAS), M)
     }
 
-    computeThrustSpecificFuelConsumption(){
+    computeThrustSpecificFuelConsumption() {
         let Cf1 = parseFloat(this.flightCoefficients.aircraftFuelConsumption.firstThrustConsumption)
         let Cf2 = parseFloat(this.flightCoefficients.aircraftFuelConsumption.secondThrustConsumption)
-        this.specificFuelConsumption = Cf1 * (1 + msToKnot(this.flightParams.speed.TAS)/Cf2)
+        this.specificFuelConsumption = Cf1 * (1 + msToKnot(this.flightParams.speed.TAS) / Cf2)
         // console.log(this.specificFuelConsumption)
     }
 
-    computeNominalFuelFlow(){
+    computeNominalFuelFlow() {
         this.computeThrustSpecificFuelConsumption()
-        return this.nominalFuelFlow = this.specificFuelConsumption * this.force.thrust/1000
+        return this.nominalFuelFlow = this.specificFuelConsumption * this.force.thrust / 1000
     }
 
-    computeMinimumFuelFlow(){
+    computeMinimumFuelFlow() {
         let Cf3 = parseFloat(this.flightCoefficients.aircraftFuelConsumption.firstDescentConsumption)
         let Cf4 = parseFloat(this.flightCoefficients.aircraftFuelConsumption.secondDescentConsumption)
         return this.minimumFuelFlow = Cf3 * (1 - this.flightParams.Hp * 3.28084 / Cf4)
     }
 
-    computeCruiseFuelFlow(){
+    computeCruiseFuelFlow() {
         this.computeThrustSpecificFuelConsumption()
         let CfCr = parseFloat(this.flightCoefficients.aircraftFuelConsumption.cruiseConsumption)
-        return this.cruiseFuelFlow = this.specificFuelConsumption * this.force.thrust/1000 * CfCr
+        return this.cruiseFuelFlow = this.specificFuelConsumption * this.force.thrust / 1000 * CfCr
     }
 
-    computeFuelFlow(){
+    computeFuelFlow() {
         this.fuelFlow = 0
         switch (this.flightPhase) {
             case "LEVELLED":
@@ -293,7 +293,7 @@ export class PhysicalPlane {
     }
 
     computeROCD(ESFValue) {
-        this.flightParams.ROCD = (ROCD(this.atmosphereParams.temperature, this.force.thrust, this.force.drag, this.flightParams.speed.TAS, ESFValue, this.flightParams.mass, 0)+ 3*this.flightParams.ROCD)/4
+        this.flightParams.ROCD = (ROCD(this.atmosphereParams.temperature, this.force.thrust, this.force.drag, this.flightParams.speed.TAS, ESFValue, this.flightParams.mass, 0) + 3 * this.flightParams.ROCD) / 4
     }
 
     computedVTAS(ESFValue) {
@@ -313,6 +313,8 @@ export class PhysicalPlane {
     }
 
     flyLoop() {
+        // console.log(this.targetTime, this.targetFL, this.targetSpeed)
+        console.log(this.flightParams.Hp/100*3.28084)
         this.updateConditions()
         switch (this.flightPhase) {
             case "LEVELLED":
@@ -326,12 +328,18 @@ export class PhysicalPlane {
                 this.descent()
                 break
         }
-        if (this.targetTime){
+        if (this.targetTime) {
             this.targetTime--
         }
+
+        // this.speedVariation = this.getSpeedVariation(this.speedInstruction)
+        // console.log(this.speedInstruction)
+        // console.log(this.speedVariation)
+        // this.setSpeedInstructionValue(this.speedInstruction)
+        // this.setTarget(null, null, null, this.speedInstructionValue)
     }
 
-    levelInstruction(time){
+    levelInstruction(time) {
         this.idleState = false
         this.flightPhase = 'LEVELLED'
         this.setTarget('', time, '', '')
@@ -345,10 +353,10 @@ export class PhysicalPlane {
             // console.log('reach', reachTarget)
             if (reachTarget) this.targetTime = null
         }
-        if (!reachTarget){
+        if (!reachTarget) {
             this.computeThrustForPallier(this.flightParams.speed.TAS)
             let ESFValue = ESF(this.flightParams.speed.Mach, this.loiMontee.Mach, knotToMs(this.loiMontee.CAS), this.atmosphereParams.temperature, this.atmosphereParams.deltaT, this.flightParams.Hp, "CONSTANT", 0)
-            this.flightParams.ROCD = (ROCD(this.atmosphereParams.temperature, this.force.thrust, this.force.drag, this.flightParams.speed.TAS, ESFValue, this.flightParams.mass, this.atmosphereParams.deltaT) + 9*this.flightParams.ROCD)/10
+            this.flightParams.ROCD = (ROCD(this.atmosphereParams.temperature, this.force.thrust, this.force.drag, this.flightParams.speed.TAS, ESFValue, this.flightParams.mass, this.atmosphereParams.deltaT) + 9 * this.flightParams.ROCD) / 10
             this.dVTAS = (this.force.thrust - this.force.drag) / this.flightParams.mass
             // console.log("hi")
             this.updateFlightParams()
@@ -359,22 +367,45 @@ export class PhysicalPlane {
     climbInstruction(target, time, ROCD, speedInstruction) {
         this.idleState = false
         this.flightPhase = 'CLIMB'
-        if (speedInstruction === "law"){
+        if (speedInstruction === "law") {
             speedInstruction = this.loiMontee.CAS
         }
-        this.speedInstruction = this.computeSpeedInstruction(speedInstruction)
-        this.setTarget(target, time, ROCD, speedInstruction)
+
+        this.speedInstruction = speedInstruction
+        this.speedVariation = this.getSpeedVariation(speedInstruction)
+        console.log(this.speedVariation, this.speedInstruction)
+        // this.setSpeedInstructionValue(speedInstruction)
+        // console.log(this.speedVariation, this.speedInstructionValue)
+        this.setTarget(target, time, ROCD, this.speedInstruction)
     }
+
+    setSpeedInstructionValue(speedInstruction) {
+        if (!this.speedVariation.variation === "CONSTANT") {
+            return
+        }
+        if (this.flightParams.Hp / 100 * 3.28084 < 100) {
+            if (this.speedVariation.type === "CAS"){
+                this.speedInstructionValue = Math.min(250, speedInstruction)
+            }
+            else {
+                this.speedInstructionValue = speedInstruction
+            }
+
+        }
+    }
+
 
     descentInstruction(target, time, ROCD, speedInstruction) {
         this.idleState = false
         this.flightPhase = 'DESCENT'
-        this.speedInstruction = this.computeSpeedInstruction(speedInstruction)
-        console.error(target)
-        this.setTarget(target, time, ROCD, speedInstruction)
+        this.speedVariation = this.getSpeedVariation(speedInstruction)
+        this.speedInstruction = speedInstruction
+        // console.log(this.speedVariation, this.speedInstructionValue)
+        this.setTarget(target, time, ROCD, this.speedInstruction)
     }
 
     setTarget(target, time, ROCD, speedInstruction) {
+        // console.log(this.targetTime, this.targetFL, this.targetSpeed)
         this.targetROCD = ROCD
         if (target != null) {
             this.targetFL = target
@@ -382,54 +413,64 @@ export class PhysicalPlane {
         if (time) {
             this.targetTime = time
         }
-        if (speedInstruction){
-            this.speedInstructionValue = speedInstruction
+        if (speedInstruction) {
+            this.targetSpeed = speedInstruction
         }
+        // console.log(this.targetTime, this.targetFL, this.targetSpeed)
     }
 
-    startInterception(){
+    startInterception() {
         this.t = 0
-        this.Tx = Math.abs(this.flightParams.ROCD/Constante.Gmax)
+        this.Tx = Math.abs(this.flightParams.ROCD / Constante.Gmax)
         this.h = this.flightParams.ROCD * this.Tx
         this.INTERCEPTION = true
     }
 
     climb() {
-
+        // console.log("hi")
+        // let reachTargetFL = true
+        // let reachTargetTime = true
+        // let reachTargetSpeed = true
         let reachTarget
         if (this.targetFL != null) {
-            let Tx = this.flightParams.ROCD/Constante.Gmax
+            // reachTargetFL = false
+            let Tx = this.flightParams.ROCD / Constante.Gmax
             let h = this.flightParams.ROCD * Tx
-            let altIntcpt = this.targetFL*100/3.28084 - h
-            if (this.flightParams.Hp > altIntcpt && !this.INTERCEPTION){
+            let altIntcpt = this.targetFL * 100 / 3.28084 - h
+            if (this.flightParams.Hp > altIntcpt && !this.INTERCEPTION) {
                 this.startInterception()
             }
-            reachTarget = Math.abs(this.flightParams.Hp - this.targetFL*100/3.28084)<10
-            if (reachTarget) {this.targetFL= null ; this.INTERCEPTION = false}
+            reachTarget = Math.abs(this.flightParams.Hp - this.targetFL * 100 / 3.28084) < 10
+            if (reachTarget) {
+                this.targetFL = null;
+                this.INTERCEPTION = false
+            }
         }
         if (this.targetTime) {
             reachTarget = (this.targetTime === 0)
             if (reachTarget) this.targetTime = null
         }
-        if (this.speedInstructionValue) {
+        if (this.targetSpeed) {
             //console.log('checkSpeed')
-            reachTarget = (Math.abs(this.flightParams.speed.CAS - knotToMs(this.speedInstructionValue))<1)
-            if (reachTarget) this.speedInstructionValue = null
+            // reachTargetSpeed = false
+            reachTarget = (Math.abs(this.flightParams.speed.CAS - knotToMs(this.targetSpeed))<1)
+            if (reachTarget) {this.targetSpeed = null }
         }
 
-        if (this.INTERCEPTION){
+        if (this.INTERCEPTION) {
             let t = this.t
-            let ROCDbis = (this.h)/ this.Tx * (Math.exp(-t/this.Tx))
-            this.t ++
+            let ROCDbis = (this.h) / this.Tx * (Math.exp(-t / this.Tx))
+            this.t++
             this.climbAtROCD(ROCDbis)
             return
         }
 
         if (!reachTarget) {
+
             if (this.targetROCD) {
                 this.climbAtROCD(this.targetROCD / 197)
             } else {
-                let ESFValue = ESF(this.flightParams.speed.Mach, this.loiMontee.Mach, knotToMs(this.loiMontee.CAS), this.atmosphereParams.temperature, this.atmosphereParams.deltaT, this.flightParams.Hp, this.speedInstruction, 1)
+                let ESFValue = ESF(this.flightParams.speed.Mach, this.loiMontee.Mach, knotToMs(this.loiMontee.CAS), this.atmosphereParams.temperature, this.atmosphereParams.deltaT, this.flightParams.Hp, this.speedVariation.variation, 1)
                 this.force.thrust = this.maxThrust
                 this.computeROCD(ESFValue)
                 this.computedVTAS(ESFValue)
@@ -441,28 +482,31 @@ export class PhysicalPlane {
     descent() {
         let reachTarget
         if (this.targetFL != null) {
-            let Tx = Math.abs(this.flightParams.ROCD/Constante.Gmax)
+            let Tx = Math.abs(this.flightParams.ROCD / Constante.Gmax)
             let h = this.flightParams.ROCD * Tx
-            let altIntcpt = this.targetFL*100/3.28084 - h
-            if (this.flightParams.Hp < altIntcpt && !this.INTERCEPTION){
+            let altIntcpt = this.targetFL * 100 / 3.28084 - h
+            if (this.flightParams.Hp < altIntcpt && !this.INTERCEPTION) {
                 this.startInterception()
             }
-            reachTarget = Math.abs(this.flightParams.Hp - this.targetFL*100/3.28084)<10
-            if (reachTarget) {this.targetFL= null ; this.INTERCEPTION = false}
+            reachTarget = Math.abs(this.flightParams.Hp - this.targetFL * 100 / 3.28084) < 10
+            if (reachTarget) {
+                this.targetFL = null;
+                this.INTERCEPTION = false
+            }
         }
         if (this.targetTime) {
             reachTarget = (this.targetTime === 0)
             if (reachTarget) this.targetTime = null
         }
-        if (this.speedInstructionValue) {
-            reachTarget = (Math.abs(this.flightParams.speed.CAS - knotToMs(this.speedInstructionValue))<1)
-            if (reachTarget) this.speedInstructionValue = null
+        if (this.targetSpeed) {
+            reachTarget = (Math.abs(this.flightParams.speed.CAS - knotToMs(this.targetSpeed)) < 1)
+            if (reachTarget)  {this.speedInstruction = null ; this.targetSpeed = null}
         }
 
-        if (this.INTERCEPTION){
+        if (this.INTERCEPTION) {
             let t = this.t
-            let ROCDbis = this.h/ this.Tx * (Math.exp(-t/this.Tx))
-            this.t ++
+            let ROCDbis = this.h / this.Tx * (Math.exp(-t / this.Tx))
+            this.t++
             this.descentAtROCD(ROCDbis)
             return
         }
@@ -472,43 +516,52 @@ export class PhysicalPlane {
                 this.descentAtROCD(this.targetROCD / 197)
             } else {
                 //console.log(this.speedInstruction)
-                let ESFValue = ESF(this.flightParams.speed.Mach, this.loiMontee.Mach, knotToMs(this.loiMontee.CAS), this.atmosphereParams.temperature, this.atmosphereParams.deltaT, this.flightParams.Hp, this.speedInstruction, -1)
+                let ESFValue = ESF(this.flightParams.speed.Mach, this.loiMontee.Mach, knotToMs(this.loiMontee.CAS), this.atmosphereParams.temperature, this.atmosphereParams.deltaT, this.flightParams.Hp, this.speedVariation.variation, -1)
                 this.force.thrust = this.minimumDescentThrust
                 this.computeROCD(ESFValue)
                 this.computedVTAS(ESFValue)
                 this.updateFlightParams()
             }
-        } else  this.idleState = true
+        } else this.idleState = true
     }
 
-    computeSpeedInstruction(speedInstruction) {
-
+    getSpeedVariation(speedInstruction) {
+        console.log(speedInstruction)
+        let variation;
+        let type
         if (speedInstruction === "CONSTANT" || !speedInstruction || speedInstruction === 0) {
-            return 'CONSTANT'
+            variation = 'CONSTANT'
+            return {
+                type: type,
+                variation: variation
+            }
         }
         if (speedInstruction < 1) {
+            type = "mach"
             if (this.flightParams.speed.Mach < speedInstruction) {
-                return 'ACCELERATION'
+                variation = 'ACCELERATION'
             } else if (this.flightParams.speed.Mach === speedInstruction) {
-                return 'CONSTANT'
+                variation = 'CONSTANT'
             } else {
-                return 'DECELERATION'
+                variation = 'DECELERATION'
             }
         } else {
-            // console.log( msToKnot(this.flightParams.speed.CAS))
-            // console.log(speedInstruction)
+            type = "CAS"
             if (msToKnot(this.flightParams.speed.CAS) < speedInstruction) {
-                return 'ACCELERATION'
+                variation = 'ACCELERATION'
             } else if (msToKnot(this.flightParams.speed.CAS) === speedInstruction) {
-                return 'CONSTANT'
+                variation = 'CONSTANT'
             } else {
-                // console.log('MDR')
-                return 'DECELERATION'
+                variation = 'DECELERATION'
             }
+        }
+        return {
+            type: type,
+            variation: variation
         }
     }
 
-    computeMassVariation(){
+    computeMassVariation() {
         // console.log(this.fuelFlow)
         this.flightParams.mass -= this.fuelFlow / 60
     }
@@ -684,7 +737,7 @@ export class PhysicalPlane {
 
     updateFlightParams() {
         this.flightParams.speed.TAS += this.dVTAS
-        this.distanceFromStartPoint += this.flightParams.speed.TAS*Math.sqrt(1-(this.flightParams.ROCD/this.flightParams.speed.TAS)**2)
+        this.distanceFromStartPoint += this.flightParams.speed.TAS * Math.sqrt(1 - (this.flightParams.ROCD / this.flightParams.speed.TAS) ** 2)
         this.flightParams.lastHp = this.flightParams.Hp
         this.flightParams.Hp += this.flightParams.ROCD
         this.flightParams.Hp = Math.max(this.flightParams.Hp, 0)

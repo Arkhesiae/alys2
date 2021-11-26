@@ -353,7 +353,7 @@ export default {
 .value {
   font-size: 12px;
   font-weight: 800;
-  color: #85b5ff;
+  color: #be89d8;
 }
 
 
@@ -459,20 +459,20 @@ export default {
 
 
 .law-edit-picker.selected {
-  border: 2px solid #7CBBFA;
+  border: 2px solid #bf8cef;
 }
 
 .picker-label.selected {
-  color: #7CBBFA;
+  color: #c188f6;
 }
 
 .param-option.selected span {
-  color: #7CBBFA;
+  color: #c994f4;
 
 }
 
 .param-option.selected .bar {
-  background: #7CBBFA;
+  background: #c38def;
 }
 
 .param-option span {
@@ -540,7 +540,7 @@ export default {
   bottom: 0;
   right: 0;
   box-shadow: rgba(5, 5, 5, 0.4) 0px 1px 3px 0px;
-  background: #7CBBFA;
+  background: #d4a2f4;
   border-radius: 20px;
   margin: 10px;
   width: 40px;

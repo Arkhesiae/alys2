@@ -1,6 +1,6 @@
 <template>
   <div id="tile-container">
-    <router-link :to="$route.fullPath+'static'">
+    <router-link :to="$route.fullPath+'statizaec'">
       <Tile type="static"></Tile>
     </router-link>
     <router-link :to="$route.fullPath+'dynamic'">
@@ -36,11 +36,12 @@ export default {
   width: 100%;
   display: flex;
   align-self: center;
+  margin-top: 30vh;
   /*flex-direction: column;*/
   justify-content: center;
   align-content: space-evenly;
   align-items: center;
-  height: 100vh;
+  height: auto;
   position: absolute;
   /*backdrop-filter: blur(1px);*/
   /*top: calc(50% - 150px);*/

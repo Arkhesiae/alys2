@@ -66,6 +66,7 @@ let dataSets = {
 
 export function calcPerf(FL, loi, speed) {
     let plane = new PhysicalPlane()
+    console.log("ey")
     plane.setParameters(54000)
     plane.setInitialState(FL * 100 / 3.28084, knotToMs(250), 0, 0)
     let minSpeed = msToKnot(plane.minSpeed)
@@ -75,7 +76,29 @@ export function calcPerf(FL, loi, speed) {
         plane.setInitialState(FL * 100 / 3.28084, knotToMs(loi.speed), 0, 0)
         plane.setLoiMontee(loi.speed, loi.mach)
         plane.climbInstruction('', '', '', 'CONSTANT')
-        plane.flyLoop()
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // plane.flyLoop()
+
+
+
+
+
+
+
+
+
         maxROCD = plane.flightParams.ROCD
         return {rate: Math.floor(maxROCD * 196.85039 / 100) * 100, speed: '', maxFL: '', absoluteMaxFL: ''}
     } else {
@@ -89,7 +112,16 @@ export function calcPerf(FL, loi, speed) {
             //plane.monteeCASConstant()
             //console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
             plane.climbInstruction('', '', '', 'CONSTANT')
-            plane.flyLoop()
+
+
+
+
+
+            // plane.flyLoop()
+
+
+
+
             //console.warn("APRES")
             // console.log("CAS : ", plane.flightParams.speed.CAS, " FL : ",plane.flightParams.Hp*3.28084/100, " ROCD : ", plane.flightParams.ROCD*197, " %T : " , plane.force.thrust/plane.maxThrust)
 
@@ -127,7 +159,11 @@ export function calcPerf(FL, loi, speed) {
         plane.setInitialState((FL) * 100 / 3.28084, knotToMs(speed), 0, 0)
         plane.loiChelou(speed, 0.78)
         plane.climbInstruction('', '', '', 'CONSTANT')
-        plane.flyLoop()
+
+
+        // plane.flyLoop()
+
+
         return {
             rate: Math.floor(plane.flightParams.ROCD * 196.85039 / 100) * 100,
             speed: speedY,
@@ -169,7 +205,15 @@ export function maxFLAtROCD(FL, speed, loi, ROCD) {
     let maxThrustFL
     plane.climbInstruction('', '', ROCD * 197, '')
     for (let x = 0; x < 4000; x++) {
-        plane.flyLoop()
+
+
+
+
+        // plane.flyLoop()
+
+
+
+
         //   console.log("%Poussée : ", plane.force.thrust/plane.maxThrust)
         let limit = plane.ROCDLimit
         // console.log(limit)
@@ -198,6 +242,7 @@ export function maxFLAtROCD(FL, speed, loi, ROCD) {
 
 
 export function flightProfile(climbSequence, cruiseSequence, descentSequence, law) {
+    console.error("FP")
     let fullSequence = {
         climb : climbSequence,
         cruise : cruiseSequence,
@@ -219,8 +264,11 @@ export function flightProfile(climbSequence, cruiseSequence, descentSequence, la
     }
     let index = 0
     let X = 0
+    console.log(fullSequence)
     Object.keys(fullSequence).forEach((sequence)=>{
+
         let currentSequence = fullSequence[sequence]
+
         for (let instruction of currentSequence){
             if (plane.idleState) {
                 X = 0
@@ -238,7 +286,7 @@ export function flightProfile(climbSequence, cruiseSequence, descentSequence, la
             }
             while (!plane.idleState) {
                 X ++
-                if (X>8000){
+                if (X>5000){
                     console.log('FIN')
                     break
                 }
@@ -275,6 +323,7 @@ export function flightProfile(climbSequence, cruiseSequence, descentSequence, la
 
 export function calcPerfbis(FL, loi, speed) {
     let plane = new PhysicalPlane()
+    console.log('hey')
     plane.setParameters(54000)
     plane.setInitialState(FL * 100 / 3.28084, knotToMs(250), 0, 0)
 
@@ -283,7 +332,26 @@ export function calcPerfbis(FL, loi, speed) {
         plane.setInitialState(FL * 100 / 3.28084, knotToMs(speed), 0, 0)
         plane.setLoiMontee(loi.speed, loi.mach)
         plane.descentInstruction('', '', '', 'CONSTANT')
-        plane.flyLoop()
+
+
+
+
+
+
+
+
+
+
+        // plane.flyLoop()
+
+
+
+
+
+
+
+
+
         maxROCD = plane.flightParams.ROCD
         return {rate: Math.floor(maxROCD * 196.85039 / 100) * 100, speed: '', maxFL: '', absoluteMaxFL: ''}
     }

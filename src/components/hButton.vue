@@ -25,7 +25,7 @@ height: 28px;
 
 img{
   margin: 7px;
-  filter: invert(69%) sepia(14%) saturate(1299%) hue-rotate(172deg) brightness(99%) contrast(98%);
+  filter: invert(69%) sepia(14%) saturate(1299%) hue-rotate(225deg) brightness(99%) contrast(98%);
 }
 
 span {

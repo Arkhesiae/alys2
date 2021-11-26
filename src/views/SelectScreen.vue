@@ -1,41 +1,21 @@
 <template>
-  <div>
-    <MenuButton/>
-    <Background/>
-    <nav class="nav-bar">
-      <div> Static</div>
-      <div> Dynamic</div>
 
-<!--      <h1>Dynamic</h1>-->
-    </nav>
-  </div>
+    <HelloWorld  />
 
-  <div id="rendered-items-flexbox" :class="transitionClass" :style="{ transform: transformStyle }">
-    <transition-group name="static" appear mode="in-out">
-<!--        <div class="container">-->
-          <Static class="static" key="saved"></Static>
-          <Dynamic class="dynamic" key="savzed"></Dynamic>
-<!--        </div>-->
-    </transition-group>
-
-  </div>
 </template>
 
 <script>
-import Background from "../components/Background"
-import MenuButton from "../components/MenuButton"
-// import router from "../router"
-import Static from "./HomePage"
-import Dynamic from "./Dynamic"
+
+
+import HelloWorld from "@/components/HelloWorld"
 
 export default {
   name: "SelectScreen",
 
   components: {
-    Static,
-    Dynamic,
-    MenuButton,
-    Background,
+
+    HelloWorld,
+
   },
 
   props : {},
@@ -47,7 +27,8 @@ export default {
       transformStyle: 'translateX(0)',
       transitionClass: 'transition-initial',
       maxIndex : 1,
-      routeName:"static"
+      routeName:"static",
+      show : true,
     };
   },
 

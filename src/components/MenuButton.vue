@@ -24,10 +24,11 @@ export default {
   width: 32px;
   margin: 16px;
   height: 32px;
+  filter: invert(70%);
 }
 
 #home-button {
-  position: absolute;
+  /*position: absolute;*/
   width: 64px;
   height: 64px;
   border-radius: 64px;
@@ -35,8 +36,8 @@ export default {
   cursor: pointer;
   transition: all 1s ease-in-out 0s;
   box-shadow: rgba(5, 5, 5, 0.3) 0px 1px 3px 1px;
-  background: #2b2f37;
-  margin: 20px;
+  background: #2b282c;
+
 }
 
 .home-in-enter-active,
@@ -55,6 +56,6 @@ export default {
 
 
   background: #25252a;
-  margin: 20px;
+
 }
 </style>

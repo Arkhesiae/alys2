@@ -18,7 +18,7 @@ export default {
   overflow: hidden;
   height: 100%;
   /*background: linear-gradient(237deg, rgba(39,42,51,1) -00%, rgba(30,30,36,1) 50%);*/
-  background: linear-gradient(205deg, rgba(42,43,51,1) 11%, rgb(38, 40, 50) 28%, rgba(33,32,36,1) 53%, rgba(22,21,21,1) 100%);
+  background: linear-gradient(205deg, rgb(20 19 20) 11%,  rgb(24 23 24) 100%)
   /*background: linear-gradient(237deg, rgb(88, 76, 67) -100%, rgba(30,30,36,1) 80%);*/
 }
 
@@ -29,7 +29,7 @@ export default {
   height: 90vw;
   border-radius: 45vw;
   width: 90vw;
-  opacity: 0.1;
+  opacity: 0.01;
   filter: blur(5px);
   background: #1E1E24;
 }

@@ -1,27 +1,9 @@
 <template>
   <div id="page">
-    <MenuButton/>
-    <Background/>
-    <nav class="nav-bar">
-      <div class="nav-button active">Static</div>
-      <div class="nav-button">Dynamic</div>
-      <div class="select-bar"></div>
-      <div class="searchbar-container">
-        <div id="searchbar">
-          <!--              STATIC-->
-          <label for="search"></label>
-          <input  autocomplete="off" placeholder="Search..." id="search" v-model="search">
-          <div class="search-icon"  @click="erase()"><img v-if="search!==''" src="../assets/clear_black_24dp.svg" alt=""></div>
-        </div>
-        <ul class="wrapper">
-          <li class="card" v-bind:key="post.title" v-for="post in filteredList">
-            <div class="text-container">
-              <p>
-                {{ post.title.slice(0, post.title.indexOf(search.toUpperCase())) }}</p>
-              <p class="highlight"> {{ search.toUpperCase() }}</p>
-              <p>
-                {{ post.title.slice(post.title.indexOf(search.toUpperCase()) + search.length, 8) }}</p>
-              <a v-bind:href="post.link" target="_blank">
+
+
+<!--    <nav class="nav-bar">-->
+
 
               </a>
             </div>
@@ -140,11 +122,12 @@
         </div>
 
 
+
         <div class="footer">
 
           <div class="content-container__app-button-container">
-            <AppButton text="Profil de Vol" icon="show_chart_black_24dp.svg"/>
-            <AppButton text="Paramètres avancés" icon="settings_black_24dp.svg"/>
+
+
 
             <!--          <div class="content__app-button">-->
             <!--            <div class="content-container__app-button-text">Paramètres avancés</div>-->
@@ -153,6 +136,7 @@
             <!--            </div>-->
             <!--          </div>-->
           </div>
+          <transition name="pop-in" appear>
           <div class="law-edit">
             <img src="../assets/edit_black_24dp.svg"/>
             <span>Loi de montée</span>
@@ -164,47 +148,11 @@
         <!--        <div class = "lower-frame"></div>-->
       </div>
 
-      <div class ="sideBar">
-        <div class="presentation">
-          <div class="header">
-            <div class="name">AIRBUS A319</div>
-            <div class="lower-header">
-              <div class="bar"/>
-              <div class="ICAO-code">A319</div>
-            </div>
+      <transition name="side-in" appear>
+        <SideBar></SideBar>
+      </transition>
 
 
-            <div class="menu-option"></div>
-          </div>
-          <div class="picture">
-            <img src="../assets/airbus.jpg"/>
-          </div>
-        </div>
-        <div class="charac">
-          <img src="../assets/jet.svg"/><p class="actype">JET</p>
-          <div class="description">
-            <h2>Wing position</h2>
-            <p>Low wing</p>
-            <h2>Engine position</h2>
-            <p>Underwing mounted</p>
-            <h2>Tail configuration</h2>
-            <p>Regular tail, mid set Landing gear</p>
-          </div>
-
-        </div>
-        <div class="type">
-          <div class="description">
-            <h2>Masse a vide</h2>
-            <p>60 000kg</p>
-          </div>
-        </div>
-        <div class="misc">
-          <p>
-            L'Airbus A319 est une version raccourcie de l'A320
-          </p>
-        </div>
-
-      </div>
     </div>
 
   </div>
@@ -213,8 +161,8 @@
 <script>
 
 
-import MenuButton from "@/components/MenuButton"
-import Background from "@/components/Background"
+// import MenuButton from "@/components/MenuButton"
+// import Background from "@/components/Background"
 import {calcPerf, speedRange} from "@/BADA/perfomanceFile"
 import {calcPerfbis} from "@/BADA/perfomanceFile"
 import AppButton from "@/components/appButton"
@@ -225,11 +173,12 @@ require('fabric')
 export default {
   name: "TestView",
   components: {
+    SideBar,
     HButton,
     LawEdit,
     AppButton,
-    MenuButton,
-    Background,
+    // MenuButton,
+    // Background,
   },
 
   data() {
@@ -289,7 +238,6 @@ export default {
       {
         type: 'climb',
         speedInstruction: 250,
-        treshold: 'speed',
         FLTarget: 100,
       },
       {
@@ -305,7 +253,6 @@ export default {
       },
       {
         type: 'climb',
-        treshold: 'speed',
         //speedInstruction: 300,
         FLTarget : 360,
       },
@@ -511,7 +458,7 @@ export default {
             radius: 20,
             left: this.currentPoint.x - 20,
             top: this.currentPoint.y - 20,
-            fill: "rgba(188,123,100,0.52)"
+            fill: "rgba(100,188,162,0.52)"
 
           }, {
             onChange: function () {
@@ -730,8 +677,110 @@ export default {
 
 </script>
 
+<style>
+
+</style>
+
 <style scoped>
 
+
+*{
+  user-select: none;
+}
+
+
+.side-in-enter-active,
+.side-in-leave-active {
+  transition: all 1s ease-in-out 0s;
+}
+
+.side-in-enter-from,
+.side-in-leave-to {
+  transition: all 1s ease-in-out 0s;
+  transform:  translateX(400px);
+  opacity: 0;
+}
+
+
+.pop-in-enter-active,
+.pop-in-leave-active {
+  transition: all 0.6s cubic-bezier(.72, .02, .44, 1.38) 1s;
+}
+
+.pop-in-enter-from,
+.pop-in-leave-to {
+  transition: all 0.6s ease-in-out 1s;
+  transform:  scale(0.8) translateY(20px);
+  opacity: 0;
+}
+
+.nav-bar {
+  width: calc(100% - 360px) !important;
+}
+
+.add-point{
+  right: 0;
+  bottom: 0;
+  position: absolute;
+  margin-right: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+
+}
+
+.add-box{
+  width: 48px;
+  height: 48px;
+  border-radius: 48px;
+  background: #b786ce;
+  box-shadow: rgba(11, 10, 10, 0.44) 0px 8px 8px 1px;
+  cursor: pointer;
+
+}
+
+.add-box:hover img{
+  transform: rotate(180deg);
+}
+
+.add-point:hover .box{
+  transform: scale(1);
+}
+
+
+.add-box img{
+  margin: 8px;
+  width: 32px;
+  transition: transform cubic-bezier(.72, .02, .44, 1.38) 0.7s;
+  filter: invert(10%);
+  height: 32px;
+}
+
+.more-box{
+  margin-bottom: 10px;
+}
+
+.box{
+  width: 36px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  height: 36px;
+  border-radius: 30px;
+  transform: scale(0);
+  transition: transform cubic-bezier(.72, .02, .44, 1.38) 0.7s;
+  transform-origin: center;
+  background: #2e292e;
+  box-shadow: rgba(16, 16, 16, 0.44) 0px 8px 8px 1px;
+}
+
+.box img{
+  /*filter: invert(50%);*/
+  width: 24px;
+  margin: 6px;
+  filter: invert(81%) sepia(20%) saturate(1041%) hue-rotate(250deg) brightness(92%) contrast(88%);
+  height: 24px;
+}
 
 @font-face {
   font-family: "Product Sans";
@@ -787,7 +836,7 @@ export default {
   /*width: 50px;*/
   margin-left: 5px;
   border-radius: 50px;
-  background: #353a40;
+  background: #3e3543;
   border: 1px solid rgba(101, 143, 206, 0);
   height: 18px;
   font-size: 11px;
@@ -795,7 +844,7 @@ export default {
   padding-left: 12px;
   padding-right: 12px;
   padding-top: 4px;
-  color: #658fce;
+  color: #b48fc1;
   cursor: pointer;
 }
 
@@ -803,7 +852,7 @@ export default {
   /*width: 50px;*/
   margin-left: 5px;
   border-radius: 50px;
-  border: 1px solid #658fce;
+  border: 1px solid #65cebb;
   background: #222428;
   height: 18px;
   font-size: 11px;
@@ -811,7 +860,7 @@ export default {
   padding-left: 12px;
   padding-right: 12px;
   padding-top: 4px;
-  color: #658fce;
+  color: #65ceb6;
   cursor: pointer;
 }
 
@@ -857,8 +906,11 @@ export default {
   font-family: "Product Sans", sans-serif;
   font-weight: 600;
   font-size: 13px;
-  color: #d1836b;
+  color: #c292ea;
 }
+
+
+
 
 .infoboxTypeValueBis {
   margin-top: 5px;
@@ -890,7 +942,7 @@ export default {
 }
 
 .information-box.information-box--brown .box__container {
-  background: linear-gradient(45deg, rgba(72, 55, 48, 1) -0%, rgba(166, 98, 77, 1) 110%);
+  background: linear-gradient(45deg, rgb(66, 60, 67) -0%, rgb(199, 148, 241) 110%);
 }
 
 .information-box.information-box--blue.information-box--active .box__container {
@@ -910,7 +962,7 @@ export default {
 }
 
 .information-box.information-box--brown.information-box--active .color-text {
-  color: rgba(166, 98, 77, 1);
+  color: rgb(220, 159, 234);
 }
 
 .information-box.information-box--blue.information-box--active .color-text {
@@ -922,7 +974,7 @@ export default {
 }
 
 .information-box.information-box--brown.information-box--active .flight-state-value {
-  color: rgba(166, 98, 77, 1);
+  color: rgb(202, 159, 248);
 }
 
 .law-edit-circle {
@@ -1035,6 +1087,14 @@ export default {
   display: flex;
 }
 
+.adv-params{
+  top:0;
+  position: absolute;
+  margin-right: 20px;
+  margin-top: 10px;
+  right: 0;
+}
+
 .slider-background{
   background: #5f303d;
   position: relative;
@@ -1074,9 +1134,14 @@ export default {
 }
 
 .law-edit {
+  position: absolute;
+  transform-origin: center;
   width: 300px;
-  margin-right: 20px;
-  margin-top: 40px;
+  right: 0;
+  bottom: 0;
+  margin-right:10px;
+  margin-bottom: 20px;
+  /*margin-top: 40px;*/
 }
 
 .law-edit{
@@ -1087,9 +1152,9 @@ export default {
   display: flex;
   justify-content: space-between;
   border-radius: 30px;
-  background: #493630;
+  background: #3c333f;
   transition: all 0.2s ease-in-out;
-  box-shadow: rgba(5, 5, 5, 0.3) 0px 1px 2px 1px;
+  box-shadow: rgba(5, 5, 5, 0.3) 0px 5px 10px 1px;
 }
 
 .law-edit:hover{
@@ -1098,7 +1163,7 @@ export default {
 }
 
 .law-edit-box span {
-  color: #d09e7f;
+  color: #be7fd0;
 
   padding-right: 20px;
   padding-top : 14px;
@@ -1230,23 +1295,7 @@ export default {
   height: 100%
 }
 
-.sideBar{
-  /*position: absolute;*/
-  width: 320px;
-  box-shadow: rgba(5, 5, 5, 0.3) 0px 1px 3px 1px;
-  border-left: 1px solid #3c3c3c;
-  background: rgba(40, 43, 51, 0.99);
-  /*top:0;*/
-  height: 100%;
-  display: flex;
-  padding-top: 50px;
-  padding-left: 20px;
-  padding-right: 20px;
-  box-sizing: border-box;
-  justify-content: space-around;
-  flex-direction: column;
-  /*right: 0px;*/
-}
+
 
 .current-frame{
   position: absolute;
@@ -1510,23 +1559,6 @@ canvas{
   bottom: -20px;
 }
 
-.misc{
-  border-radius: 8px;
-  background: rgb(33, 33, 39);
-  border-left: 8px solid rgba(223, 122, 91, 1);
-  height: 80px;
-}
-
-.misc p{
-  width: 90%;
-  margin: 5%;
-  font-style: italic;
-  letter-spacing: 0px;
-  color: #abb2c0;
-  font-family: "Product Sans", sans-serif;
-  font-size: 14px;
-}
-
 .switch {
   width: 64px;
   position: absolute;
@@ -1552,136 +1584,6 @@ canvas{
   border-radius: 30px 30px 0 0 ;
 }
 
-.charac{
-  height: 250px;
-  border-radius: 8px;
-  background: rgb(33, 33, 39);
-  /*box-shadow: rgba(5, 5, 5, 0.2) 0px 1px 2px 0px, rgba(5, 5, 5, 0.2) 0px 2px 4px 2px;*/
-  width: 80%;
-}
-
-.description{
-  display: flex;
-  padding-right: 20px;
-  text-align: right;
-  flex-direction: column;
-}
-
-.actype{
-  width: 50px;
-  font-size: 10px;
-  display: inline;
-  font-family: "Product Sans", sans-serif;
-  font-weight: bold;
-
-}
-
-.charac .description h2{
-  font-size: 15px;
-  line-height: 15px;
-  color: #d1836b;
-  margin: 0;
-  padding: 0;
-}
-
-.charac .description p{
-  font-size: 12px;
-  margin-top: 5px;
-  line-height: 15px;
-}
-
-.type h2{
-  font-size: 15px;
-  line-height: 15px;
-  color: #1a1a1a;
-  margin: 0;
-  padding: 0;
-}
-
-.type p{
-  font-size: 12px;
-  margin-top: 5px;
-  color: #1a1a1a;
-  line-height: 15px;
-}
-
-
-.charac img{
-  margin-left: 5px;
-  width: 50px;
-  height: 50px;
-}
-
-.type{
-  height: 130px;
-  padding-top: 20px;
-  box-shadow: rgba(5, 5, 5, 0.2) 0px 1px 2px 0px, rgba(5, 5, 5, 0.2) 0px 2px 4px 2px;
-  background: linear-gradient(237deg, rgba(48, 48, 48, 1) -30%, rgba(223, 122, 91, 1) 150%);
-  border-radius: 8px;
-  /*background: #aeb9d5;*/
-}
-
-.picture{
-  box-shadow: rgba(5, 5, 5, 0.2) 0px 1px 2px 0px, rgba(5, 5, 5, 0.2) 0px 2px 4px 2px;
-  width: auto;
-  overflow: hidden;
-  height: 180px;
-  border-radius: 8px;
-  /*background: #6480ca;*/
-}
-
-.name{
-  font-family: "Product Sans", sans-serif;
-  color: #9da6ba;
-  font-size: 30px;
-}
-
-.bar{
-  width: 5px;
-  /*display: inline;*/
-  height: 20px;
-  margin : 3px;
-  margin-left:5px;
-  background: #ca8364;
-  border-radius: 20px;
-}
-
-.picture img{
-  width: 100%;
-}
-
-.header{
-  display: flex;
-  width: max-content;
-  flex-direction: column;
-  flex-wrap: wrap;
-  position: relative;
-  margin-bottom: 5px;
-}
-
-.lower-header{
-  width: auto;
-  display: flex;
-  justify-content: space-between;
-}
-
-.ICAO-code{
-  color : #4b4e56;
-  margin-left: 50px;
-  /*margin-bottom: 20px;*/
-  top:0;
-  /*position: absolute;*/
-  font-size: 20px;
-  line-height: 25px;
-  /*padding-bottom: 5px;*/
-  font-family: "Product Sans", sans-serif;
-  font-weight: bold;
-  /*display: inline*/
-}
-
-.presentation{
-  /*height: 500px;*/
-}
 
 
 .nav-bar{

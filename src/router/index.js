@@ -6,6 +6,7 @@ import Test from "../views/Test"
 import TestView from "../views/TestView"
 import Graphe from "../views/graphe"
 import Home from "@/views/Home"
+import NotFound from "@/components/NotFound"
 
 // import SelectScreen from "../views/SelectScreen.vue"
 
@@ -43,6 +44,13 @@ const routes = [
       {
         // UserProfile will be rendered inside User's <router-view>
         // when /user/:id/profile is matched
+        path: '',
+        name:'Select',
+        component: SelectScreen
+      },
+      {
+        // UserProfile will be rendered inside User's <router-view>
+        // when /user/:id/profile is matched
         path: 'static',
         component: TestView
       },
@@ -54,6 +62,10 @@ const routes = [
       }
     ]
   },
+
+  { path: '/404', component: NotFound },
+
+  { path: "/:catchAll(.*)", redirect: '/404' },
 
   {
     path: '/testView',
