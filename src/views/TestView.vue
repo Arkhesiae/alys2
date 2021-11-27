@@ -1,18 +1,5 @@
 <template>
   <div id="page">
-
-
-<!--    <nav class="nav-bar">-->
-
-
-              </a>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </nav>
-
-
     <div class="content-container">
       <div class="frame-container">
         <div id="perf" class="current-frame frame">
@@ -122,20 +109,7 @@
         </div>
 
 
-
         <div class="footer">
-
-          <div class="content-container__app-button-container">
-
-
-
-            <!--          <div class="content__app-button">-->
-            <!--            <div class="content-container__app-button-text">Paramètres avancés</div>-->
-            <!--            <div class="content-container__app-button-icon-container">-->
-            <!--              <img src="../assets/settings_black_24dp.svg"/>-->
-            <!--            </div>-->
-            <!--          </div>-->
-          </div>
           <transition name="pop-in" appear>
           <div class="law-edit">
             <img src="../assets/edit_black_24dp.svg"/>
@@ -144,8 +118,6 @@
           <input type="checkbox" v-model="checked"/>
           <div>{{checked}}</div>
         </div>
-
-        <!--        <div class = "lower-frame"></div>-->
       </div>
 
       <transition name="side-in" appear>
@@ -205,7 +177,6 @@ export default {
     console.log(_getPhotoByQueryANET('A320'))
     let slider = document.getElementById("myRange");
     let output = document.getElementById("fl-value");
-    //let canvasElement = document.getElementById("flightProfile-canvas");
     let frame = document.getElementsByClassName('frame__content')[1]
 
     output.innerHTML = slider.value; // Display the default slider value
@@ -224,8 +195,6 @@ export default {
 
 
     window.addEventListener('resize', function () {
-      // canvas.width = frame.offsetWidth
-      // canvas.height = frame.offsetHeight
       canvas.setWidth(frame.offsetWidth);
       canvas.setHeight(frame.offsetHeight);
       // canvas.calcOffset();
@@ -475,41 +444,7 @@ export default {
           PRESSED = true
         }
 
-        // if (!HOVER){
-        //   cursor1.animate({
-        //     radius: 20,
-        //     left: this.currentPoint.x - 20,
-        //     top: this.currentPoint.y - 20
-        //     // text : trackObject.ETA.toString()
-        //
-        //   }, {
-        //     onChange: function () {
-        //       canvas.requestRenderAll()
-        //     },
-        //
-        //     easing: // eslint-disable-next-line no-unused-vars,no-undef
-        //         fabric.util.ease['easeOutQuad'],
-        //     duration: 500
-        //   });
-        //   // cursor1.set({'radius' : 20, 'left': this.currentPoint.x - 20, 'top': this.currentPoint.y - 20})
-        //   cursor1.setCoords()
-        //   canvas.requestRenderAll()
-        // }
       }
-
-      let pointer = canvas.getPointer(event.e);
-      let minVert = Infinity
-      // eslint-disable-next-line no-unused-vars
-      let pt
-      for (let point of points){
-        if (Math.abs(pointer.x - point.x)<minVert){
-          minVert = Math.abs(pointer.x - point.x)
-          pt = point
-        }
-      }
-     // verticalCursor.set({top : pt.y-2})
-      //verticalCursorText.set({top : pt.y-6})
-      //cursor.set({left : pointer.x-10, top : pt.y-10})
       canvas.requestRenderAll()
     })
 
@@ -547,9 +482,6 @@ export default {
     let HOVER = false
 
     canvas.on("mouse:over", (event) => {
-      console.log(event)
-
-
       if (event.target === this.pointObject || event.target === cursor2 || event.target === cursor1) {
         if (HOVER) {
           return
@@ -562,17 +494,51 @@ export default {
           radius: 20,
           left: this.currentPoint.x - 20,
           top: this.currentPoint.y - 20
-          // text : trackObject.ETA.toString()
-
         }, {
           onChange: function () {
             canvas.requestRenderAll()
           },
+          easing: // eslint-disable-next-line no-unused-vars,no-undef
+              fabric.util.ease['easeOutQuad'],
+          duration: 200
+        });
+        // cursor1.set({'radius' : 20, 'left': this.currentPoint.x - 20, 'top': this.currentPoint.y - 20})
+        cursor1.setCoords()
+        canvas.requestRenderAll()
+      }
+    })
 
-          // onComplete : function(){
-          //   cursor1.set({'left': 'this.currentPoint.x - 20', 'top' : 'this.currentPoint.y - 20',})
-          // },
 
+    let group = [this.pointObject, cursor1, cursor2]
+    console.log(group)
+    canvas.on("mouse:out", (event) => {
+      console.log(event.nextTarget)
+
+      if ((event.target === this.pointObject || event.target === cursor2 || event.target === cursor1) && (!group.includes(event.nextTarget))) {
+        if (HOVER && !GRABBING) {
+          console.log("MOUSE OUT")
+          cursor1.animate({
+            left: this.currentPoint.x - 4,
+            top: this.currentPoint.y - 4,
+            radius: 4,
+          }, {
+            onChange: function () {
+              canvas.requestRenderAll()
+            },
+            easing: // eslint-disable-next-line no-unused-vars,no-undef
+                fabric.util.ease['easeOutQuad'],
+            duration: 200
+          });
+          cursor1.setCoords()
+          canvas.requestRenderAll()
+        }
+        HOVER = false
+        if (GRABBING) {
+          return
+        }
+
+      }
+    })
 
     canvas.requestRenderAll()
 
@@ -684,7 +650,7 @@ export default {
 <style scoped>
 
 
-*{
+* {
   user-select: none;
 }
 
@@ -697,7 +663,7 @@ export default {
 .side-in-enter-from,
 .side-in-leave-to {
   transition: all 1s ease-in-out 0s;
-  transform:  translateX(400px);
+  transform: translateX(400px);
   opacity: 0;
 }
 
@@ -710,7 +676,7 @@ export default {
 .pop-in-enter-from,
 .pop-in-leave-to {
   transition: all 0.6s ease-in-out 1s;
-  transform:  scale(0.8) translateY(20px);
+  transform: scale(0.8) translateY(20px);
   opacity: 0;
 }
 
@@ -718,7 +684,7 @@ export default {
   width: calc(100% - 360px) !important;
 }
 
-.add-point{
+.add-point {
   right: 0;
   bottom: 0;
   position: absolute;
@@ -730,7 +696,7 @@ export default {
 
 }
 
-.add-box{
+.add-box {
   width: 48px;
   height: 48px;
   border-radius: 48px;
@@ -740,16 +706,16 @@ export default {
 
 }
 
-.add-box:hover img{
+.add-box:hover img {
   transform: rotate(180deg);
 }
 
-.add-point:hover .box{
+.add-point:hover .box {
   transform: scale(1);
 }
 
 
-.add-box img{
+.add-box img {
   margin: 8px;
   width: 32px;
   transition: transform cubic-bezier(.72, .02, .44, 1.38) 0.7s;
@@ -757,11 +723,11 @@ export default {
   height: 32px;
 }
 
-.more-box{
+.more-box {
   margin-bottom: 10px;
 }
 
-.box{
+.box {
   width: 36px;
   cursor: pointer;
   margin-bottom: 10px;
@@ -774,7 +740,7 @@ export default {
   box-shadow: rgba(16, 16, 16, 0.44) 0px 8px 8px 1px;
 }
 
-.box img{
+.box img {
   /*filter: invert(50%);*/
   width: 24px;
   margin: 6px;
@@ -908,8 +874,6 @@ export default {
   font-size: 13px;
   color: #c292ea;
 }
-
-
 
 
 .infoboxTypeValueBis {
@@ -1087,8 +1051,8 @@ export default {
   display: flex;
 }
 
-.adv-params{
-  top:0;
+.adv-params {
+  top: 0;
   position: absolute;
   margin-right: 20px;
   margin-top: 10px;
@@ -1139,7 +1103,7 @@ export default {
   width: 300px;
   right: 0;
   bottom: 0;
-  margin-right:10px;
+  margin-right: 10px;
   margin-bottom: 20px;
   /*margin-top: 40px;*/
 }

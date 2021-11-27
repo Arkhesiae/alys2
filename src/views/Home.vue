@@ -2,6 +2,7 @@
   <Background/>
   <div class="nav-bar" :class="{reduced : $route.path.includes('dynamic')}">
     <MenuButton/>
+    <div class="pute">{{id}}</div>
     <div class="page-button">
       <div class="page-button-icon-chevron">
         <img src="../assets/chevron-down.svg">
@@ -19,6 +20,7 @@
     </div>
   </div>
 
+
   <router-view class="plane-view"></router-view>
 <!--  <div class="truc" @click="show=!show"></div>-->
 </template>
@@ -35,6 +37,7 @@ import Searchbar from "@/components/Searchbar"
 
 export default {
   name: 'Home',
+  props : ['id'],
   data() {
     return {
       show: true
@@ -81,6 +84,16 @@ export default {
 
 .page-button span{
   padding-top: 20px;
+}
+
+.pute{
+  margin-left: 90px;
+  margin-top: 10px;
+  font-size: 30px;
+  font-weight: bold;
+  color: #9da6ba;
+  z-index: 999;
+  position: absolute;
 }
 
 .page-button-icon{

@@ -1,10 +1,10 @@
 <template>
   <div id="tile-container">
     <router-link :to="$route.fullPath+'statizaec'">
-      <Tile type="static"></Tile>
+      <Tile type="Performances"></Tile>
     </router-link>
     <router-link :to="$route.fullPath+'dynamic'">
-      <Tile type="dynamic"></Tile>
+      <Tile type="Profil de vol"></Tile>
     </router-link>
   </div>
 </template>
@@ -36,7 +36,7 @@ export default {
   width: 100%;
   display: flex;
   align-self: center;
-  margin-top: 30vh;
+  margin-top: 40vh;
   /*flex-direction: column;*/
   justify-content: center;
   align-content: space-evenly;

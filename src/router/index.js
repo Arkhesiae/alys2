@@ -39,12 +39,14 @@ const routes = [
   {
     path: '/plane/:id/',
     name: 'Plane',
+    props: true,
     component: Home,
     children: [
       {
         // UserProfile will be rendered inside User's <router-view>
         // when /user/:id/profile is matched
         path: '',
+
         name:'Select',
         component: SelectScreen
       },

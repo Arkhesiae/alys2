@@ -1,14 +1,15 @@
 <template>
   <div :id=type class="tile">
     <div class="tile-lower-container">
-      <div class="tile-title-decoration"></div>
+      <img class="rrua" src="../assets/trending_up_black_24dp.svg">
+<!--      <div class="tile-title-decoration"></div>-->
       <p>{{type}}</p>
     </div>
-    <div class="tile-bubble-container">
-      <div class="bubble" id="bubble1"></div>
-      <div class="bubble" id="bubble2"></div>
-      <div class="bubble" id="bubble3"></div>
-    </div>
+<!--    <div class="tile-bubble-container">-->
+<!--      <div class="bubble" id="bubble1"></div>-->
+<!--      <div class="bubble" id="bubble2"></div>-->
+<!--      <div class="bubble" id="bubble3"></div>-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -21,20 +22,24 @@ export default {
 
 <style scoped>
 
+
+.rrua{
+  filter: invert(81%) sepia(20%) saturate(1041%) hue-rotate(250deg) brightness(82%) contrast(88%);
+}
 .tile {
   width: 290px;
-  height: 150px;
+  height: 60px;
   margin: 20px;
   cursor: pointer;
   border-radius: 8px;
-  background: linear-gradient(237deg, rgba(48, 48, 48, 1) -30%, rgba(223, 122, 91, 1) 150%);
+  background: linear-gradient(237deg, rgb(43, 36, 49) -30%, rgb(30, 28, 32) 150%);
   box-shadow: rgba(5, 5, 5, 0.2) 0px 1px 2px 0px, rgba(5, 5, 5, 0.2) 0px 2px 4px 2px;
-  font-size: 30px;
-  font-weight: bold;
+  font-size: 20px;
+  /*font-weight: bold;*/
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease-in-out;
-  color: rgba(30, 30, 36, 1);
+  color: rgb(108, 80, 135);
 
 }
 
@@ -69,7 +74,7 @@ export default {
   align-items: center;
   position: absolute;
   width: 100%;
-  height: 80px;
+  height: 60px;
 }
 
 .tile-lower-container p {
