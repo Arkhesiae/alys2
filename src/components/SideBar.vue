@@ -5,26 +5,34 @@
         <img src="../assets/airbus.jpg"/>
       </div>
       <div class="header">
-        <div class="name">AIRBUS A319</div>
+        <div class="name">{{ aircraft.aircraftModel }}</div>
         <div class="lower-header">
           <div class="bar"/>
-          <div class="ICAO-code">A319</div>
+          <div class="ICAO-code">{{ aircraft.ICAO }}</div>
         </div>
         <!--            <div class="class-icon"><img src="../assets/jet.svg"/></div>-->
         <div class="menu-option"></div>
       </div>
     </div>
-    <div class="charac">
-      <div class="description">
-        <h2>Wing position</h2>
-        <p>Low wing</p>
-        <h2>Engine position</h2>
-        <p>Underwing mounted</p>
-        <h2>Tail configuration</h2>
-        <p>Regular tail, mid set Landing gear</p>
-      </div>
+    <div class="container">
+      <div class="engine">
+        <img src="../assets/jet.svg"/>
+        <div class="engine-number">2</div>
+        <div class="engine-description">Réacteur</div>
 
+      </div>
+      <div class="charac">
+        <div class="description">
+          <h2>Wing position</h2>
+          <p>Low wing</p>
+          <h2>Engine position</h2>
+          <p>Underwing mounted</p>
+          <h2>Tail configuration</h2>
+          <p>Regular tail, mid set Landing gear</p>
+        </div>
+      </div>
     </div>
+
     <div class="type">
       <div class="description">
         <h2>Information techniques</h2>
@@ -44,7 +52,8 @@
 
 <script>
 export default {
-  name: "SideBar"
+  name: "SideBar",
+  props : ["aircraft"]
 }
 </script>
 
@@ -99,13 +108,60 @@ export default {
   filter: invert(70%);
 }
 
-.charac {
-  align-self: center;
+.container{
+  display: flex;
+  align-items: flex-start;
+}
 
+.charac {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  position: relative;
+  align-self: center;
   border-radius: 8px;
   background: linear-gradient(45deg, rgb(88, 65, 80) 0%, rgb(88, 65, 80) 100%);
   box-shadow: rgba(5, 5, 5, 0.2) 0px 10px 15px 2px;
   width: 80%;
+}
+
+.engine{
+  /*align-self: center;*/
+  position: relative;
+  height: 40px;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  justify-content: space-between;
+  display: flex;
+  border-radius: 8px;
+  background: linear-gradient(45deg, rgb(169, 129, 183) 0%, rgb(46, 42, 44) 100%);
+  box-shadow: rgba(5, 5, 5, 0.07) 0px 10px 15px 2px;
+  width: 60%;
+}
+
+.engine .engine-number{
+  position: absolute;
+  font-weight: 900;
+  font-family: Arial;
+  left : 22px;
+  font-size: 9px;
+  top : 13px;
+  color: #252424;
+}
+
+.engine-description{
+  margin-right: 10px;
+  font-weight: bold;
+  padding-top: 10px;
+  font-size: 14Px;
+  color: #26212a;
+}
+
+.engine img{
+  margin: 5px;
+  filter: invert(15%);
+  margin-left: 10px;
+  width: 30px;
+  height: 30px;
 }
 
 .charac, .misc{
@@ -114,9 +170,9 @@ export default {
 }
 
 .charac .description{
-  margin-top: 20px;
+  /*margin-top: 20px;*/
 
-  margin-bottom: 20px;
+  /*margin-bottom: 20px;*/
 }
 
 .description {
@@ -146,6 +202,7 @@ export default {
 .charac .description p {
   font-size: 12px;
   margin-top: 5px;
+  color: #9e8fa1;
   line-height: 15px;
 }
 
@@ -202,6 +259,8 @@ export default {
 }
 
 .name {
+  /*max-width: 200px;*/
+  text-align: right;
   align-self: center;
   font-size: 15px;
   letter-spacing: 3px;

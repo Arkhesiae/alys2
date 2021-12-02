@@ -265,7 +265,7 @@ export function lowSpeedBuffetting(k, Clbo, p, S, W) {
 
 }
 
-export function maxClimbTOThrust(Ctc1, Ctc2, Ctc3, Hp) {
+export function maxClimbTOThrustJET(Ctc1, Ctc2, Ctc3, Hp) {
     let HpFeet = Hp * 3.28084
     return Ctc1 * (1 - HpFeet / Ctc2 + Ctc3 * HpFeet ** 2)
 }
@@ -273,7 +273,7 @@ export function maxClimbTOThrust(Ctc1, Ctc2, Ctc3, Hp) {
 // eslint-disable-next-line no-unused-vars
 export function correctMaxClimbTOThrust(Ctc1, Ctc2, Ctc3, Ctc4, Ctc5, Hp, deltaT) {
     let deltaTeff = deltaT - Ctc4
-    return maxClimbTOThrust(Ctc1, Ctc2, Ctc3, Hp) * (1 - Ctc5 * deltaTeff)
+    return maxClimbTOThrustJET(Ctc1, Ctc2, Ctc3, Hp) * (1 - Ctc5 * deltaTeff)
 }
 
 // eslint-disable-next-line no-unused-vars

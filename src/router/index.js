@@ -7,6 +7,8 @@ import TestView from "../views/TestView"
 import Graphe from "../views/graphe"
 import Home from "@/views/Home"
 import NotFound from "@/components/NotFound"
+import flightProfile from "@/views/flightProfile"
+import StaticPerformances from "@/views/StaticPerformances"
 
 // import SelectScreen from "../views/SelectScreen.vue"
 
@@ -53,15 +55,25 @@ const routes = [
       {
         // UserProfile will be rendered inside User's <router-view>
         // when /user/:id/profile is matched
-        path: 'static',
-        component: TestView
+        path: 'aircraftForm',
+        component: TestView,
+        children : [
+          {
+            // UserPosts will be rendered inside User's <router-view>
+            // when /user/:id/posts is matched
+            path: 'dynamic',
+            component: flightProfile
+          },
+          {
+            // UserPosts will be rendered inside User's <router-view>
+            // when /user/:id/posts is matched
+            path: 'sPerformances',
+            component: StaticPerformances
+          }
+
+        ]
       },
-      {
-        // UserPosts will be rendered inside User's <router-view>
-        // when /user/:id/posts is matched
-        path: 'dynamic',
-        component: TestView
-      }
+
     ]
   },
 

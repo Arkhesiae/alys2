@@ -3470,8 +3470,8 @@
           <!--          </div>-->
           <!--          <div class="bloc2 bloc"></zdiv>-->
           <Searchbar></Searchbar>
-          <router-link style="text-decoration: none; color: inherit" :to="{ name: ''}">
-            <div id="browse">
+          <router-link style="text-decoration: none; color: inherit; position: relative" :to="{ name: ''}">
+            <div id="browse" @click="createRipple">
               Browse
             </div>
           </router-link>
@@ -3590,6 +3590,7 @@
 // @ is an alias to /src
 import Background from "../components/Background"
 import Searchbar from "@/components/Searchbar"
+import {createRipple} from "@/BADA/ripple"
 
 // import MenuButton from "../components/MenuButton"
 
@@ -3624,6 +3625,11 @@ export default {
     }
   },
   methods: {
+    createRipple(event){
+      console.log("bite")
+      createRipple(event)
+    },
+
     erase() {
       this.search = ""
       // document.getElementById('search').value = ""
@@ -5262,18 +5268,19 @@ body {
   cursor: pointer;
   box-shadow: rgba(5, 5, 5, 0.3) 0px 1px 3px 1px;
   /*width: 500px;*/
-  border: 2px solid rgb(183, 134, 216);
+  border: 0px solid rgb(183, 134, 216);
   height: 60px;
   box-sizing: border-box;
   border-radius: 8px;
   text-align: center;
-  color: rgb(183, 134, 216);
+  color: rgb(46, 32, 56);
   padding-top: 18px;
   font-size: 20px;
+  position: relative;
   overflow: hidden;
   /*font-weight: bold;*/
   letter-spacing: 1px;
-  /*background: linear-gradient(237deg, rgba(48, 48, 48, 1) -30%, rgb(183, 134, 216) 150%);*/
+  background: linear-gradient(237deg, rgba(48, 48, 48, 1) -30%, rgb(183, 134, 216) 150%);
 }
 
 #browse:hover {

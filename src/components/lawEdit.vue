@@ -71,7 +71,7 @@ import {HpTrans, knotToMs} from "@/BADA/func"
 
 export default {
   name: "lawEdit",
-  props: ["icon"],
+  props: ["icon", "speedRange", "machRange"],
   data() {
     return {
       speedList: [],
@@ -128,7 +128,7 @@ export default {
         maxIndex: this.maxIndex(figureLists[i].id) - 1
       }
 
-      console.log(list.maxIndex)
+      // console.log(list.maxIndex)
 
       list.listElement.addEventListener('click', function (event) {
         for (let n = 0; n < list.listElement.children.length; n++) {

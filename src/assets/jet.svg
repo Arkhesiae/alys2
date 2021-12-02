@@ -1,22 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Generator: Adobe Illustrator 23.0.2, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
+<!-- Generator: Adobe Illustrator 25.2.0, SVG Export Plug-In . SVG Version: 6.00 Build 0)  -->
 <svg version="1.1" id="Calque_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
-	 viewBox="40 40 186 186" style="enable-background:new 0 0 256 256;" xml:space="preserve" fill="rgba(0,0,0,1)">
-<!--<style type="text/css">-->
-<!--	.st0{fill:#020202;}-->
-<!--</style>-->
+	 viewBox="0 0 186 186" style="enable-background:new 0 0 186 186;" xml:space="preserve">
 <g>
-	<path class="st0" d="M181,96.1C75.9,63.7,60.7,99,60.7,99s-0.5,30.9-0.5,55.7c26.4,31.5,118.5,7.3,121.6,6.5
-		C181.6,159.3,181.4,148.6,181,96.1z M76.1,147.7c0-19-0.4-40-0.4-40s9.3-24.6,90.2,0.2c0,18.4,0.4,38.8,0.4,40.2
-		C164,148.8,99.2,168.3,76.1,147.7z"/>
+	<path d="M137.7,57C30.8,26.2,17.4,62.3,17.4,62.3s-0.5,30.9-0.5,55.7c26.4,31.5,118.5,8.4,121.6,7.6
+		C138.5,117.9,138.6,122.3,137.7,57z M32.8,111c0-19-0.4-40-0.4-40s12.1-22.9,90.2-3.1c0,18.4,0.4,45.3,0.4,46.7
+		C120.7,115.4,57.2,129.4,32.8,111z"/>
 </g>
-<g>
-	<path class="st0" d="M181.8,161.1C181.8,161.1,181.7,161.9,181.8,161.1C181.7,161.1,181.8,161.1,181.8,161.1z"/>
-</g>
-<g>
-	<path class="st0" d="M54.3,114.2l0.3,21l-13.7-8.3c-1-0.6-1.1-2.1-0.1-2.8L54.3,114.2z"/>
-</g>
-<polygon class="st0" points="222.7,133.5 209.6,136.5 209.2,117.4 222.3,120 "/>
-<polygon class="st0" points="204,146.5 188.3,151.7 187.7,104.5 203.1,108 "/>
-<polygon class="st0" points="108.9,160.7 97.8,161.2 97.9,129.6 109.7,129.6 "/>
+<polygon points="179.4,96.8 166.3,99.8 165.9,80.7 179,83.3 "/>
+<polygon points="160.7,109.8 145,115 144.4,67.8 159.8,71.3 "/>
+<polygon points="57.1,122.3 49.1,122.5 49.2,55.2 57.2,55.2 "/>
 </svg>

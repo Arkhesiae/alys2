@@ -3,26 +3,46 @@
     <router-link :to="$route.fullPath+'statizaec'">
       <Tile type="Performances"></Tile>
     </router-link>
-    <router-link :to="$route.fullPath+'dynamic'">
-      <Tile type="Profil de vol"></Tile>
+    <router-link style="-webkit-user-drag: none; " :to="$route.fullPath+'aircraftForm/'+'dynamic'">
+      <Tile class="tile" @mousedown="createRipple" type="Profil de vol"></Tile>
     </router-link>
   </div>
 </template>
 
 <script>
 import Tile from "./Tile"
+import {createRipple} from "@/BADA/ripple"
 export default {
   name: 'HelloWorld',
   components: {Tile},
   props: {
     msg: String,
     type : String,
+  },
+  methods: {
+    createRipple(event){
+      console.warn("bite")
+      console.warn("bite")
+      console.warn("bite")
+      console.warn("bite")
+      console.warn("bite")
+      console.warn("bite")
+      console.warn("bite")
+      createRipple(event)
+    }
   }
+
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+.tile{
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-drag: none;
+}
 
 @media screen and (max-width: 1024px) {
   #tile-container {

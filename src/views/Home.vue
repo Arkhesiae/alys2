@@ -1,6 +1,6 @@
 <template>
   <Background/>
-  <div class="nav-bar" :class="{reduced : $route.path.includes('dynamic')}">
+  <div class="nav-bar" :class="{reduced : $route.path.includes('aircraftForm')}">
     <MenuButton/>
     <div class="pute">{{id}}</div>
     <div class="page-button">
@@ -21,7 +21,7 @@
   </div>
 
 
-  <router-view class="plane-view"></router-view>
+  <router-view class="plane-view" :coefficient="aircraftCoef" :aircraft="aircraft"></router-view>
 <!--  <div class="truc" @click="show=!show"></div>-->
 </template>
 
@@ -31,6 +31,8 @@
 import Background from "../components/Background"
 import MenuButton from "../components/MenuButton"
 import Searchbar from "@/components/Searchbar"
+import {coef} from "@/BADA/coefficients"
+import {formattedList} from "@/BADA/dataFormatting"
 // import AppButton from "@/components/appButton"
 // Vue.createApp(Demo).mount('#home')
 
@@ -41,6 +43,7 @@ export default {
   data() {
     return {
       show: true
+
     }
   },
   components: {
@@ -48,9 +51,39 @@ export default {
     // AppButton,
     MenuButton,
     Background,
+  },
+
+  beforeMount() {
+
+  },
+
+  mounted() {
+    console.warn("MOUNT")
+
+
+  },
+
+  computed: {
+    aircraft(){
+      return formattedList.find((aircraft)=> aircraft.ICAO === this.id)
+    },
+
+    aircraftCoef(){
+      let aircraft = this.aircraft
+      // eslint-disable-next-line vue/no-side-effects-in-computed-properties
+      this.aircraftCoefficients = coef.aircraftPerformances.find((object)=> object.aircraftType === aircraft.performanceReference)
+      return this.aircraftCoefficients
+    }
+  },
+
+  methods : {
 
   }
+
 }
+
+
+
 </script>
 
 <style>

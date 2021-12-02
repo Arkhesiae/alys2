@@ -7,6 +7,9 @@
 </template>
 
 <script>
+// eslint-disable-next-line no-unused-vars,no-undef
+import {createRipple} from "@/BADA/ripple"
+
 export default {
   data(){
     return{
@@ -25,6 +28,26 @@ export default {
 </script>
 
 <style>
+
+@font-face {
+  font-family: "Product Sans";
+  src: url("../src/assets/fonts/ProductSans-Regular.woff") format("woff");
+}
+
+div.Gripple {
+  position: absolute; /* The absolute position we mentioned earlier */
+  border-radius: 50%;
+  transform: scale(0);
+  animation: Gripple 600ms linear;
+  background-color: rgba(210, 171, 243, 0.7);
+}
+
+@keyframes Gripple {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
 
 *{
   font-family: "Product Sans", sans-serif;

@@ -8,16 +8,16 @@
                                                      alt=""></div>
     </div>
     <ul class="wrapper">
-      <li class="card" v-bind:key="post.title" v-for="post in filteredList">
+      <li class="card" v-bind:key="post.ICAO" v-for="post in filteredList">
         <router-link style="text-decoration: none; color: inherit"
-                     :to="'/plane/'+post.title+'/'">
+                     :to="'/plane/'+post.ICAO+'/'">
           <div class="text-container">
             <p>
-              {{ post.title.slice(0, post.title.indexOf(search.toUpperCase())) }}</p>
+              {{ post.ICAO.slice(0, post.ICAO.indexOf(search.toUpperCase())) }}</p>
             <p class="highlight"> {{ search.toUpperCase() }}</p>
             <p>
-              {{ post.title.slice(post.title.indexOf(search.toUpperCase()) + search.length, 8) }}</p>
-            <p class="fullName">{{ post.fullname }}</p>
+              {{ post.ICAO.slice(post.ICAO.indexOf(search.toUpperCase()) + search.length, 8) }}</p>
+            <p class="fullName">{{ post.aircraftModel }}</p>
 
           </div>
         </router-link>
@@ -27,60 +27,40 @@
 </template>
 
 <script>
-class Post {
-  constructor(title, link, author, img) {
-    this.title = title;
-    this.fullname = link;
-    this.link = title;
-    this.author = author;
-    this.img = img;
-  }
-}
+import {formattedList} from "@/BADA/dataFormatting"
+
+
+// class Post {
+//   constructor(title, link, author, img) {
+//     this.title = title;
+//     this.fullname = link;
+//     this.link = title;
+//     this.author = author;
+//     this.img = img;
+//   }
+// }
 
 export default {
   name: "Searchbar",
   data() {
     return {
       search: '',
-      postList: [
-        new Post(
-            'A318', 'Airbus A318-200'
-        ),
-        new Post(
-            'A320',
-        ),
-        new Post(
-            'A321',
-        ),
-        new Post(
-            'B747',
-        ),
-        new Post(
-            'B744',
-        ),
-        new Post(
-            'B764',
-        ),
-        new Post(
-            'B789',
-        ),
-        new Post(
-            'B756',
-        ),
-        new Post(
-            'B73M',
-        ),
-      ]
+      postList: []
     }
   },
+
+  mounted() {
+     this.postList = formattedList
+  },
+
   computed: {
     filteredList() {
       if (this.search == "") {
         return
       }
       return this.postList.filter(post => {
-        return post.title.toLowerCase().includes(this.search.toLowerCase())
-      })
+        return (post.ICAO.toLowerCase().includes(this.search.toLowerCase()))
+      }).slice(0,7)
     },
 
   },
@@ -95,6 +75,10 @@ export default {
 </script>
 
 <style scoped>
+*{
+  user-select: none;
+}
+
 .searchbar-container {
   flex-basis: auto;
   flex-grow: 1;
@@ -174,7 +158,7 @@ export default {
   flex-direction: column;
   border-radius: 12px;
   overflow: hidden;
-  background: rgba(195, 188, 197, 0.03);
+  background: #191819;
   padding-top: 60px;
   padding-left: 0;
 }
@@ -192,7 +176,7 @@ export default {
   padding-left: 40px;
   /*background: #2B2F37;*/
   /*box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;*/
-  width: 560px;
+  width: 100%;
   height: 60px;
   /*transition: .3s all ease-in-out;*/
 
@@ -208,7 +192,7 @@ export default {
 
 .card p, .card h1 {
   font-size: 20px;
-  color: #808080;
+  color: #595064;
   padding: 0;
   margin: 0;
 
@@ -217,14 +201,14 @@ export default {
 p.fullName {
 
 
-  color: #a0624e;
+  color: #886599;
   font-size: 14px !important;
   padding-left: 20px !important;
   padding-top: 5px !important;
 }
 
 .card .highlight {
-  color: #afafaf;
+  color: #dfa8ec;
 }
 
 </style>

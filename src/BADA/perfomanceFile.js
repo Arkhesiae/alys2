@@ -64,8 +64,8 @@ let dataSets = {
 // }
 
 
-export function calcPerf(FL, loi, speed) {
-    let plane = new PhysicalPlane()
+export function calcPerf(FL, loi, speed, coef) {
+    let plane = new PhysicalPlane(coef)
     console.log("ey")
     plane.setParameters(54000)
     plane.setInitialState(FL * 100 / 3.28084, knotToMs(250), 0, 0)
@@ -196,8 +196,8 @@ export function calcPerf(FL, loi, speed) {
 }
 
 
-export function maxFLAtROCD(FL, speed, loi, ROCD) {
-    let plane = new PhysicalPlane()
+export function maxFLAtROCD(FL, speed, loi, ROCD, coef) {
+    let plane = new PhysicalPlane(coef)
     plane.setParameters(54000)
     plane.setInitialState((FL - 5) * 100 / 3.28084, knotToMs(speed), 0, 0)
     // console.log(FL, speed)
@@ -241,21 +241,25 @@ export function maxFLAtROCD(FL, speed, loi, ROCD) {
 
 
 
-export function flightProfile(climbSequence, cruiseSequence, descentSequence, law) {
+export function flightProfile(climbSequence, cruiseSequence, descentSequence, law, coefficients) {
     console.error("FP")
+
     let fullSequence = {
         climb : climbSequence,
         cruise : cruiseSequence,
         descent : descentSequence,
     }
-    let plane = new PhysicalPlane()
-    plane.setParameters(64000)
+
+    let plane = new PhysicalPlane(coefficients)
+
 
     if (law){
         plane.setLoiMontee(law.speed, law.mach)
-    } else plane.setLoiMontee(280, 0.74)
+    } else plane.setLoiMontee(300, 0.79)
 
-    plane.setInitialState(0 * 100 / 3.28084, knotToMs(180), 0, 0)
+    plane.setInitialState(0, 0, 1, 0)
+    plane.setParameters(85)
+    console.log(plane.flightParams.mass)
     let profile = {
         climb : [],
         cruise : [],
@@ -275,13 +279,13 @@ export function flightProfile(climbSequence, cruiseSequence, descentSequence, la
                 console.error('SHIFT')
                 let current = instruction
                 if (current.type === 'climb'){
-                    plane.climbInstruction(current.FLTarget, current.time, '', current.speedInstruction)
+                    plane.getTargetInstruction(current.FLTarget, current.time, '', current.speedInstruction)
                 }
                 else if (current.type === 'level'){
-                    plane.levelInstruction(current.time)
+                    plane.getTargetInstruction(current.FLTarget, current.time, '', current.speedInstruction)
                 }
                 else if (current.type === 'descent'){
-                    plane.descentInstruction(current.FLTarget, current.time, '', current.speedInstruction)
+                    plane.getTargetInstruction(current.FLTarget, current.time, '', current.speedInstruction)
                 }
             }
             while (!plane.idleState) {
@@ -297,7 +301,7 @@ export function flightProfile(climbSequence, cruiseSequence, descentSequence, la
                     speed : Math.round(msToKnot(plane.flightParams.speed.CAS)),
                     speedTAS : Math.round(msToKnot(plane.flightParams.speed.TAS)),
                     mach : plane.flightParams.speed.Mach,
-                    rate : Math.round(plane.flightParams.ROCD*197/100)*100,
+                    rate : Math.round(plane.flightParams.ROCD*197/10)*10,
                     alt : plane.flightParams.Hp*3.28084/100,
                     dist : plane.distanceFromStartPoint,
                     hpTrans : plane.loiMontee.HpTrans,
@@ -321,8 +325,8 @@ export function flightProfile(climbSequence, cruiseSequence, descentSequence, la
 
 
 
-export function calcPerfbis(FL, loi, speed) {
-    let plane = new PhysicalPlane()
+export function calcPerfbis(FL, loi, speed, coef) {
+    let plane = new PhysicalPlane(coef)
     console.log('hey')
     plane.setParameters(54000)
     plane.setInitialState(FL * 100 / 3.28084, knotToMs(250), 0, 0)
@@ -358,16 +362,16 @@ export function calcPerfbis(FL, loi, speed) {
 
 }
 
-export function getPlaneMach(FL, CAS) {
-    let plane = new PhysicalPlane()
+export function getPlaneMach(FL, CAS, coef) {
+    let plane = new PhysicalPlane(coef)
     plane.setParameters(54000)
     plane.setInitialState(FL * 100 / 3.28084, knotToMs(CAS), 0, 0)
     return plane.flightParams.speed.Mach
 }
 
 // eslint-disable-next-line no-unused-vars
-export function speedRange(FL) {
-    let plane = new PhysicalPlane()
+export function speedRange(FL, coef) {
+    let plane = new PhysicalPlane(coef)
     plane.setParameters(54000)
     plane.setInitialState(FL * 100 / 3.28084, knotToMs(250), 0, 0)
     let minSpeed = plane.minSpeed
@@ -384,8 +388,8 @@ export function speedRange(FL) {
     return {minSpeed: minSpeed, maxSpeed: maxSpeed}
 }
 
-export function range(FL) {
-    let plane = new PhysicalPlane()
+export function range(FL, coef) {
+    let plane = new PhysicalPlane(coef)
     plane.setParameters(54000)
     plane.setInitialState(FL * 100 / 3.28084, knotToMs(250), 0, 0)
     let minSpeed = plane.minSpeed

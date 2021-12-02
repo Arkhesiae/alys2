@@ -33,59 +33,59 @@ export default {
   },
 
   watch: {
-    '$route' () {
-      this.transformStyle = this.$route.params.type === 'static' ? 'translateX(0vw)' : 'translateX(-100vw)';
-    }
+    // '$route' () {
+    //   this.transformStyle = this.$route.params.type === 'static' ? 'translateX(0vw)' : 'translateX(-100vw)';
+    // }
   },
 
   mounted(){
-    window.addEventListener("keydown", (event)=>{
-      if (event.code==="ArrowRight"){
-        this.currentIndex = this.currentIndex < this.maxIndex ? this.currentIndex+1 : this.maxIndex
-        this.next()
-      }
-      else if (event.code==="ArrowLeft"){
-        this.currentIndex = this.currentIndex > 0 ? this.currentIndex-1 : 0
-        this.previous()
-      }
-      // this.changeCard()
-    })
+    // window.addEventListener("keydown", (event)=>{
+    //   if (event.code==="ArrowRight"){
+    //     this.currentIndex = this.currentIndex < this.maxIndex ? this.currentIndex+1 : this.maxIndex
+    //     this.next()
+    //   }
+    //   else if (event.code==="ArrowLeft"){
+    //     this.currentIndex = this.currentIndex > 0 ? this.currentIndex-1 : 0
+    //     this.previous()
+    //   }
+    //   // this.changeCard()
+    // })
   },
 
   methods : {
-    changeCard(){
-      const {  upcomingIndex, currentSet} = this
-      const id = currentSet[upcomingIndex];
-      this.$router.replace({ name: "select-screen", params: { id } });
-    },
-    previous() {
-
-
-      this.transitionClass = 'transition-item';
-      // this.transformStyle = 'translateX(100vw)';
-      this.$router.push({ name: 'SelectScreen', params: {type: 'static' }})
-      // const prevIndex = currentIndex === 0 ? currentSet.length - 1 : currentIndex - 1;
-      // this.upcomingIndex = prevIndex;
-      // if (isTranslationDisabled) {
-      //   this.changeCard();
-      // }
-    },
-    next() {
-
-
-      this.transitionClass = 'transition-item';
-      // this.transformStyle = 'translateX(-100vw)';
-      // setTimeout(()=>{
-        this.$router.push({ name: 'SelectScreen', params: {type: 'dynamic' }})
-        // this.transformStyle = 'translateX(0vw)';
-      // },500)
-
-      // const prevIndex = currentIndex === 0 ? currentSet.length - 1 : currentIndex - 1;
-      // this.upcomingIndex = prevIndex;
-      // if (isTranslationDisabled) {
-      //   this.changeCard();
-      // }
-    },
+    // changeCard(){
+    //   const {  upcomingIndex, currentSet} = this
+    //   const id = currentSet[upcomingIndex];
+    //   this.$router.replace({ name: "select-screen", params: { id } });
+    // },
+    // previous() {
+    //
+    //
+    //   this.transitionClass = 'transition-item';
+    //   // this.transformStyle = 'translateX(100vw)';
+    //   this.$router.push({ name: 'SelectScreen', params: {type: 'static' }})
+    //   // const prevIndex = currentIndex === 0 ? currentSet.length - 1 : currentIndex - 1;
+    //   // this.upcomingIndex = prevIndex;
+    //   // if (isTranslationDisabled) {
+    //   //   this.changeCard();
+    //   // }
+    // },
+    // next() {
+    //
+    //
+    //   this.transitionClass = 'transition-item';
+    //   // this.transformStyle = 'translateX(-100vw)';
+    //   // setTimeout(()=>{
+    //     this.$router.push({ name: 'SelectScreen', params: {type: 'dynamic' }})
+    //     // this.transformStyle = 'translateX(0vw)';
+    //   // },500)
+    //
+    //   // const prevIndex = currentIndex === 0 ? currentSet.length - 1 : currentIndex - 1;
+    //   // this.upcomingIndex = prevIndex;
+    //   // if (isTranslationDisabled) {
+    //   //   this.changeCard();
+    //   // }
+    // },
 
   },
   computed : {

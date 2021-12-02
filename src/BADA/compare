@@ -1,0 +1,126 @@
+"aircraftType": "A319",
+            "acTypeData": {
+                "engineType": "JET",
+                "numberOfEngines": "2",
+                "wakeTurbulenceCategory": "MEDIUM",
+                "self-closing": "true"
+            },
+            "aerodynamics": {
+                "buffetCoefficient": "1.2273",
+                "buffetGradient": "0.47037",
+                "inducedDragApproach": "0.035779",
+                "inducedDragCruise": "0.025882",
+                "inducedDragLanding": "0.036689",
+                "machDragCoefficient": "0.0",
+                "parasiticDragApproach": "0.046986",
+                "parasiticDragCruise": "0.025954",
+                "parasiticDragLanding": "0.097256",
+                "parasiticDragLandingGear": "0.02568",
+                "stallSpeedApproaching": "1000",
+                "stallSpeedCruise": "1390",
+                "stallSpeedInitialClimbing": "1130",
+                "stallSpeedLanding": "940",
+                "stallSpeedTakeoff": "1040",
+                "wingSurfaceArea": "122.6",
+                "self-closing": "true"
+            },
+            "aircraftStandardMass": {
+                "maximumMass": "70000",
+                "maximumPayloadMass": "17000",
+                "minimumMass": "40000",
+                "referenceMass": "60000",
+                "self-closing": "true"
+            },
+            "aircraftEngineThrust": {
+                "approachThrust": "0.14767",
+                "descentMach": "0.78",
+                "descentSpeed": "3000",
+                "firstThrustTemperatureCoefficient": "9",
+                "highAltitudeDescentThrust": "0.083084",
+                "landingThrust": "0.34217",
+                "lowAltitudeDescentThrust": "0.051765",
+                "secondMaxClimbThrust": "47489.0",
+                "secondThrustTemperatureCoefficient": "0.0094754",
+                "transitionAltitude": "27726.0",
+                "firstMaxClimbThrust": {
+                    "JET": {
+                        "jetPiston": "140720.0",
+                        "self-closing": "true"
+                    }
+                },
+                "thirdMaxClimbThrust": {
+                    "JET": {
+                        "jetCoef": "9.6625E-11",
+                        "self-closing": "true"
+                    }
+                }
+            },
+            "aircraftFlightEnvelope": {
+                "altitudeTemperatureGradient": "160",
+                "maxAltitudeAtMTOW": "37575",
+                "maxOperatingAltitude": "41000",
+                "maxOperatingMachNumber": "0.82",
+                "maxOperatingSpeed": "3500",
+                "weightGradient": "0.31247",
+                "self-closing": "true"
+            },
+            "groundPerformance": {
+                "landingLength": "1470.0",
+                "length": "33.84",
+                "takeoffLength": "1820.0",
+                "wingSpan": "34.1",
+                "self-closing": "true"
+            },
+            "aircraftFuelConsumption": {
+                "cruiseConsumption": "0.99224",
+                "firstDescentConsumption": "11.114",
+                "secondDescentConsumption": "133850.0",
+                "secondThrustConsumption": "1729.8",
+                "firstThrustConsumption": {
+                    "J  ET": {
+                        "jetConsumption": "0.72891",
+                        "self-closing": "true"
+                    }
+                }
+            }
+            <aircraftPerformances aircraftType="SH36">
+            			<acTypeData engineType="TURBOPROP" numberOfEngines="2" wakeTurbulenceCategory="MEDIUM"/>
+            			<aerodynamics buffetCoefficient="0.0" buffetGradient="0.0" inducedDragApproach="0.0" inducedDragCruise="0.032377" inducedDragLanding="0.0" machDragCoefficient="0.0" parasiticDragApproach="0.0" parasiticDragCruise="0.031297" parasiticDragLanding="0.0" parasiticDragLandingGear="0.0" stallSpeedApproaching="880" stallSpeedCruise="960" stallSpeedInitialClimbing="940" stallSpeedLanding="840" stallSpeedTakeoff="880" wingSurfaceArea="42.18"/>
+            			<aircraftStandardMass maximumMass="12300" maximumPayloadMass="3200" minimumMass="7900" referenceMass="11300"/>
+            			<aircraftEngineThrust approachThrust="0.15687" descentMach="0.36" descentSpeed="1600" firstThrustTemperatureCoefficient="5" highAltitudeDescentThrust="0.53232" landingThrust="0.067108" lowAltitudeDescentThrust="0.35519" secondMaxClimbThrust="83944.0" secondThrustTemperatureCoefficient="0.0061714" transitionAltitude="10098.0">
+            				<firstMaxClimbThrust>
+            					<TURBOPROP turbo="2290700.0"/>
+            				</firstMaxClimbThrust>
+            				<thirdMaxClimbThrust>
+            					<TURBOPROP turbopropCoef="0.0"/>
+            				</thirdMaxClimbThrust>
+            			</aircraftEngineThrust>
+            			<aircraftFlightEnvelope altitudeTemperatureGradient="0" maxAltitudeAtMTOW="0" maxOperatingAltitude="20000" maxOperatingMachNumber="0.44" maxOperatingSpeed="2000" weightGradient="0"/>
+            			<groundPerformance landingLength="1220.0" length="21.58" takeoffLength="1305.0" wingSpan="22.8"/>
+            			<aircraftFuelConsumption cruiseConsumption="1.1618" firstDescentConsumption="5.8739" secondDescentConsumption="105840.0" secondThrustConsumption="605.21">
+            				<firstThrustConsumption>
+            					<TURBOPROP turbopropConsumption="5.3348"/>
+            				</firstThrustConsumption>
+            			</aircraftFuelConsumption>
+            		</aircraftPerformances>
+
+            		<aircraftPerformances aircraftType="S2P">
+                    			<acTypeData engineType="PISTON" numberOfEngines="2" wakeTurbulenceCategory="MEDIUM"/>
+                    			<aerodynamics buffetCoefficient="0.0" buffetGradient="0.0" inducedDragApproach="0.0" inducedDragCruise="0.06" inducedDragLanding="0.0" machDragCoefficient="0.0" parasiticDragApproach="0.0" parasiticDragCruise="0.03" parasiticDragLanding="0.0" parasiticDragLandingGear="0.0" stallSpeedApproaching="775" stallSpeedCruise="890" stallSpeedInitialClimbing="890" stallSpeedLanding="730" stallSpeedTakeoff="835" wingSurfaceArea="46.08"/>
+                    			<aircraftStandardMass maximumMass="13200" maximumPayloadMass="2200" minimumMass="8800" referenceMass="11300"/>
+                    			<aircraftEngineThrust approachThrust="0.2186" descentMach="0.3" descentSpeed="1300" firstThrustTemperatureCoefficient="0" highAltitudeDescentThrust="0.40983" landingThrust="0.2408" lowAltitudeDescentThrust="0.2535" secondMaxClimbThrust="38719.0" secondThrustTemperatureCoefficient="0.004" transitionAltitude="11278.0">
+                    				<firstMaxClimbThrust>
+                    					<PISTON jetPiston="25715.0"/>
+                    				</firstMaxClimbThrust>
+                    				<thirdMaxClimbThrust>
+                    					<PISTON pistonCoef="0.0"/>
+                    				</thirdMaxClimbThrust>
+                    			</aircraftEngineThrust>
+                    			<aircraftFlightEnvelope altitudeTemperatureGradient="0" maxAltitudeAtMTOW="0" maxOperatingAltitude="21000" maxOperatingMachNumber="0.65" maxOperatingSpeed="2900" weightGradient="0"/>
+                    			<groundPerformance landingLength="1052.0" length="13.26" takeoffLength="945.0" wingSpan="22.12"/>
+                    			<aircraftFuelConsumption cruiseConsumption="0.344" firstDescentConsumption="3.2934" secondDescentConsumption="0.0" secondThrustConsumption="0.0">
+                    				<firstThrustConsumption>
+                    					<PISTON pistonConsumption="12.254"/>
+                    				</firstThrustConsumption>
+                    			</aircraftFuelConsumption>
+                    		</aircraftPerformances>
