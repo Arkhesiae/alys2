@@ -281,4 +281,3 @@ export function maxCruiseThrust(maxClimbThrust) {
     return .95 * maxClimbThrust
 }
 
-
