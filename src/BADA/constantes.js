@@ -21,4 +21,11 @@ export class Constante {
     static Bt = -0.0065 // K/m
     // ISA temperature at tropopause
     static TISAtrop = this.T0 + this.Bt * this.HpTrop
+    // load factor alt intercept
+    static Gmax = 0.15 // g
+    // Cvmin TO
+    static CvminTO = 1.2
+    // Cvmin
+    static Cvmin = 1.3
+    // Hey
 }

@@ -28,6 +28,10 @@ export class PhysicalPlane {
         mass: ""
     }
 
+    flightEnvelope = {
+        optFL: ""
+    }
+
     force = {
         drag: "",
         thrust: "",
@@ -418,6 +422,47 @@ export class PhysicalPlane {
             Vmin = Constante.CvminTO * stallSpeed
         } else Vmin = Constante.Cvmin * stallSpeed
         return this.Vmin = Vmin
+    }
+
+    getPhase(){
+        let phase
+        let ROCD = this.flightParams.ROCD
+        let Hp = this.flightParams.Hp*3.28084
+        let speed = msToKnot(this.flightParams.speed.CAS)
+        console.log("hi")
+        if (ROCD > 0){
+            if (Hp < 400){
+                phase = "TAKEOFF"
+            }
+            else if (Hp < 2000){
+                phase = "INITIALCLIMB"
+            }
+            else if (Hp >= 2000){
+                phase = "CRUISE"
+            }
+        }
+        else {
+            if (Hp >= 8000){
+                phase = "CRUISE"
+            }
+            else if (Hp < 3000){
+                if (speed < Constante.Cvmin * parseFloat(this.flightCoefficients.aerodynamics.stallSpeedApproaching)/10 + 10){
+                    phase = "LANDING"
+                }
+                else {
+                    phase = "APPROACH"
+                }
+            }
+            else if (Hp < 8000){
+                if (speed >= Constante.Cvmin * parseFloat(this.flightCoefficients.aerodynamics.stallSpeedCruise)/10 + 10){
+                    phase = "CRUISE"
+                }
+                else {
+                    phase = "APPROACH"
+                }
+            }
+        }
+        return this.phase = phase
     }
 
     climbAtSpeed(ESFValue) {
