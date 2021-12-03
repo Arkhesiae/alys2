@@ -68,6 +68,10 @@ export class PhysicalPlane {
         this.flightParams.mass = parseFloat(this.flightCoefficients.aircraftStandardMass.maximumMass)*massCoefficient/100
     }
 
+    setMass(mass) {
+        this.flightParams.mass = mass
+    }
+
     setLoiMontee(CAS, M) {
         this.loiMontee.CAS = CAS
         this.loiMontee.Mach = M
@@ -429,7 +433,7 @@ export class PhysicalPlane {
         let ROCD = this.flightParams.ROCD
         let Hp = this.flightParams.Hp*3.28084
         let speed = msToKnot(this.flightParams.speed.CAS)
-        console.log("hi")
+        // console.log("hi")
         if (ROCD > 0){
             if (Hp < 400){
                 phase = "TAKEOFF"
@@ -949,7 +953,7 @@ export class PhysicalPlane {
     computeMassVariation() {
         // console.log(this.fuelFlow)
         if (this.fuelFlow){
-            this.flightParams.mass -= this.fuelFlow / 60
+            // this.flightParams.mass -= this.fuelFlow / 60
         }
 
     }

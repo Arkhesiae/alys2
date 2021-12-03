@@ -241,7 +241,7 @@ export function maxFLAtROCD(FL, speed, loi, ROCD, coef) {
 
 
 
-export function flightProfile(climbSequence, cruiseSequence, descentSequence, law, coefficients) {
+export function flightProfile(climbSequence, cruiseSequence, descentSequence, law, coefficients, mass) {
     console.error("FP")
 
     let fullSequence = {
@@ -258,7 +258,10 @@ export function flightProfile(climbSequence, cruiseSequence, descentSequence, la
     } else plane.setLoiMontee(300, 0.79)
 
     plane.setInitialState(0, 0, 1, 0)
-    plane.setParameters(85)
+
+    if (mass){
+        plane.setMass(mass)
+    } else plane.setParameters(85)
     console.log(plane.flightParams.mass)
     let profile = {
         climb : [],

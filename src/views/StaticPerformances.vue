@@ -125,16 +125,6 @@ export default {
       this.isSelected = !this.isSelected
     },
 
-    changeUnit: function (event) {
-      if (this.selectedUnit.element) {
-        this.selectedUnit.element.classList.remove('selected')
-      }
-      this.selectedUnit = {
-        element: event.target,
-        unit: event.target.innerText
-      }
-      event.target.classList.add('selected')
-    },
 
     changeSelection: function (event) {
       if (event.deltaY < 0) {
@@ -247,20 +237,14 @@ export default {
 
 .slidecontainer {
   display: inline-block;
-  width: 20px;
+  width: 100%;
   padding: 0;
   margin: 15px;
-  height: 90%;
+  height: 100%;
   /*width: 100%; !* Width of the outside container *!*/
 }
 
-.speed.slidecontainer {
-  margin: 0;
-  position: absolute;
-  top: 3px;
-  height: 100%;
-  z-index: 999;
-}
+
 
 .content-container__app-button-container {
 

@@ -3,8 +3,10 @@
     <div class="law-edit-frame" v-show="lawEditing">
       <div class="law-edit-overlay"></div>
       <law-edit @close="lawEditing = false" @getLaw="setCustomSpeedLaw"></law-edit>
-
-
+    </div>
+    <div class="params-frame" v-show="params">
+      <div class="law-edit-overlay"></div>
+      <parameters @close="params = false" @setParams="setCustomParams" :mass="this.coefficient.aircraftStandardMass" @getLaw="setCustomSpeedLaw"></parameters>
     </div>
     <div id="flightProfile" class="current-frame frame">
       <transition name="pop-in" appear>
@@ -103,7 +105,7 @@
 
 
       <transition name="pop-in" appear>
-        <AppButton class="adv-params"  @mousedown="createRipple" text="Paramètres avancés" icon="settings_black_24dp.svg"/>
+        <AppButton class="adv-params"  @mousedown="createRipple" @click="params = true" text="Paramètres avancés" icon="settings_black_24dp.svg"/>
       </transition>
 
     </div>
@@ -165,6 +167,7 @@ import AppButton from "@/components/appButton"
 import {flightProfile} from "@/BADA/perfomanceFile"
 // import {profileSampling} from "@/BADA/sampling"
 import {createRipple} from "@/BADA/ripple"
+import Parameters from "@/components/Parameters"
 
 export default {
   name: "flightProfile",
@@ -172,6 +175,7 @@ export default {
     HButton,
     LawEdit,
     AppButton,
+    Parameters,
   },
 
   data (){
@@ -181,6 +185,8 @@ export default {
         unit: 'CAS'
       },
       lawEditing: false,
+      params : false,
+      selectedMass: "",
       currentProfilePoint: 0,
       currentPhase : "",
       customSpeedLaw : "",
@@ -194,14 +200,20 @@ export default {
 
   },
 
+  computed: {
+    flightProfile: function () {
+      return flightProfile(this.climbSequence, this.cruiseSequence, this.descentSequence, this.law, this.coefficient, this.selectedMass)
+    },
+  },
+
   mounted() {
-    let coefficients = this.coefficient
+    // let coefficients = this.coefficient
+    // this.masses = this.coefficient.aircraftStandardMass
     this.profileObject = []
     this.pointObject = ""
     // let slider = document.getElementById("myRange");
     // let output = document.getElementById("fl-value");
     let frame = document.getElementsByClassName('frame__content')[0]
-
     // output.innerHTML = slider.value; // Display the default slider value
     // eslint-disable-next-line no-undef
     let canvas = new fabric.Canvas("flightProfile-canvas", {
@@ -213,9 +225,9 @@ export default {
           fireMiddleClick: true,
         } //Prevent proportions conservation when resizing with the corner button})
     )
-
     this.canvas = canvas
-
+    canvas.setHeight(frame.offsetHeight)
+    canvas.setWidth(frame.offsetWidth)
     let ref = this
 
     window.addEventListener('resize', function () {
@@ -234,13 +246,12 @@ export default {
       canvas.requestRenderAll()
       // canvas.calcOffset();
     });
-    canvas.setHeight(frame.offsetHeight)
-    canvas.setWidth(frame.offsetWidth)
 
-    this.canvasHeight = frame.offsetHeight
+
+
+
     this.marginVertical = canvas.height / 4
     let marginVertical = canvas.height / 4
-    // let marginHorizontal = canvas.width / 10
     let marginHorizontalLeft = 300
     this.marginHorizontalLeft = 300
     let marginHorizontalRight = 50
@@ -254,6 +265,7 @@ export default {
         FLTarget: 360,
       },
     ]
+    this.climbSequence = climbSequence
     let cruiseSequence = [
       {
         type: 'level',
@@ -267,51 +279,27 @@ export default {
         type: 'level',
         time: 1000,
       }]
+    this.cruiseSequence = cruiseSequence
     let descentSequence = [
       {
         type: 'descent',
         FLTarget: 1,
       }
     ]
+    this.descentSequence = descentSequence
 
 
-    let points = [
-      // {
-      //   x: canvas.width + 1,
-      //   y: canvas.height - marginVertical,
-      // },
-      // {
-      //   x: canvas.width + 1,
-      //   y: canvas.height,
-      // },
-      // {
-      //   x: -1,
-      //   y: canvas.height,
-      // },
-      // {
-      //   x: -1,
-      //   y: canvas.height - marginVertical,
-      // },
-    ]
+    let points = []
 
     this.profilePoints = points
 
-    let climbPoints = [
-      // {
-      //   x: -1,
-      //   y: canvas.height,
-      // },
-      // {
-      //   x: -1,
-      //   y: canvas.height - marginVertical,
-      // },
-    ]
+    let climbPoints = []
     let cruisePoints = []
     let descentPoints = []
     let lastAnchor
     let fullList
 
-    let profileObject = flightProfile(climbSequence, cruiseSequence, descentSequence, "", coefficients)
+    let profileObject = this.flightProfile
     let profile = profileObject.full
     this.profileObject = profileObject.full
     let DTotal = profile[profile.length - 1].dist
@@ -322,7 +310,6 @@ export default {
         y: -point.alt * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height
       })
     }
-
     for (let point of profileObject.climb) {
       climbPoints.push({
         profilePoint: point,
@@ -334,8 +321,6 @@ export default {
       x: climbPoints[climbPoints.length - 1].x,
       y: canvas.height
     })
-
-
     lastAnchor = climbPoints[climbPoints.length - 1].x
 
     for (let point of profileObject.cruise) {
@@ -894,9 +879,19 @@ export default {
   },
 
   methods : {
-    setCustomSpeedLaw: function (lawParameters) {
+    setCustomParams : function (parameters) {
+      console.log(parameters)
+      this.selectedMass = parseFloat(parameters.mass)
+      this.selectedISAdev = parameters.ISA
+      this.selectedQNH = parameters.QNH
+      this.computeFlightProfile()
+      this.canvas.requestRenderAll()
+    },
+
+    setCustomSpeedLaw : function (lawParameters) {
       this.customSpeedLaw = lawParameters
-      console.log(this.customSpeedLaw)
+      this.law = this.customSpeedLaw
+      // console.log(this.customSpeedLaw)
       this.hpTrans.set({
         top: -this.customSpeedLaw.FL * (this.canvasHeight - 2 * this.marginVertical) / 410 - this.marginVertical + this.canvasHeight
       })
@@ -911,86 +906,23 @@ export default {
     },
 
     computeFlightProfile: function () {
-      let climbSequence = [
-        {
-          type: 'climb',
-          speedInstruction: 250,
-          treshold: 'speed',
-          FLTarget: 100,
-        },
-        {
-          type: 'climb',
-          treshold: 'speed',
-          FLTarget: 100,
-        },
-        {
-          type: 'climb',
-          treshold: 'speed',
-          speedInstruction: 'law',
-          FLTarget: 360,
-        },
-        {
-          type: 'climb',
-          treshold: 'speed',
-          //speedInstruction: 300,
-          FLTarget: 360,
-        }
-      ]
-      let cruiseSequence = [
-
-        {
-          type: 'climb',
-          treshold: 'speed',
-          //speedInstruction: 300,
-          FLTarget: 380,
-        },
-        {
-          type: 'level',
-          treshold: 'speed',
-          //speedInstruction: 300,
-          time: 1000,
-        }]
-      let descentSequence = [
-        {
-          type: 'descent',
-          //speedInstruction: 300,
-          FLTarget: 110,
-        }
-        ,
-        {
-          type: 'descent',
-          speedInstruction: 250,
-          treshold: 'speed',
-          //speedInstruction: 300,
-          FLTarget: 0,
-        }
-        ,
-        {
-          type: 'descent',
-          FLTarget: 0,
-        }
-      ]
-
       let canvas = this.canvas
       let marginVertical = this.marginVertical
       let marginHorizontalLeft = this.marginHorizontalLeft
       let marginHorizontalRight = this.marginHorizontalRight
-      let climbPoints = [
-        {
-          x: -1,
-          y: canvas.height,
-        },
-        {
-          x: -1,
-          y: canvas.height - marginVertical,
-        },
-      ]
+      let points = []
+
+      this.profilePoints = points
+
+      let climbPoints = []
       let cruisePoints = []
       let descentPoints = []
+      let lastAnchor
+      let fullList
 
-      let points = []
-      let profileObject = flightProfile(climbSequence, cruiseSequence, descentSequence, this.customSpeedLaw)
+      let profileObject = this.flightProfile
       let profile = profileObject.full
+      this.profileObject = profileObject.full
       let DTotal = profile[profile.length - 1].dist
       for (let point of profile) {
         points.push({
@@ -999,7 +931,6 @@ export default {
           y: -point.alt * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height
         })
       }
-
       for (let point of profileObject.climb) {
         climbPoints.push({
           profilePoint: point,
@@ -1011,7 +942,7 @@ export default {
         x: climbPoints[climbPoints.length - 1].x,
         y: canvas.height
       })
-
+      lastAnchor = climbPoints[climbPoints.length - 1].x
 
       for (let point of profileObject.cruise) {
         cruisePoints.push({
@@ -1020,14 +951,18 @@ export default {
           y: -point.alt * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height
         })
       }
+
+      fullList = climbPoints.concat(cruisePoints)
       cruisePoints.push({
-        x: cruisePoints[cruisePoints.length - 1].x,
+        x: fullList[fullList.length - 1].x,
         y: canvas.height
       })
       cruisePoints.push({
-        x: cruisePoints[0].x,
+        x: lastAnchor,
         y: canvas.height
       })
+
+      lastAnchor =  fullList[fullList.length - 1].x
 
 
       for (let point of profileObject.descent) {
@@ -1037,17 +972,18 @@ export default {
           y: -point.alt * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height
         })
       }
+      fullList = fullList.concat(descentPoints)
+
       descentPoints.push({
-        x: descentPoints[descentPoints.length - 1].x,
+        x: fullList[fullList.length - 1].x,
         y: canvas.height
       })
       descentPoints.push({
-        x: descentPoints[0].x,
+        x: lastAnchor,
         y: canvas.height
       })
 
-
-      console.log(points)
+      // console.log(points)
       this.profilePoints = points
       this.pointObject.set({points: points})
       let conjonctionPoint = this.findConjonctionPoint()
@@ -1075,10 +1011,21 @@ export default {
           minDistanceToConjonctionAltitude = vDist
           conjonctionPoint = point
         }
-        console.log(vDist, conjonctionPoint)
       }
       return conjonctionPoint
     },
+
+    changeUnit: function (event) {
+      if (this.selectedUnit.element) {
+        this.selectedUnit.element.classList.remove('selected')
+      }
+      this.selectedUnit = {
+        element: event.target,
+        unit: event.target.innerText
+      }
+      event.target.classList.add('selected')
+    },
+
 
     createRipple(event){
       createRipple(event)
@@ -1532,7 +1479,7 @@ export default {
   top: 0;
   backdrop-filter: blur(2px);
   height: 100vh;
-  background: rgba(26, 26, 26, 0.32);
+  background: rgba(25, 24, 24, 0.52);
 }
 
 
