@@ -397,7 +397,7 @@ export default {
       },
       colorStops: [
         {
-          color: 'rgba(216,30,255,0.09)',
+          color: 'rgba(224,126,244,0.09)',
           offset: 0,
         },
         {
@@ -409,18 +409,18 @@ export default {
     });
 
     // eslint-disable-next-line no-undef
-    let pointObject = new fabric.Polyline(points, {
+    this.pointObject = new fabric.Polyline(points, {
       stroke: '#ca8ee3',
       strokeWidth: 0.5,
       // evented: false,
       radius: 1,
       hoverCursor: 'pointer',
       selectable: false,
+      objectCaching:false,
       fill: grad,
     })
-
-    this.pointObject = pointObject
-
+    let pointObject = this.pointObject
+    canvas.add(pointObject)
     // eslint-disable-next-line no-undef
     // let sampledObject = new fabric.Polyline(sampledPoints, {
     //   stroke: '#ff1f32',
@@ -449,7 +449,7 @@ export default {
     // canvas.add(sampledObject)
 
     // eslint-disable-next-line no-undef
-    let followLine = new fabric.Polyline([{x: 0, y: 0}, {x: canvas.width, y: canvas.height}], {
+    this.followLine = new fabric.Polyline([{x: 0, y: 0}, {x: canvas.width, y: canvas.height}], {
       stroke: '#46f4b2',
       strokeWidth: 1,
       evented: false,
@@ -457,6 +457,7 @@ export default {
       hoverCursor: 'pointer',
       selectable: false,
     })
+    let followLine = this.followLine
     canvas.add(followLine)
     // eslint-disable-next-line no-undef
     let groundLabel = new fabric.Text('GROUND', {
@@ -472,7 +473,6 @@ export default {
       fill: 'rgba(100,100,100,1)',
     })
     canvas.add(groundLabel)
-    // marginHorizontalLeft + (canvas.width - marginHorizontalRight - marginHorizontalLeft)
     // eslint-disable-next-line no-undef
     let climbLabel = new fabric.Text('Climb', {
       left: 0.5 * (canvas.width - marginHorizontalRight - marginHorizontalLeft) / 3 + marginHorizontalLeft - 20,
@@ -488,7 +488,7 @@ export default {
     })
     canvas.add(climbLabel)
     // eslint-disable-next-line no-undef
-    let climbGraph = new fabric.Polygon(climbPoints, {
+    this.climbGraph = new fabric.Polygon(climbPoints, {
       stroke: '#764637',
       strokeWidth: 0.0002,
       evented: false,
@@ -497,7 +497,7 @@ export default {
       selectable: false,
       fill: grad2,
     })
-    canvas.add(climbGraph)
+    canvas.add(this.climbGraph)
     // eslint-disable-next-line no-undef
     let cruiseLabel = new fabric.Text('Cruise', {
       left: 1.5 * (canvas.width - marginHorizontalRight - marginHorizontalLeft) / 3 + marginHorizontalLeft - 20,
@@ -513,7 +513,7 @@ export default {
     })
     canvas.add(cruiseLabel)
     // eslint-disable-next-line no-undef
-    let cruiseGraph = new fabric.Polygon(cruisePoints, {
+    this.cruiseGraph = new fabric.Polygon(cruisePoints, {
       stroke: '#764637',
       strokeWidth: 0.0002,
       evented: false,
@@ -522,7 +522,7 @@ export default {
       selectable: false,
       fill: grad2,
     })
-    canvas.add(cruiseGraph)
+    canvas.add(this.cruiseGraph)
     // eslint-disable-next-line no-undef
     let descentLabel = new fabric.Text('Descent', {
       left: 2.5 * (canvas.width - marginHorizontalRight - marginHorizontalLeft) / 3 + marginHorizontalLeft - 20,
@@ -538,7 +538,7 @@ export default {
     })
     canvas.add(descentLabel)
     // eslint-disable-next-line no-undef
-    let descentGraph = new fabric.Polygon(descentPoints, {
+    this.descentGraph = new fabric.Polygon(descentPoints, {
       stroke: '#764637',
       strokeWidth: 0.0002,
       evented: false,
@@ -547,25 +547,24 @@ export default {
       selectable: false,
       fill: grad2,
     })
-    canvas.add(descentGraph)
+    canvas.add(this.descentGraph)
 
     this.phaseObjects = {
       climb: {
         label: climbLabel,
-        graph: climbGraph,
+        graph: this.climbGraph,
       },
       cruise: {
         label: cruiseLabel,
-        graph: cruiseGraph,
+        graph: this.cruiseGraph,
       },
       descent: {
         label: descentLabel,
-        graph: descentGraph,
+        graph: this.descentGraph,
       }
 
     }
 
-    canvas.requestRenderAll()
     // eslint-disable-next-line no-undef
     let verticalScale = new fabric.Rect({
       fill: 'rgba(100,100,100,1)',
@@ -607,18 +606,15 @@ export default {
       selectable: false,
       fill: 'rgba(79,255,176,0.1)',
     })
-
-
+    canvas.add(cursor1)
     // eslint-disable-next-line no-undef
     let cursor2 = new fabric.Circle({
-      // stroke : '#AA644E',
-      // strokeWidth : 2,
       radius: 4,
       hoverCursor: 'pointer',
       selectable: false,
       fill: '#85dfca',
     })
-
+    canvas.add(cursor2)
     // eslint-disable-next-line no-undef
     let cursorLine = new fabric.Rect({
       fill: '#85eac3',
@@ -628,19 +624,12 @@ export default {
       height: canvas.height,
       left: canvas.width - 10,
       top: marginVertical,
+      selectable : false,
     })
-
-    canvas.add(pointObject)
-    canvas.add(cursor1)
     canvas.add(cursorLine)
-
-    canvas.add(pointObject)
-    canvas.add(cursor1)
-    canvas.add(cursor2)
-
     // eslint-disable-next-line no-undef
     this.hpTrans = new fabric.Rect({
-      fill: 'rgba(137,207,255,0.98)',
+      fill: 'rgba(205,189,246,0.98)',
       height: 2,
       width: 10,
       left: canvas.width - 10,
@@ -648,10 +637,9 @@ export default {
       top: -profile[0].hpTrans / 100 * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height,
     })
     canvas.add(this.hpTrans)
-
     // eslint-disable-next-line no-undef
     this.hpTransText = new fabric.Text('CONJONCTION', {
-      fill: 'rgba(137,207,255,0.98)',
+      fill: 'rgba(223,209,255,0.98)',
       opacity: 0.6,
       fontSize: 9,
       objectCaching: false,
@@ -663,23 +651,12 @@ export default {
     })
     canvas.add(this.hpTransText)
 
-//     let hpTransLevel = new fabric.Text('FL' + (Math.round(profile[0].hpTrans / 100).toString()), {
-//       fill: 'rgba(137,207,255,0.98)',
-//
-//       fontSize: 10,
-//       objectCaching: false,
-//       fontFamily: 'Product Sans',
-//       fontWeight: 'Bold',
-//
-//       left: 2,
-//       top: -profile[0].hpTrans / 100 * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height - 12,
-//     })
-
     let PRESSED = false
-
     let GRABBING = false
-    canvas.on("mouse:down", (event) => {
+    let HOVER = false
+    let group = [this.pointObject, cursor1, cursor2]
 
+    canvas.on("mouse:down", (event) => {
       if (event.target === cursor1 || event.target === cursor2) {
         GRABBING = true
         if (!PRESSED) {
@@ -813,8 +790,6 @@ export default {
 
     })
 
-    let HOVER = false
-
     canvas.on("mouse:over", (event) => {
       if (event.target === this.pointObject || event.target === cursor2 || event.target === cursor1) {
         if (HOVER) {
@@ -843,11 +818,8 @@ export default {
     })
 
 
-    let group = [this.pointObject, cursor1, cursor2]
-    // console.log(group)
     canvas.on("mouse:out", (event) => {
       // console.log(event.nextTarget)
-
       if ((event.target === this.pointObject || event.target === cursor2 || event.target === cursor1) && (!group.includes(event.nextTarget))) {
         if (HOVER && !GRABBING) {
           // console.log("MOUSE OUT")
@@ -873,7 +845,6 @@ export default {
 
       }
     })
-
     canvas.requestRenderAll()
 
   },
@@ -986,6 +957,11 @@ export default {
       // console.log(points)
       this.profilePoints = points
       this.pointObject.set({points: points})
+      this.climbGraph.set({points: climbPoints})
+      this.cruiseGraph.set({points: cruisePoints})
+      this.descentGraph.set({points: descentPoints})
+      this.followLine.set({points: points})
+
       let conjonctionPoint = this.findConjonctionPoint()
       // eslint-disable-next-line no-unused-vars,no-undef
       let conjonctionBug = new fabric.Circle({
@@ -1176,7 +1152,7 @@ export default {
   border-radius: 48px;
   position: relative;
   overflow: hidden;
-  background: #b786ce;
+  background: #b794dc;
   box-shadow: rgba(11, 10, 10, 0.44) 0px 8px 8px 1px;
   cursor: pointer;
 
@@ -1309,23 +1285,26 @@ export default {
   height: 55px;
   flex-direction: column;
 
-  font-family: "Roboto", sans-serif;
-  font-weight: normal;
-  color: #e4cae8;
-  font-size: 14px;
+  font-family: "Product Sans", sans-serif;
+  /*font-weight: bold;*/
+  /*text-transform: uppercase;*/
+  letter-spacing: 1px;
+  color: #bdafc0;
+  font-size: 12px;
 }
 
 .infoboxTypeValue {
   margin-top: 5px;
   display: flex;
   text-align: right;
+  text-transform: none;
   padding-right: 15px;
   letter-spacing: 1px;
   flex-direction: column;
   font-family: "Product Sans", sans-serif;
   font-weight: 600;
   font-size: 13px;
-  color: #c292ea;
+  color: #be97f8;
 }
 
 
@@ -1348,7 +1327,7 @@ export default {
 }
 
 .information-box.information-box--active .box__container {
-  box-shadow: rgba(5, 5, 5, 0.45) 0px 1px 3px 1px;
+  box-shadow: rgba(5, 5, 5, 0.59) 0px 2px 10px 1px;
   width: calc(100% - 10px);
   transform: translateY(-5px);
   margin: 5px;
@@ -1359,7 +1338,7 @@ export default {
 }
 
 .information-box.information-box--brown .box__container {
-  background: linear-gradient(45deg, rgb(66, 60, 67) -0%, rgb(199, 148, 241) 110%);
+  background: linear-gradient(45deg, rgb(66, 60, 67) -0%, rgb(193, 176, 244) 110%);
 }
 
 .information-box.information-box--blue.information-box--active .box__container {
@@ -1379,7 +1358,7 @@ export default {
 }
 
 .information-box.information-box--brown.information-box--active .color-text {
-  color: rgb(220, 159, 234);
+  color: rgb(229, 190, 237);
 }
 
 .information-box.information-box--blue.information-box--active .color-text {
@@ -1391,7 +1370,7 @@ export default {
 }
 
 .information-box.information-box--brown.information-box--active .flight-state-value {
-  color: rgb(202, 159, 248);
+  color: rgb(213, 189, 239);
 }
 
 .box__container{
@@ -1490,14 +1469,15 @@ export default {
 .box__container {
   width: 100%;
   display: flex;
-  background: rgba(83, 85, 91, 0.20);
+  background: linear-gradient(45deg, rgb(33, 30, 33) -0%, rgb(56, 54, 62) 110%);
   flex-direction: column;
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(1px);
   border-radius: 14px;
   margin: 0px;
   position: relative;
   top: 0;
   left: 0;
+  box-shadow: rgba(5, 5, 5, 0.3) 0px 1px 10px 3px;
   height: max-content;
   transform: translateY(0px);
   justify-content: space-between;
@@ -1579,7 +1559,7 @@ export default {
 }
 
 .law-edit-box span {
-  color: #be7fd0;
+  color: #bd94e3;
 
   padding-right: 20px;
   padding-top: 14px;
@@ -1665,7 +1645,7 @@ export default {
 
 .flight-state-value {
   background: rgba(38, 42, 46, 1);
-  color: rgb(151, 77, 168);
+  color: rgb(196, 162, 218);
   font-weight: bold;
   font-size: 12px;
   border-radius: 9px;

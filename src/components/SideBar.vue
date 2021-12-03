@@ -194,7 +194,7 @@ export default {
 .charac .description h2 {
   font-size: 15px;
   line-height: 15px;
-  color: #d19af1;
+  color: #cab1f3;
   margin: 0;
   padding: 0;
 }
@@ -234,7 +234,7 @@ export default {
   display: flex;
   height: 60px;
   box-shadow: rgba(5, 5, 5, 0.1) 0px 8px 8px 2px, rgba(5, 5, 5, 0.2) 0px 2px 4px 2px;
-  background: linear-gradient(237deg, rgba(48, 48, 48, 1) -30%, rgb(192, 136, 237) 150%);
+  background: linear-gradient(237deg, rgba(48, 48, 48, 1) -30%, rgb(206, 178, 248) 150%);
   border-radius: 8px;
 }
 
