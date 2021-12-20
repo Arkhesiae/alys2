@@ -71,7 +71,7 @@ import {HpTrans, knotToMs, msToKnot} from "@/BADA/Misc/func"
 
 export default {
   name: "lawEdit",
-  props: ["icon", "speedRange", "machRange"],
+  props: ["icon", "speedRange"],
   data() {
     return {
       // speedList: [],
@@ -87,22 +87,8 @@ export default {
   mounted() {
     // eslint-disable-next-line no-unused-vars
     let drag_time = 0
-    let minSpeed = 230
-    let maxSpeed = 350
-    for (let speed = minSpeed; speed <= maxSpeed; speed++) {
-      this.speedList.push({
-        value: speed
-      })
-    }
 
-    let minMach = 72
-    let maxMach = 80
 
-    for (let mach = minMach; mach <= maxMach; mach++) {
-      this.machList.push({
-        value: mach / 100
-      })
-    }
 
 
     let figureLists = document.getElementsByClassName('figure-list')
