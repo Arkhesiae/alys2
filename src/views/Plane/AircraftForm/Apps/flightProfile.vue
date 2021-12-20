@@ -2,7 +2,7 @@
   <div class="frame-container">
     <div class="law-edit-frame" v-show="lawEditing">
       <div class="law-edit-overlay"></div>
-      <law-edit @close="lawEditing = false" @getLaw="setCustomSpeedLaw"></law-edit>
+      <law-edit @close="lawEditing = false" @getLaw="setCustomSpeedLaw" :speedRange="envelopeSpeeds"></law-edit>
     </div>
     <div class="params-frame" v-show="params">
       <div class="law-edit-overlay"></div>
@@ -227,8 +227,19 @@ export default {
   computed: {
 
     flightProfile: function () {
-      return flightProfile(this.climbSequence, this.cruiseSequence, this.descentSequence, this.law, this.coefficient, this.selectedMass)
+      return flightProfile(this.climbSequence, this.cruiseSequence, this.descentSequence, this.law, this.coefficient, this.defaultSpeed, this.selectedMass)
     },
+
+
+    envelopeSpeeds: function () {
+      let lastCruisePoint = this.flightProfile?.cruise[this.flightProfile.cruise.length - 1]
+      return {
+        minSpeed: lastCruisePoint?.minSpeed,
+        buffetingMach: lastCruisePoint?.buffetingMach,
+        VMO: lastCruisePoint?.maxSpeed,
+        maxMach: lastCruisePoint?.maxMach
+      }
+    }
   },
 
   mounted() {
@@ -279,6 +290,7 @@ export default {
 
 
     let points = []
+    let pointsMaxAlt = []
 
     this.profilePoints = points
 
@@ -298,7 +310,12 @@ export default {
         x: marginHorizontalLeft + (canvas.width - marginHorizontalRight - marginHorizontalLeft) / DTotal * point.dist,
         y: -point.alt * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height
       })
+      pointsMaxAlt.push({
+        x: marginHorizontalLeft + (canvas.width - marginHorizontalRight - marginHorizontalLeft) / DTotal * point.dist,
+        y: -point.maxAlt * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height
+      })
     }
+    console.log(pointsMaxAlt)
     for (let point of profileObject.climb) {
       climbPoints.push({
         profilePoint: point,
@@ -407,8 +424,23 @@ export default {
       objectCaching: false,
       fill: grad,
     })
+
+    // eslint-disable-next-line no-undef
+    this.pointMaxAltObject = new fabric.Polyline(pointsMaxAlt, {
+      stroke: '#76d6ff',
+      strokeWidth: 1,
+      strokeDashArray: [5, 5],
+      // evented: false,
+      // radius: 1,
+      hoverCursor: 'pointer',
+      selectable: false,
+      objectCaching: false,
+      fill: "rgba(0,0,0,0)",
+    })
     let pointObject = this.pointObject
+    let pointMaxAltObject = this.pointMaxAltObject
     canvas.add(pointObject)
+    canvas.add(pointMaxAltObject)
     // eslint-disable-next-line no-undef
     // let sampledObject = new fabric.Polyline(sampledPoints, {
     //   stroke: '#ff1f32',
