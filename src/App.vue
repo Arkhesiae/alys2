@@ -8,7 +8,7 @@
 
 <script>
 // eslint-disable-next-line no-unused-vars,no-undef
-import {createRipple} from "@/BADA/ripple"
+import {createRipple} from "@/BADA/Misc/ripple"
 
 export default {
   data(){

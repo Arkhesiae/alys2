@@ -1,59 +1,78 @@
 <template>
   <div class="sideBar">
-    <div class="presentation">
+    <div class="ctn-all">
       <div class="picture">
-        <img src="../assets/airbus.jpg"/>
+        <img alt="" :src="require('@/assets/Images/'+this.imageRef.imageIDs[0].toString()+'.jpg')"/>
+<!--        <span>{{imageRef.imageIDs[0]}}</span>-->
+<!--        <img src="../assets/images/{{ ref.imageIDs[0]}}jpg"/>-->
       </div>
-      <div class="header">
-        <div class="name">{{ aircraft.aircraftModel }}</div>
-        <div class="lower-header">
-          <div class="bar"/>
-          <div class="ICAO-code">{{ aircraft.ICAO }}</div>
+      <div class="content">
+        <div class="engine">
+          <img src="../assets/icons/jet.svg"/>
+          <div class="engine-number">2</div>
+          <div class="engine-description">Réacteur</div>
+          <div class="wake-turbulence">M</div>
         </div>
-        <!--            <div class="class-icon"><img src="../assets/jet.svg"/></div>-->
-        <div class="menu-option"></div>
-      </div>
-    </div>
-    <div class="container">
-      <div class="engine">
-        <img src="../assets/jet.svg"/>
-        <div class="engine-number">2</div>
-        <div class="engine-description">Réacteur</div>
+        <div class="presentation">
 
-      </div>
-      <div class="charac">
-        <div class="description">
-          <h2>Wing position</h2>
-          <p>Low wing</p>
-          <h2>Engine position</h2>
-          <p>Underwing mounted</p>
-          <h2>Tail configuration</h2>
-          <p>Regular tail, mid set Landing gear</p>
+          <div class="header">
+            <div class="name">{{ aircraft.aircraftModel }}</div>
+            <div class="lower-header">
+              <div class="bar"/>
+              <div class="ICAO-code">{{ aircraft.ICAO }}</div>
+            </div>
+            <!--            <div class="class-icon"><img src="../assets/jet.svg"/></div>-->
+            <div class="menu-option"></div>
+          </div>
+        </div>
+        <div class="container">
+
+          <div class="charac">
+            <div class="description">
+              <h2>Wing position</h2>
+              <p>Low wing</p>
+              <h2>Engine position</h2>
+              <p>Underwing mounted</p>
+              <h2>Tail configuration</h2>
+              <p>Regular tail, mid set Landing gear</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="type">
+          <div class="description">
+            <h2>Information techniques</h2>
+            <p>Masses, limitations</p>
+          </div>
+          <img src="../assets/icons/chevron-right.svg">
+        </div>
+        <div class="misc">
+          <img src="../assets/icons/information-outline.svg"/>
+          <p>
+            L'Airbus A319 est une version raccourcie de l'A320
+          </p>
         </div>
       </div>
-    </div>
 
-    <div class="type">
-      <div class="description">
-        <h2>Information techniques</h2>
-        <p>Masses, limitations</p>
-      </div>
-      <img src="../assets/chevron-right.svg">
     </div>
-    <div class="misc">
-      <img src="../assets/information-outline.svg"/>
-      <p>
-        L'Airbus A319 est une version raccourcie de l'A320
-      </p>
-    </div>
+<!--    <div class="picture">-->
+<!--      -->
+<!--    </div>-->
+
 
   </div>
 </template>
 
 <script>
+// import {imageData} from "@/BADA/Data/imagesRef"
+
 export default {
   name: "SideBar",
-  props : ["aircraft"]
+  props : ["aircraft", "imageRef"],
+  beforeMount() {
+
+      console.log('@/assets/images/'+this.imageRef.imageIDs[0].toString()+'.jpg')
+  }
 }
 </script>
 
@@ -62,17 +81,17 @@ export default {
   /*position: absolute;*/
   width: 320px;
   box-shadow: rgba(5, 5, 5, 0.1) 0px 1px 3px 1px;
-  border-left: 1px solid rgba(60, 60, 60, 0.07);
-  background: rgba(25, 23, 23, 0.99);
-  background-size: auto 100%;
+  /*border-left: 1px solid rgba(60, 60, 60, 0.07);*/
+  background: rgba(29, 28, 30, 1);
+  /*background-size: auto 100%;*/
   /*top:0;*/
   height: 100%;
+  /*overflow: hidden;*/
   display: flex;
   /*padding-top: 50px;*/
-  padding-left: 20px;
-  padding-right: 20px;
+  /*padding: 20px;*/
   box-sizing: border-box;
-  justify-content: space-around;
+  justify-content: space-between;
   flex-direction: column;
   /*right: 0px;*/
 }
@@ -110,7 +129,8 @@ export default {
 
 .container{
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  flex-direction: column;
 }
 
 .charac {
@@ -126,16 +146,35 @@ export default {
 
 .engine{
   /*align-self: center;*/
-  position: relative;
+  position: absolute;
+  top:-15px;
+  margin-left: 5%;
   height: 40px;
   margin-bottom: 10px;
-  margin-right: 10px;
+  /*margin-right: 10px;*/
+  backdrop-filter: blur(5px);
   justify-content: space-between;
   display: flex;
-  border-radius: 8px;
-  background: linear-gradient(45deg, rgb(169, 129, 183) 0%, rgb(46, 42, 44) 100%);
+  border-radius: 80px;
+  background: linear-gradient(45deg, rgba(59, 53, 62, 0.9) 0%, rgb(46, 42, 44) 100%);
   box-shadow: rgba(5, 5, 5, 0.07) 0px 10px 15px 2px;
-  width: 60%;
+  width: 80%;
+}
+
+.engine .wake-turbulence{
+  width: 30px;
+  margin: 5px;
+  box-sizing: border-box;
+  text-align: center;
+  padding-top: 8px;
+  font-weight: bold;
+  color: #202020;
+  font-size: 13px;
+
+  height: 30px;
+  border-radius: 30px;
+  background:linear-gradient(45deg, rgb(166, 155, 195) 0%, rgb(88, 65, 80) 100%); ;
+
 }
 
 .engine .engine-number{
@@ -145,20 +184,23 @@ export default {
   left : 22px;
   font-size: 9px;
   top : 13px;
-  color: #252424;
+  color: #e6cbf6;
 }
 
 .engine-description{
   margin-right: 10px;
   font-weight: bold;
-  padding-top: 10px;
+  padding-top: 11px;
   font-size: 14Px;
-  color: #26212a;
+  flex: 1 1 auto;
+  margin-left: 10px;
+  text-align: left;
+  color: #a99bb5;
 }
 
 .engine img{
   margin: 5px;
-  filter: invert(15%);
+  filter: invert(81%) sepia(20%) saturate(841%) hue-rotate(220deg) brightness(82%) contrast(88%);
   margin-left: 10px;
   width: 30px;
   height: 30px;
@@ -194,7 +236,7 @@ export default {
 .charac .description h2 {
   font-size: 15px;
   line-height: 15px;
-  color: #cab1f3;
+  color: #b7a5d3;
   margin: 0;
   padding: 0;
 }
@@ -250,12 +292,41 @@ export default {
   align-self: center;
 }
 
+.ctn-all{
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+
+.content{
+  /*background: white;*/
+  border-radius: 16px;
+  position: relative;
+  margin-top: -20px;
+  box-shadow: rgba(5, 5, 5, 0.2) 0px 1px 2px 0px, rgba(5, 5, 5, 0.2) 0px 2px 4px 2px;
+  background: rgba(29, 28, 30, 1);
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+}
+
 .picture {
   box-shadow: rgba(5, 5, 5, 0.2) 0px 1px 2px 0px, rgba(5, 5, 5, 0.2) 0px 2px 4px 2px;
-  width: auto;
+  width: 100%;
+  height: auto;
   overflow: hidden;
-  height: 180px;
-  border-radius: 8px;
+  /*height: 180px;*/
+  border-radius: 16px 16px 0 0 ;
+}
+
+.picture img {
+  width: 100%;
+  height: auto;
+  max-height: 500px;
+  /*max-width: 100%;*/
+  display: block;
 }
 
 .name {
@@ -278,9 +349,7 @@ export default {
   border-radius: 20px;
 }
 
-.picture img {
-  width: 100%;
-}
+
 
 .header {
   display: flex;

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import Background from "@/components/Background"
+import Background from "@/components/Nav/Background"
 export default {
   name: "NotFound",
   components: {Background}

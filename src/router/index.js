@@ -1,14 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
 // import Static from "../views/HomePage.vue"
-import SelectScreen from "../views/SelectScreen"
-import Test from "../views/Test"
-import TestView from "../views/TestView"
-import Graphe from "../views/graphe"
-import Home from "@/views/Home"
+import SelectScreen from "../views/Plane/SelectScreen"
+import Test from "../views/Useless/Test"
+import AircraftForm from "../views/Plane/AircraftForm/AircraftForm"
+import Graphe from "../views/Useless/graphe"
+import PlanePage from "@/views/PlanePage/PlanePage"
 import NotFound from "@/components/NotFound"
-import flightProfile from "@/views/flightProfile"
-import StaticPerformances from "@/views/StaticPerformances"
+import flightProfile from "@/views/Plane/AircraftForm/Apps/flightProfile"
+import StaticPerformances from "@/views/Plane/AircraftForm/Apps/StaticPerformances"
 
 // import SelectScreen from "../views/SelectScreen.vue"
 
@@ -42,35 +42,25 @@ const routes = [
     path: '/plane/:id/',
     name: 'Plane',
     props: true,
-    component: Home,
+    component: PlanePage,
     children: [
       {
-        // UserProfile will be rendered inside User's <router-view>
-        // when /user/:id/profile is matched
         path: '',
-
         name:'Select',
         component: SelectScreen
       },
       {
-        // UserProfile will be rendered inside User's <router-view>
-        // when /user/:id/profile is matched
         path: 'aircraftForm',
-        component: TestView,
+        component: AircraftForm,
         children : [
           {
-            // UserPosts will be rendered inside User's <router-view>
-            // when /user/:id/posts is matched
             path: 'dynamic',
             component: flightProfile
           },
           {
-            // UserPosts will be rendered inside User's <router-view>
-            // when /user/:id/posts is matched
             path: 'sPerformances',
             component: StaticPerformances
           }
-
         ]
       },
 
@@ -81,17 +71,17 @@ const routes = [
 
   { path: "/:catchAll(.*)", redirect: '/404' },
 
-  {
-    path: '/testView',
-    name: 'TestView',
-    component: TestView
-  },
-
-  {
-    path: '/testView',
-    name: 'TestView',
-    component: TestView
-  },
+  // {
+  //   path: '/testView',
+  //   name: 'TestView',
+  //   component: TestView
+  // },
+  //
+  // {
+  //   path: '/testView',
+  //   name: 'TestView',
+  //   component: TestView
+  // },
 
   {
     path: '/select-screen/:type',

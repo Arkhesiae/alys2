@@ -1,6 +1,6 @@
 <template>
   <div id="tile-container">
-    <router-link :to="$route.fullPath+'statizaec'">
+    <router-link :to="$route.fullPath+'aircraftForm/'+'static'">
       <Tile type="Performances"></Tile>
     </router-link>
     <router-link style="-webkit-user-drag: none; " :to="$route.fullPath+'aircraftForm/'+'dynamic'">
@@ -11,7 +11,7 @@
 
 <script>
 import Tile from "./Tile"
-import {createRipple} from "@/BADA/ripple"
+import {createRipple} from "@/BADA/Misc/ripple"
 export default {
   name: 'HelloWorld',
   components: {Tile},

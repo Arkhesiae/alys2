@@ -7,9 +7,9 @@ import {
     TAStoCAS,
     TAStoMach,
     temperature
-} from "@/BADA/func.js"
-import {Constante} from "@/BADA/constantes.js"
-import {msToKnot} from "./func";
+} from "@/BADA/Misc/func.js"
+import {Constante} from "@/BADA/Misc/constantes.js"
+import {msToKnot} from "./Misc/func";
 
 export class PhysicalPlane {
     flightCoefficients
@@ -120,24 +120,34 @@ export class PhysicalPlane {
 
     computeCruiseFuelFlow() {
         this.computeThrustSpecificFuelConsumption()
+        // console.log("FF : ", this.cruiseFuelFlow)
         let engType = this.flightCoefficients.acTypeData.engineType
         if (engType === "JET"){
             let CfCr = parseFloat(this.flightCoefficients.aircraftFuelConsumption.cruiseConsumption)
+
             return this.cruiseFuelFlow = this.specificFuelConsumption * this.force.thrust / 1000 * CfCr
         }
+
 
     }
 
     computeFuelFlow() {
-        this.fuelFlow = 0
-        switch (this.flightPhase) {
-            case "LEVELLED":
+        // this.fuelFlow = 0
+        let phase = this.getPhase()
+        switch (phase) {
+            case "CRUISE":
                 this.fuelFlow = this.computeCruiseFuelFlow()
                 break
-            case "CLIMB":
+            case "INITIALCLIMB":
                 this.fuelFlow = this.computeNominalFuelFlow()
                 break
-            case "DESCENT":
+            case "TAKEOFF":
+                this.fuelFlow = this.computeNominalFuelFlow()
+                break
+            case "APPROACH":
+                this.fuelFlow = this.computeMinimumFuelFlow()
+                break
+            case "LANDING":
                 this.fuelFlow = this.computeMinimumFuelFlow()
                 break
         }
@@ -187,6 +197,7 @@ export class PhysicalPlane {
             let A = Math.max(this.atmosphereParams.deltaT - parseFloat(this.flightCoefficients.aircraftEngineThrust.firstThrustTemperatureCoefficient),0)
             Math.min(hMO, hMAX + Gt*A+this.flightCoefficients.flightEnvelope.weightGradient*(this.flightCoefficients.aircraftStandardMass.maximumMass-this.flightParams.mass))
         }
+        return this.flightEnvelope.maxAlt
     }
 
 
@@ -323,6 +334,7 @@ export class PhysicalPlane {
             // let Ctc4 = parseFloat(this.flightCoefficients.aircraftEngineThrust.firstThrustTemperatureCoefficient)
             // let Ctc5 = parseFloat(this.flightCoefficients.aircraftEngineThrust.secondThrustTemperatureCoefficient)
             this.maxThrust = parseFloat(maxClimbTOThrustJET(Ctc1, Ctc2, Ctc3, this.flightParams.Hp))
+            // console.log(Ctc1, Ctc2, Ctc3, this.flightParams.Hp*3.28084)
         }
         else if (engType === "TURBOPROP"){
             let Ctc1 = parseFloat(this.flightCoefficients.aircraftEngineThrust.firstMaxClimbThrust.TURBOPROP.turbo)
@@ -562,6 +574,11 @@ export class PhysicalPlane {
             speedInstruction = this.loiMontee.CAS
         }
 
+        // if (target === "max"){
+        //     target = Math.floor((this.computeMaxAltitude()-4000)/1000)*1000/100
+        //     console.log(target)
+        // }
+
         this.speedInstruction = speedInstruction
         this.speedVariation = this.getSpeedVariation(speedInstruction)
         // console.log(this.speedVariation, this.speedInstruction)
@@ -655,6 +672,7 @@ export class PhysicalPlane {
             } else {
                 let ESFValue = ESF(this.flightParams.speed.Mach, this.loiMontee.Mach, knotToMs(this.loiMontee.CAS), this.atmosphereParams.temperature, this.atmosphereParams.deltaT, this.flightParams.Hp, this.speedVariation.variation, 1)
 
+                this.ESF = ESFValue
 
                 this.force.thrust = this.maxThrust
                 // console.log(this.force.drag)
@@ -717,9 +735,16 @@ export class PhysicalPlane {
 
         let Tx = Math.abs(this.flightParams.ROCD / Constante.Gmax)
         let h = this.flightParams.ROCD * Tx
+        // console.log("h : ",h)
+        // console.log("ROCD : ",this.flightParams.ROCD)
+        this.currenth = h * 3.28084
         let altIntcpt = this.targetFL * 100 / 3.28084 - h
+        this.altIntcpt = altIntcpt
         if (this.flightPhase === "CLIMB"){
-            if (this.flightParams.Hp > altIntcpt && !this.INTERCEPTION) {
+            if (h>4000/3.28084){
+                this.INTERCEPTION = false
+            }
+            else if (this.flightParams.Hp > altIntcpt && !this.INTERCEPTION) {
                 this.startInterception()
             }
         } else if (this.flightPhase === "DESCENT") {
@@ -751,7 +776,7 @@ export class PhysicalPlane {
         this.speedVariation = this.getSpeedVariation(this.restrictedTarget)
         // console.log(this.getSpeedVariation(this.restrictedTarget))
 
-        if (Math.abs(this.flightParams.speed.CAS - knotToMs(this.restrictedTarget)) < 2) {
+        if (Math.abs(this.flightParams.speed.CAS - knotToMs(this.restrictedTarget)) < .5) {
             // this.flightParams.speed.TAS = CAStoTAS(knotToMs(this.restrictedTarget), this.atmosphereParams.pressure, this.atmosphereParams.temperature)
             return true
         }
@@ -938,7 +963,7 @@ export class PhysicalPlane {
             type = "CAS"
             if (msToKnot(this.flightParams.speed.CAS) < speedInstruction) {
                 variation = 'ACCELERATION'
-            } else if (Math.abs(this.flightParams.speed.CAS - knotToMs(this.restrictedTarget)) < .5) {
+            } else if (Math.abs(this.flightParams.speed.CAS - knotToMs(this.restrictedTarget)) < 1) {
                 variation = 'CONSTANT'
             } else {
                 variation = 'DECELERATION'
@@ -953,7 +978,7 @@ export class PhysicalPlane {
     computeMassVariation() {
         // console.log(this.fuelFlow)
         if (this.fuelFlow){
-            // this.flightParams.mass -= this.fuelFlow / 60
+            this.flightParams.mass -= this.fuelFlow / 60
         }
 
     }

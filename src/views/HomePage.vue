@@ -3482,7 +3482,7 @@
           <span>Discover Alice</span>
           <div class="discover-button" @click="discover()">
             <div class="bg">
-              <img src="../assets/chevron-double-down.svg">
+              <img src="../assets/icons/chevron-double-down.svg">
             </div>
             <div class="ripple ripple1"></div>
             <div class="ripple ripple2"></div>
@@ -3588,11 +3588,12 @@
 
 <script>
 // @ is an alias to /src
-import Background from "../components/Background"
-import Searchbar from "@/components/Searchbar"
-import {createRipple} from "@/BADA/ripple"
-
+import Background from "../components/Nav/Background"
+import Searchbar from "@/components/Nav/Searchbar"
+import {createRipple} from "@/BADA/Misc/ripple"
+// import * as all from "@/BADA/Misc/convertToJson"
 // import MenuButton from "../components/MenuButton"
+// console.log(all)
 
 
 export default {

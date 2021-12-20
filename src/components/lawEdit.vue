@@ -4,7 +4,7 @@
       <span>Loi de vitesse</span>
     </div>
     <div class="law-edit-close" @click="close()">
-      <img src="../assets/clear_black_24dp.svg">
+      <img src="../assets/icons/clear_black_24dp.svg">
     </div>
     <div class="params">
       <div class="param-option selected">
@@ -51,7 +51,7 @@
     <div class="law-edit-conjonction">
       <span>Altitude de conjonction</span>
       <div class="title">
-        <img src="../assets/chart-multiline.svg">
+        <img src="../assets/icons/chart-multiline.svg">
         <span class="value-label">FL</span>
         <span class="value">{{ conjonctionAltitude }}</span>
 
@@ -59,7 +59,7 @@
 
     </div>
     <div class="validate" @click="setCustomSpeedLaw()">
-      <img src="../assets/check.svg">
+      <img src="../assets/icons/check.svg">
     </div>
   </div>
 </template>
@@ -67,21 +67,22 @@
 <script>
 
 
-import {HpTrans, knotToMs} from "@/BADA/func"
+import {HpTrans, knotToMs, msToKnot} from "@/BADA/Misc/func"
 
 export default {
   name: "lawEdit",
   props: ["icon", "speedRange", "machRange"],
   data() {
     return {
-      speedList: [],
+      // speedList: [],
       selectedValue: 0,
       selectedSpeed: 0,
       selectedMach: 0,
-      machList: [],
+
       customSpeedLaw : null
     }
   },
+
 
   mounted() {
     // eslint-disable-next-line no-unused-vars
@@ -307,6 +308,34 @@ export default {
   },
 
   computed: {
+    speedList : function (){
+      let minSpeed = msToKnot(this.speedRange.minSpeed)
+      let maxSpeed = (this.speedRange.VMO)
+
+      let speedValues = []
+      for (let speed = minSpeed; speed <= maxSpeed; speed++) {
+        speedValues.push({
+          value: Math.floor(speed)
+        })
+      }
+      return speedValues
+    },
+
+    machList : function (){
+      let minMach = Math.floor(this.speedRange.buffetingMach * 100)
+      let maxMach = this.speedRange.maxMach * 100
+      console.log(minMach, maxMach)
+      let machValues = []
+      for (let mach = minMach; mach <= maxMach; mach++) {
+        machValues.push({
+          value: mach / 100
+        })
+      }
+      return machValues
+    },
+
+
+
 
 
     conjonctionAltitude: function () {

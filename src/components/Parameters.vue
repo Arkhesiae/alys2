@@ -4,7 +4,7 @@
       <span>Paramètres avancés</span>
     </div>
     <div class="params-close" @click="close()">
-      <img src="../assets/clear_black_24dp.svg">
+      <img src="../assets/icons/clear_black_24dp.svg">
     </div>
     <div class="params">
     </div>
@@ -67,7 +67,7 @@
     </div>
 
     <div class="validate" @click="passParams()">
-      <img src="../assets/check.svg">
+      <img src="../assets/icons/check.svg">
     </div>
   </div>
   </div>

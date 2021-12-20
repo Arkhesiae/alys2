@@ -1,6 +1,6 @@
 // import {createCharts} from "./charts.js"
 import {PhysicalPlane} from "./physicalPlane.js"
-import {CAStoTAS, knotToMs, msToKnot, TAStoMach} from "@/BADA/func"
+import {knotToMs, msToKnot} from "@/BADA/Misc/func"
 
 
 const altitudeGraph = document.getElementById('altitude')?.getContext('2d');
@@ -261,8 +261,8 @@ export function flightProfile(climbSequence, cruiseSequence, descentSequence, la
 
     if (mass){
         plane.setMass(mass)
-    } else plane.setParameters(85)
-    console.log(plane.flightParams.mass)
+    } else plane.setParameters(95)
+
     let profile = {
         climb : [],
         cruise : [],
@@ -271,7 +271,9 @@ export function flightProfile(climbSequence, cruiseSequence, descentSequence, la
     }
     let index = 0
     let X = 0
-    console.log(fullSequence)
+
+
+
     Object.keys(fullSequence).forEach((sequence)=>{
 
         let currentSequence = fullSequence[sequence]
@@ -279,7 +281,6 @@ export function flightProfile(climbSequence, cruiseSequence, descentSequence, la
         for (let instruction of currentSequence){
             if (plane.idleState) {
                 X = 0
-                console.error('SHIFT')
                 let current = instruction
                 if (current.type === 'climb'){
                     plane.getTargetInstruction(current.FLTarget, current.time, '', current.speedInstruction)
@@ -293,7 +294,7 @@ export function flightProfile(climbSequence, cruiseSequence, descentSequence, la
             }
             while (!plane.idleState) {
                 X ++
-                if (X>5000){
+                if (X>50000){
                     console.log('FIN')
                     break
                 }
@@ -306,11 +307,27 @@ export function flightProfile(climbSequence, cruiseSequence, descentSequence, la
                     mach : plane.flightParams.speed.Mach,
                     rate : Math.round(plane.flightParams.ROCD*197/10)*10,
                     alt : plane.flightParams.Hp*3.28084/100,
+                    maxAlt : plane.flightEnvelope.maxAlt/100,
+                    intercept : plane.INTERCEPTION,
+                    altIntcpt : plane.altIntcpt,
+                    targetFL : plane.targetFL,
+                    targetSpeed : plane.targetSpeed,
+                    restrictedTarget : plane.restrictedTarget,
+                    speedVariation : plane.speedVariation,
+                    flightPhase : plane.flightPhase,
                     dist : plane.distanceFromStartPoint,
                     hpTrans : plane.loiMontee.HpTrans,
                     SAT : plane.atmosphereParams.temperature,
                     atmPressure : plane.atmosphereParams.pressure,
-                    phase : sequence
+                    phase : sequence,
+                    h: plane.currenth,
+                    force: plane.force.thrust,
+                    masse: plane.flightParams.mass,
+                    ESF : plane.ESF,
+                    buffetingMach: plane.lowSpeedBuffetingLimit,
+                    minSpeed: plane.minSpeed,
+                    maxSpeed: parseFloat(plane.flightCoefficients.aircraftFlightEnvelope.maxOperatingSpeed)/10,
+                    maxMach: parseFloat(plane.flightCoefficients.aircraftFlightEnvelope.maxOperatingMachNumber)
                 }
                 index++
                 profile[sequence].push(profilePoint)
@@ -321,8 +338,6 @@ export function flightProfile(climbSequence, cruiseSequence, descentSequence, la
             }
         }
     })
-
-
     return profile
 }
 
@@ -375,20 +390,27 @@ export function getPlaneMach(FL, CAS, coef) {
 // eslint-disable-next-line no-unused-vars
 export function speedRange(FL, coef) {
     let plane = new PhysicalPlane(coef)
-    plane.setParameters(54000)
+    plane.setParameters(85)
     plane.setInitialState(FL * 100 / 3.28084, knotToMs(250), 0, 0)
     let minSpeed = plane.minSpeed
     let maxSpeed = plane.maxSpeed
     // let unit = FL>=290 ? " M": ' kts'
-    if (FL < 290) {
-        // eslint-disable-next-line no-unused-vars
-        minSpeed = Math.floor(msToKnot(minSpeed))
-        maxSpeed = Math.floor(msToKnot(maxSpeed))
-    } else {
-        minSpeed = Math.round(TAStoMach(CAStoTAS(minSpeed, plane.atmosphereParams.pressure, plane.atmosphereParams.temperature), plane.atmosphereParams.temperature) * 100) / 100
-        maxSpeed = Math.round(TAStoMach(CAStoTAS(maxSpeed, plane.atmosphereParams.pressure, plane.atmosphereParams.temperature), plane.atmosphereParams.temperature) * 100) / 100
-    }
-    return {minSpeed: minSpeed, maxSpeed: maxSpeed}
+    // if (FL < 290) {
+    //     // eslint-disable-next-line no-unused-vars
+    //     minSpeed = Math.floor(msToKnot(minSpeed))
+    //     maxSpeed = Math.floor(msToKnot(maxSpeed))
+    // } else {
+    //     minSpeed = Math.round(TAStoMach(CAStoTAS(minSpeed, plane.atmosphereParams.pressure, plane.atmosphereParams.temperature), plane.atmosphereParams.temperature) * 100) / 100
+    //     maxSpeed = Math.round(TAStoMach(CAStoTAS(maxSpeed, plane.atmosphereParams.pressure, plane.atmosphereParams.temperature), plane.atmosphereParams.temperature) * 100) / 100
+    // }
+    return {minSpeed: msToKnot(minSpeed), maxSpeed: msToKnot(maxSpeed)}
+}
+
+export function getAtmParams(FL, coef){
+    let plane = new PhysicalPlane(coef)
+    plane.setParameters(85)
+    plane.setInitialState(FL * 100 / 3.28084, knotToMs(250), 0, 0)
+    return {pressure : plane.atmosphereParams.pressure, temperature: plane.atmosphereParams.temperature}
 }
 
 export function range(FL, coef) {

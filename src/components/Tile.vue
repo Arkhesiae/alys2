@@ -1,7 +1,7 @@
 <template>
   <div :id=type class="tile">
     <div class="tile-lower-container">
-      <img class="rrua" src="../assets/trending_up_black_24dp.svg">
+      <img class="rrua" src="../assets/icons/trending_up_black_24dp.svg">
 <!--      <div class="tile-title-decoration"></div>-->
       <p>{{type}}</p>
     </div>
