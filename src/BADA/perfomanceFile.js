@@ -241,21 +241,23 @@ export function maxFLAtROCD(FL, speed, loi, ROCD, coef) {
 
 
 
-export function flightProfile(climbSequence, cruiseSequence, descentSequence, law, coefficients, mass) {
-    console.error("FP")
-
+export function flightProfile(climbSequence, cruiseSequence, descentSequence, law, coefficients, defaultSpeeds, mass) {
     let fullSequence = {
         climb : climbSequence,
         cruise : cruiseSequence,
         descent : descentSequence,
     }
 
-    let plane = new PhysicalPlane(coefficients)
+    if(!climbSequence){
+        return
+    }
 
+
+    let plane = new PhysicalPlane(coefficients, defaultSpeeds)
 
     if (law){
         plane.setLoiMontee(law.speed, law.mach)
-    } else plane.setLoiMontee(300, 0.79)
+    } else plane.setLoiMontee(parseFloat(defaultSpeeds.climb.highAltitudeClimbSpeed.averageMassSpeed), parseFloat(defaultSpeeds.climb.standardClimbMachNumber.averageMassMach))
 
     plane.setInitialState(0, 0, 1, 0)
 

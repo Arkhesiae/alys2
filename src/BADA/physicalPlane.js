@@ -13,6 +13,7 @@ import {msToKnot} from "./Misc/func";
 
 export class PhysicalPlane {
     flightCoefficients
+    defaultSpeeds
 
     dVTAS = 0
 
@@ -29,7 +30,8 @@ export class PhysicalPlane {
     }
 
     flightEnvelope = {
-        optFL: ""
+        optFL: "",
+        maxAlt: ""
     }
 
     force = {
@@ -60,8 +62,9 @@ export class PhysicalPlane {
 
     maxThrust = 0
 
-    constructor(flightCoefficient) {
+    constructor(flightCoefficient, defaultSpeeds) {
         this.flightCoefficients = flightCoefficient
+        this.defaultSpeeds = defaultSpeeds
     }
 
     setParameters(massCoefficient) {
@@ -187,15 +190,15 @@ export class PhysicalPlane {
     }
 
     computeMaxAltitude(){
-        if (parseFloat(this.flightCoefficients.flightEnvelope.maxAltitudeAtMTOW) === 0){
-            return this.flightCoefficients.flightEnvelope.maxOperatingAltitude
+        if (parseFloat(this.flightCoefficients.aircraftFlightEnvelope.maxAltitudeAtMTOW) === 0){
+            this.flightEnvelope.maxAlt = this.flightCoefficients.aircraftFlightEnvelope.maxOperatingAltitude
         }
         else {
-            let hMO = parseFloat(this.flightCoefficients.flightEnvelope.maxOperatingAltitude)
-            let hMAX = parseFloat(this.flightCoefficients.flightEnvelope.maxAltitudeAtMTOW)
-            let Gt = parseFloat(this.flightCoefficients.flightEnvelope.altitudeTemperatureGradient)
+            let hMO = parseFloat(this.flightCoefficients.aircraftFlightEnvelope.maxOperatingAltitude)
+            let hMAX = parseFloat(this.flightCoefficients.aircraftFlightEnvelope.maxAltitudeAtMTOW)
+            let Gt = parseFloat(this.flightCoefficients.aircraftFlightEnvelope.altitudeTemperatureGradient)
             let A = Math.max(this.atmosphereParams.deltaT - parseFloat(this.flightCoefficients.aircraftEngineThrust.firstThrustTemperatureCoefficient),0)
-            Math.min(hMO, hMAX + Gt*A+this.flightCoefficients.flightEnvelope.weightGradient*(this.flightCoefficients.aircraftStandardMass.maximumMass-this.flightParams.mass))
+            this.flightEnvelope.maxAlt = Math.min(hMO, hMAX + Gt*A+this.flightCoefficients.aircraftFlightEnvelope.weightGradient*(this.flightCoefficients.aircraftStandardMass.maximumMass-this.flightParams.mass))
         }
         return this.flightEnvelope.maxAlt
     }
@@ -992,6 +995,7 @@ export class PhysicalPlane {
         this.computeAerodynamics()
         this.computeDescentThrust()
         this.computeMaxClimbThrust()
+        this.computeMaxAltitude()
     }
 
     desCASConstant() {
