@@ -123,7 +123,7 @@
             <span>Loi de montée</span>
 
           </div>
-          <span>{{ customSpeedLaw }}</span>
+<!--          <span>{{ customSpeedLaw }}</span>-->
         </div>
       </transition>
 
@@ -470,7 +470,7 @@ export default {
 
     // eslint-disable-next-line no-undef
     this.followLine = new fabric.Polyline([{x: 0, y: 0}, {x: canvas.width, y: canvas.height}], {
-      stroke: '#46f4b2',
+      stroke: '#f5cbff',
       strokeWidth: 1,
       evented: false,
       fill: 'rgba(0,0,0,0)',
@@ -1220,7 +1220,7 @@ export default {
   border-radius: 48px;
   position: relative;
   overflow: hidden;
-  background: #b794dc;
+  background: #b1a1dd;
   box-shadow: rgba(11, 10, 10, 0.44) 0px 8px 8px 1px;
   cursor: pointer;
 

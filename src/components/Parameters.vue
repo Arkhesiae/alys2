@@ -17,7 +17,8 @@
 
         <div class="params-content">
           <div class="slider-container">
-            <input type="range" :min="(4*parseFloat(this.mass.minimumMass)+parseFloat(this.mass.referenceMass))/5" :max="parseFloat(this.mass.maximumMass)"
+            <input type="range" :min="(4*parseFloat(this.mass.minimumMass)+parseFloat(this.mass.referenceMass))/5"
+                   :max="parseFloat(this.mass.maximumMass)"
                    v-bind:style="{  }"
                    step="10" class="slider" v-model="selectedMass">
           </div>
@@ -25,7 +26,7 @@
             <div class="cursor" v-bind:style="{ width: (selectedMass) / this.mass.maximumMass * 100 + '%' }"></div>
           </div>
           <div class="selectedMass">
-            <span>{{selectedMass + " kg"}}</span>
+            <span>{{ selectedMass + " kg" }}</span>
           </div>
         </div>
 
@@ -42,7 +43,7 @@
                    step="1" class="slider" v-model="selectedISADev">
           </div>
           <div class="value-holder">
-             <span>{{(parseInt(selectedISADev))+"°C"}}</span>
+            <span>{{ (parseInt(selectedISADev)) + "°C" }}</span>
           </div>
         </div>
       </div>
@@ -57,24 +58,23 @@
                    step="1" class="slider" v-model="selectedQNH">
           </div>
           <div class="value-holder">
-            <span>{{(parseInt(selectedQNH))+"hPa"}}</span>
+            <span>{{ (parseInt(selectedQNH)) + "hPa" }}</span>
           </div>
+        </div>
+
+
       </div>
       <div class="std-button-box">
-        <span>Standard Parameters</span>
+        <span>Reset to standard parameters</span>
       </div>
-
+      <div class="validate" @click="passParams()">
+        <img src="../assets/icons/check.svg">
+      </div>
     </div>
-
-    <div class="validate" @click="passParams()">
-      <img src="../assets/icons/check.svg">
-    </div>
-  </div>
   </div>
 </template>
 
 <script>
-
 
 
 export default {
@@ -82,9 +82,9 @@ export default {
   props: ["mass"],
   data() {
     return {
-      selectedMass : 0,
-      selectedISADev : 0,
-      selectedQNH : 1013,
+      selectedMass: 0,
+      selectedISADev: 0,
+      selectedQNH: 1013,
     }
   },
 
@@ -102,19 +102,18 @@ export default {
 
     passParams() {
       this.close()
-      this.$emit('setParams', {mass:this.selectedMass, ISA : this.selectedISADev, QNH : this.selectedQNH})
+      this.$emit('setParams', {mass: this.selectedMass, ISA: this.selectedISADev, QNH: this.selectedQNH})
     },
   },
 
-  computed: {
-  },
+  computed: {},
 
 }
 </script>
 
 <style scoped>
 
-.params-content{
+.params-content {
   width: 100%;
   padding-top: 20px;
   box-sizing: border-box;
@@ -124,7 +123,7 @@ export default {
   display: flex;
 }
 
-.slider-container{
+.slider-container {
   width: 70%;
   height: 30px;
   padding-left: 10px;
@@ -145,37 +144,38 @@ export default {
 }
 
 .value-holder {
-  height: 100px;
-  padding-top: 15px;
+  /*height: 100px;*/
+  /*padding-top: 15px;*/
   letter-spacing: 1px;
   padding-left: 15px;
-  font-size:26px;
-  color: #212121;
+  font-size: 26px;
+  color: #d4c9f6;
   font-weight: bold;
   box-sizing: border-box;
   width: 120px;
   border-radius: 8px;
-  background: linear-gradient(45deg, rgb(91, 41, 50) -0%, rgb(197, 183, 202) 110%);
+  /*background: linear-gradient(45deg, rgb(91, 41, 50) -0%, rgb(197, 183, 202) 110%);*/
   overflow: hidden;
 }
 
-.selectedMass{
+.selectedMass {
   position: absolute;
   right: 105px;
-  top:52px;
+  top: 52px;
   font-size: 12px;
   letter-spacing: 1px;
   color: #191818;
   font-weight: bold;
 }
 
-.cursor{
+.cursor {
   height: 100%;
   border-radius: 8px;
   width: 100%;
   box-shadow: rgba(5, 5, 5, 0.15) 0px 10px 15px 2px;
-  background: linear-gradient(45deg, rgb(66, 60, 67) -0%, rgb(199, 148, 241) 110%);
+  background: linear-gradient(45deg, rgb(66, 60, 67) -0%, rgb(220, 190, 244) 110%);
 }
+
 /*input[type=range]::-webkit-slider-runnable-track {*/
 /*  height: 2px;*/
 /*  border: none;*/
@@ -194,7 +194,7 @@ input[type=range] {
   /*padding: 0 5px;*/
   /*-webkit-appearance: slider-vertical;  !* Override default CSS styles *!*/
   appearance: none;
-  background: #604a6b; /* Grey background */
+  background: #534a6b; /* Grey background */
   border-radius: 50px;
   outline: none; /* Remove outline */
   opacity: 1; /* Set transparency (for mouse-over effects on hover) */
@@ -215,7 +215,8 @@ input[type=range] {
   border-radius: 50px;
   width: 16px; /* Set a specific slider handle width */
   height: 16px; /* Slider handle height */
-  background: linear-gradient(45deg, rgb(219, 152, 230) -0%, rgb(199, 148, 241) 110%); /* Green background */
+  background: linear-gradient(45deg, rgb(187, 152, 230) -0%, rgb(184, 166, 241) 110%); /* Green background */
+  border : 3px #202020 solid;
   cursor: pointer; /* Cursor on hover */
 }
 
@@ -229,9 +230,9 @@ input[type=range] {
 
 
 .params-container {
-  width: 600px;
-  height: 400px;
-  left: calc(50% - 300px);
+  width: 400px;
+  height: 450px;
+  left: calc(50% - 200px);
   top: calc(50% - 200px);
   z-index: 99999;
   background: #1f2023;
@@ -299,17 +300,21 @@ input[type=range] {
   flex-direction: column;
 }
 
-.std-button-box{
-  background: #be89d8;
+.std-button-box {
+  position: absolute;
+  bottom: 0;
+  /*background: #be89d8;*/
   width: 200px;
   height: 20px;
+margin: 15px;
   border-radius: 12px;
-  margin: 10px;
-  padding-left: 8px;
-  font-family: "Product Sans", sans-serif;
-  font-weight: bold;
-  font-size: 15px;
-  color: #2d3241;
+  /*margin: 10px;*/
+  /*padding-left: 8px;*/
+  font-family: "Roboto", sans-serif;
+
+  /*font-weight: bold;*/
+  font-size: 14px;
+  color: #aea0e8;
 }
 
 .params-frame {
@@ -374,7 +379,6 @@ input[type=range] {
 }
 
 
-
 .picker-label.selected {
   color: #c188f6;
 }
@@ -409,6 +413,7 @@ input[type=range] {
   width: 100%;
   min-height: 300px;
   margin-top: 10px;
+  margin-bottom: 50px;
   display: flex;
   flex-direction: column;
   justify-content: space-around;
@@ -416,14 +421,12 @@ input[type=range] {
 }
 
 
-
-
 .validate {
   position: absolute;
   bottom: 0;
   right: 0;
   box-shadow: rgba(5, 5, 5, 0.4) 0px 1px 3px 0px;
-  background: #d4a2f4;
+  background: #b1a1dd;
   border-radius: 20px;
   margin: 10px;
   width: 40px;

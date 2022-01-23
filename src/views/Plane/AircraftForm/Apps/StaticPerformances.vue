@@ -7,26 +7,29 @@
           <div class="cr-icon left">
             <img src="../../../../assets/icons/human-male-height-variant.svg">
           </div>
-          <div id="picker" class="picker">
+          <Picker v-on:FL="getFL" step="5" max-value="350" min-value="0" size="60" type="FL"></Picker>
+          <!--          <div id="picker" class="picker">-->
 
-            <div class="picker-stopbar top"></div>
-            <div class="picker-stopbar bottom"></div>
-            <ul class="figure-list" id="speed">
-              <li class="figure" v-bind:key="speed.value" v-for="speed in flightLevelList">{{ speed.value }}</li>
-            </ul>
+          <!--            <div class="picker-stopbar top"></div>-->
+          <!--            <div class="picker-stopbar bottom"></div>-->
+          <!--            <ul class="figure-list" id="speed">-->
+          <!--              <li class="figure" v-bind:key="flightLevel.value" v-for="flightLevel in flightLevelList">{{ flightLevel.value }}</li>-->
+          <!--            </ul>-->
 
-          </div>
+          <!--          </div>-->
         </div>
         <div class="blk-atm">
           <div class="ctn-param temp selected">
             <div class="ctn-value">
-              <span class="value-param">{{Math.round((atmParams.temperature-273.15)*10)/10}}</span><span class="unit">°C</span>
+              <span class="value-param">{{ Math.round((atmParams.temperature - 273.15) * 10) / 10 }}</span><span
+                class="unit">°C</span>
             </div>
             <span class="label-param">Température</span>
           </div>
           <div class="ctn-param press">
             <div class="ctn-value">
-              <span class="value-param">{{Math.round((atmParams.pressure)/100)/1}}</span><span class="unit">hPa</span>
+              <span class="value-param">{{ Math.round((atmParams.pressure) / 100) / 1 }}</span><span
+                class="unit">hPa</span>
             </div>
             <!--              <span  class="value-param"> hPa</span>-->
             <span class="label-param">Pression</span>
@@ -43,70 +46,73 @@
       </div>
       <div class="sct-right sct">
         <div class="blk-speed">
-            <div class="ctn-label">
-              <span>Speed</span>
+          <div class="ctn-label">
+            <span>Speed</span>
+          </div>
+          <div class="ctn-speed-display">
+            <div class="ctn-units">
+              <div class="unit-selector" @click="changeUnit">TAS</div>
+              <div class="unit-selector" @click="changeUnit">IAS</div>
+              <div class="unit-selector" @click="changeUnit">Mach</div>
             </div>
-            <div class="ctn-speed-display">
-              <div class="ctn-units">
-                <div class="unit-selector" @click="changeUnit">TAS</div>
-                <div class="unit-selector" @click="changeUnit">IAS</div>
-                <div class="unit-selector" @click="changeUnit">Mach</div>
-              </div>
-              <div class="ctn-extreme-values">
-                <div class="elmt-extreme">
-                  <img src="../../../../assets/icons/airplane-edit.svg">
-                  <div class="comment">Buffeting</div>
-                  <div class="txt">
-                    <span class="txt-value">{{Math.round(minSpeed)}}</span>
-                    <span class="txt-unit">kts</span>
-                  </div>
-
-
+            <div class="ctn-value">
+              <span>{{ speed }}</span>
+              <span class="txt-unit">kts</span>
+            </div>
+            <div class="ctn-extreme-values">
+              <div class="elmt-extreme">
+                <img src="../../../../assets/icons/speed_black_24dp.svg">
+                <div class="comment">Buffeting</div>
+                <div class="txt">
+                  <span class="txt-value">{{ Math.round(minSpeed) }}</span>
+                  <span class="txt-unit">kts</span>
                 </div>
-                <div class="elmt-extreme" >
-                  <img src="../../../../assets/icons/airplane-edit.svg">
-                  <div class="comment">VMO</div>
-                  <div class="txt">
-                    <span class="txt-value">{{Math.round(maxSpeed)}}</span>
-                    <span class="txt-unit">kts</span>
-                  </div>
+
+
+              </div>
+              <div class="elmt-extreme">
+                <img src="../../../../assets/icons/speed_black_24dp.svg">
+                <div class="comment">VMO</div>
+                <div class="txt">
+                  <span class="txt-value">{{ Math.round(maxSpeed) }}</span>
+                  <span class="txt-unit">kts</span>
                 </div>
               </div>
-
             </div>
 
-<!--            <div class="information__value__contener">-->
-<!--              <div>{{ displayedSpeed }}</div>-->
-<!--              <div class="stopbar-container"-->
-<!--                   v-bind:style="{ width : sliderWidthInPx+'px', marginLeft : sliderMarginLeftInPx+'px'  }">-->
-<!--                <div class="min">-->
-<!--                  <div class="stopbar"></div>-->
-<!--                  <span class="speed-value">{{ speedRange.minSpeed }}</span>-->
-<!--                </div>-->
+          </div>
 
-<!--                <div class="max">-->
-<!--                  <div class="stopbar"></div>-->
-<!--                  <span class="speed-value">{{ speedRange.maxSpeed }}</span>-->
-<!--                </div>-->
-<!--              </div>-->
+          <!--            <div class="information__value__contener">-->
+          <!--              <div>{{ displayedSpeed }}</div>-->
+          <!--              <div class="stopbar-container"-->
+          <!--                   v-bind:style="{ width : sliderWidthInPx+'px', marginLeft : sliderMarginLeftInPx+'px'  }">-->
+          <!--                <div class="min">-->
+          <!--                  <div class="stopbar"></div>-->
+          <!--                  <span class="speed-value">{{ speedRange.minSpeed }}</span>-->
+          <!--                </div>-->
+
+          <!--                <div class="max">-->
+          <!--                  <div class="stopbar"></div>-->
+          <!--                  <span class="speed-value">{{ speedRange.maxSpeed }}</span>-->
+          <!--                </div>-->
+          <!--              </div>-->
 
 
-<!--            </div>-->
+          <!--            </div>-->
 
-            <div class="ctn-slider">
-              <div class="cr-icon small black">
-                <img src="../../../../assets/icons/airplane-edit.svg">
-              </div>
-              <div class="ctn">
-                <div class="slider-background"></div>
-                <input type="range" :min="0" :max="100"
-                       v-bind:style="{ width : sliderWidthInPx+'%', marginLeft : sliderMarginLeftInPx+'%' }"
-                       step="1" class="slider" v-model="speed">
-                <div class="slider-background"></div>
-              </div>
-
+          <div class="ctn-slider">
+            <div class="cr-icon small black">
+              <img src="../../../../assets/icons/speed_black_24dp.svg">
+            </div>
+            <div class="ctn">
+              <div class="slider-background"></div>
+              <input type="range" :min="Math.round(minSpeed)" :max="Math.round(maxSpeed)"
+                     v-bind:style="{ width : sliderWidthInPx+'%', marginLeft : sliderMarginLeftInPx+'%' }"
+                     step="1" class="slider" v-model="speed">
+              <div class="slider-background"></div>
             </div>
 
+          </div>
 
 
         </div>
@@ -116,9 +122,45 @@
           <div class="ctn-label">
             <span>Rates</span>
           </div>
-          <div class="slct-view"></div>
+          <div class="slct-view">Select view</div>
           <div class="dsp-rates">
-            <div class="rates"></div>
+            <div class="rates">
+              <div class="nav-type">
+                <div class="elmt">climb</div>
+                <div class="elmt">descent</div>
+              </div>
+              <div class="ctn">
+                <div class="elmt-value">
+                  <div class="cr-icon black">
+                    <img src="../../../../assets/icons/chevron-down.svg">
+                  </div>
+                  <div class="txt">
+                    <span class="txt-value">{{ climbPerf.rate }}</span>
+                    <span class="txt-unit">ft/min</span>
+                  </div>
+
+                </div>
+                <div class="elmt-info">
+                  <div class="cr-icon none">
+                    <img src="../../../../assets/icons/information-outline.svg">
+                  </div>
+                  <span class="txt">Montée à puissance max</span>
+                </div>
+                <div class="elmt-fixed">
+                  <div class="elmt">
+                    <div class="cr-icon medium none">
+                      <img src="../../../../assets/icons/show_chart_black_24dp.svg">
+                    </div>
+                    <span class="txt">Fixer un taux</span>
+                  </div>
+
+                  <div class="cr-icon medium none">
+                    <img src="../../../../assets/icons/chevron-right.svg">
+                  </div>
+                </div>
+
+              </div>
+            </div>
             <div class="graph"></div>
           </div>
 
@@ -222,33 +264,37 @@
 <script>
 import {HpTrans, knotToMs} from "@/BADA/Misc/func"
 import {calcPerf, calcPerfbis, getAtmParams, getPlaneMach, maxFLAtROCD, speedRange} from "@/BADA/perfomanceFile"
+import Picker from "@/components/picker"
 
-function toCell(cell, listElement, picker) {
-  listElement.style.transform = 'translateY(' + (-cell * picker.offsetHeight / 3 + picker.offsetHeight / 3) + 'px)'
-  for (let n = 0; n < listElement.children.length; n++) {
-    listElement.children.item(n).style.transition = "opacity 1s ease"
-    let distance = Math.abs(listElement.children.item(cell).offsetTop - n * picker.offsetHeight / 3)
-    listElement.children.item(n).style.opacity = 1 - distance / (picker.offsetHeight / 1.5)
-  }
-}
-
-function getCellValue(cell, listElement) {
-  console.log(cell)
-  console.log(listElement.children.item(cell))
-  return parseInt(listElement.children.item(cell).innerText)
-}
+// function toCell(cell, listElement, picker) {
+//   listElement.style.transition = 'all 0.5s ease'
+//   listElement.style.transform = 'translateY(' + (-cell * picker.offsetHeight / 3 + picker.offsetHeight / 3) + 'px)'
+//   for (let n = 0; n < listElement.children.length; n++) {
+//     listElement.children.item(n).style.transition = "opacity 0.2s ease"
+//     let distance = Math.abs(listElement.children.item(cell).offsetTop - n * picker.offsetHeight / 3)
+//     listElement.children.item(n).style.opacity = 1 - distance / (picker.offsetHeight / 1.5)
+//   }
+// }
+//
+// function getCellValue(cell, listElement) {
+//   return parseInt(listElement.children.item(cell).innerText)
+// }
 
 export default {
   name: "StaticPerformances",
-
+  components: {Picker},
   props: ["coefficient"],
 
   data() {
     return {
       // climbROCD: 0,
-      selectedFL : 0,
+      selectedFL: 0,
       flightLevelList: [],
       FLinput: 0,
+      selectedUnit: {
+        element: null,
+        unit: 'CAS'
+      },
       minFL: 0,
       maxFL: 350,
       speed: 0,
@@ -261,16 +307,16 @@ export default {
   },
 
   mounted() {
-    for (let FL = this.maxFL; FL >= 0; FL -= 5) {
-      this.flightLevelList.push({
-        value: FL === 0 ? "GROUND" : FL,
-      })
-    }
-    let ref = this
-    // eslint-disable-next-line no-unused-vars
-    let drag_time = 0
-    let figureLists = document.getElementsByClassName('figure-list')
-    let picker = document.getElementById('picker')
+    // for (let FL = this.maxFL; FL >= 0; FL -= 5) {
+    //   this.flightLevelList.push({
+    //     value: FL === 0 ? "GROUND" : FL,
+    //   })
+    // }
+    // let ref = this
+    // // eslint-disable-next-line no-unused-vars
+    // let drag_time = 0
+    // let figureLists = document.getElementsByClassName('figure-list')
+    // let picker = document.getElementById('picker')
     // let currentCell
     // var elements = document.getElementsByClassName("classname");
 
@@ -280,92 +326,116 @@ export default {
     // };
 
 
-    for (var i = 0; i < figureLists.length; i++) {
-      // let ref = this
-      let list = {
-        id: i,
-        type: figureLists[i].id,
-        listElement: figureLists[i],
-        currentCell: 0,
-        lastCell: 0,
-        mouseDown: false,
-        originY: 0,
-        deltaY: 0,
-        maxIndex: this.maxIndex(figureLists[i].id) - 1
-      }
+    // for (var i = 0; i < figureLists.length; i++) {
+    //   // let ref = this
+    //   let list = {
+    //     id: i,
+    //     type: figureLists[i].id,
+    //     listElement: figureLists[i],
+    //     currentCell: 0,
+    //     lastCell: 0,
+    //     touchStart: false,
+    //     originY: 0,
+    //     deltaY: 0,
+    //     maxIndex: this.maxIndex(figureLists[i].id) - 1
+    //   }
+    //
+    //   list.listElement.addEventListener('click', function (event) {
+    //     for (let n = 0; n < list.listElement.children.length; n++) {
+    //       if (list.listElement.children.item(n) === event.target) {
+    //         list.currentCell = n
+    //         toCell(list.currentCell, list.listElement, picker)
+    //         ref.selectedFL = getCellValue(list.currentCell, list.listElement)
+    //         break
+    //       }
+    //     }
+    //     // ref.setSelectedValue(list.type, list.currentCell)
+    //   }, false);
+    //   // eslint-disable-next-line no-unused-vars
+    //   let target
+    //
+    //
+    //   list.listElement.addEventListener('touchstart', function (event) {
+    //     target = event.target
+    //     list.originY = event.touches[0].clientY
+    //     list.touchStart = true
+    //   })
+    //
+    //   list.listElement.addEventListener('mousewheel', function (event) {
+    //     target = event.target
+    //     list.currentCell += (event.deltaY>0) ? 1 : -1
+    //     for (let n = 0; n < list.listElement.children.length; n++) {
+    //       list.listElement.children.item(n).style.transition = "opacity 0s ease"
+    //     }
+    //     toCell(list.currentCell, list.listElement, picker)
+    //     ref.selectedFL = getCellValue(list.currentCell, list.listElement)
+    //   })
+    //
+    //   // console.log(target)
+    //   // eslint-disable-next-line no-unused-vars
+    //   let lastMove
+    //   // eslint-disable-next-line no-unused-vars
+    //   let movedBy
+    //   // eslint-disable-next-line no-unused-vars
+    //   let lastTime
+    //   // eslint-disable-next-line no-unused-vars
+    //   let speed
+    //   // eslint-disable-next-line no-unused-vars
+    //   let eTime
+    //   let lastPos
+    //   window.addEventListener('touchmove', function (event) {
+    //     movedBy = lastPos - event.touches[0].clientY
+    //     // eTime = lastTime - event.timeStamp
+    //     // lastTime = event.timeStamp
+    //     lastPos = event.touches[0].clientY
+    //     list.deltaY = list.originY - event.touches[0].clientY
+    //     if (list.touchStart) {
+    //       list.listElement.style.transition = 'all 0s ease'
+    //       list.listElement.style.transform = 'translateY(' + (-list.lastCell * 60 + 60 - list.deltaY) + 'px)'
+    //       list.currentCell = Math.min(Math.max(-Math.round((-list.lastCell * 60 + 60 - list.deltaY - 60) / 60), 0), list.maxIndex)
+    //       ref.selectedFL = getCellValue(list.currentCell, list.listElement)
+    //       for (let n = 0; n < list.listElement.children.length; n++) {
+    //         list.listElement.children.item(n).style.transition = "opacity 0s ease"
+    //         let distance = Math.abs(list.listElement.children.item(n).getBoundingClientRect().y - picker.getBoundingClientRect().y - list.listElement.children.item(n).getBoundingClientRect().height)
+    //         list.listElement.children.item(n).style.opacity = 1 - distance / 100
+    //       }
+    //     }
+    //   })
+    //
+    //   window.addEventListener('touchend', function () {
+    //     if (list.touchStart) {
+    //       list.touchStart = false
+    //       if (list.deltaY != 0) {
+    //         list.originY = 0
+    //         list.currentCell = Math.min(Math.max(-Math.round((-list.lastCell * 60 - list.deltaY) / 60), 0), list.maxIndex)
+    //         list.lastCell = list.currentCell
+    //         // list.listElement.style.transition = 'all ' + Math.abs(0.2) + 's ease-out'
+    //         toCell(list.currentCell, list.listElement, picker)
+    //         ref.selectedFL = getCellValue(list.currentCell, list.listElement)
+    //       }
+    //     }
+    //   })
 
-      list.listElement.addEventListener('click', function (event) {
-        console.log(event.target.getBoundingClientRect())
-        for (let n = 0; n < list.listElement.children.length; n++) {
-          if (list.listElement.children.item(n) === event.target) {
-            list.currentCell = n
-            toCell(list.currentCell, list.listElement, picker)
-            ref.selectedFL = getCellValue(list.currentCell, list.listElement)
-            console.log(ref.selectedFL)
-            break
-          }
-        }
-        // ref.setSelectedValue(list.type, list.currentCell)
-      }, false);
-      // eslint-disable-next-line no-unused-vars
-      let target
 
-
-      list.listElement.addEventListener('touchstart', function (event) {
-        target = event.target
-        list.originY = event.touches[0].clientY
-        list.mouseDown = true
-      })
-
-      // console.log(target)
-      // eslint-disable-next-line no-unused-vars
-      let lastMove
-      // eslint-disable-next-line no-unused-vars
-      let movedBy
-      // eslint-disable-next-line no-unused-vars
-      let lastTime
-      // eslint-disable-next-line no-unused-vars
-      let speed
-      // eslint-disable-next-line no-unused-vars
-      let eTime
-      let lastPos
-      window.addEventListener('touchmove', function (event) {
-        movedBy = lastPos - event.touches[0].clientY
-        eTime = lastTime - event.timeStamp
-        console.log(movedBy / eTime)
-        lastTime = event.timeStamp
-        lastPos = event.touches[0].clientY
-        list.deltaY = list.originY - event.touches[0].clientY
-        if (list.mouseDown) {
-          list.listElement.style.transition = 'all 0s ease'
-          list.listElement.style.transform = 'translateY(' + (-list.lastCell * 60 + 60 - list.deltaY) + 'px)'
-          list.currentCell = Math.min(Math.max(-Math.round((-list.lastCell * 60 + 60 - list.deltaY - 60) / 60), 0), list.maxIndex)
-          ref.selectedFL = getCellValue(list.currentCell, list.listElement)
-          for (let n = 0; n < list.listElement.children.length; n++) {
-            list.listElement.children.item(n).style.transition = "opacity 0s ease"
-            let distance = Math.abs(list.listElement.children.item(n).getBoundingClientRect().y - picker.getBoundingClientRect().y - list.listElement.children.item(n).getBoundingClientRect().height)
-            list.listElement.children.item(n).style.opacity = 1 - distance / 100
-          }
-        }
-      })
-
-      window.addEventListener('touchend', function () {
-        if (list.mouseDown) {
-          list.mouseDown = false
-          if (list.deltaY != 0) {
-            list.originY = 0
-            list.currentCell = Math.min(Math.max(-Math.round((-list.lastCell * 60 - list.deltaY) / 60), 0), list.maxIndex)
-            list.lastCell = list.currentCell
-            list.listElement.style.transition = 'all ' + Math.abs(0.2) + 's ease-out'
-            toCell(list.currentCell, list.listElement, picker)
-            ref.selectedFL = getCellValue(list.currentCell, list.listElement)
-          }
-        }
-      })
-    }
+    // }
   },
 
   methods: {
+    changeUnit: function (event) {
+      if (this.selectedUnit.element) {
+        this.selectedUnit.element.classList.remove('selected')
+      }
+      this.selectedUnit = {
+        element: event.target,
+        unit: event.target.innerText
+      }
+      event.target.classList.add('selected')
+    },
+
+    getFL: function (FL) {
+      this.selectedFL = FL
+    },
+
     maxIndex: function () {
       let index = 100
       // switch (type) {
@@ -392,6 +462,7 @@ export default {
       }
 
     },
+
 
     computedHpTrans: function (law) {
       if (law) {
@@ -428,23 +499,23 @@ export default {
       } else return this.speed
     },
 
-    atmParams : function(){
+    atmParams: function () {
       return getAtmParams(this.selectedFL, this.coefficient, "", "")
     },
 
     sliderWidthInPx: function () {
-      return  100*(this.maxSpeed - this.minSpeed) / (this.speedRangeAtZero.maxSpeed - this.speedRangeAtZero.minSpeed)
+      return 100 * (this.maxSpeed - this.minSpeed) / (this.speedRangeAtZero.maxSpeed - this.speedRangeAtZero.minSpeed)
     },
 
     sliderMarginLeftInPx: function () {
-      return  100*(this.minSpeed - this.speedRangeAtZero.minSpeed) / (this.speedRangeAtZero.maxSpeed - this.speedRangeAtZero.minSpeed)
+      return 100 * (this.minSpeed - this.speedRangeAtZero.minSpeed) / (this.speedRangeAtZero.maxSpeed - this.speedRangeAtZero.minSpeed)
     },
 
     climbPerf: function () {
       if (this.checked) {
         console.log("hi")
-        return calcPerf(this.FLinput, this.law, this.speed, this.coefficient)
-      } else return calcPerf(this.FLinput, "", this.speed, this.coefficient)
+        return calcPerf(this.selectedFL, this.law, this.speed, this.coefficient)
+      } else return calcPerf(this.selectedFL, this.law, this.speed, this.coefficient)
     },
 
     computedHeight: function () {
@@ -543,12 +614,49 @@ export default {
   filter: invert(82%) sepia(5%) saturate(1087%) hue-rotate(223deg) brightness(97%) contrast(91%);
 }
 
+.cr-icon.black {
+  background: linear-gradient(45deg, rgb(168, 154, 183) -0%, rgb(163, 158, 179) 110%);
+}
+
+.cr-icon.black img {
+   filter: invert(12%) sepia(5%) saturate(1087%) hue-rotate(223deg) brightness(97%) contrast(91%);
+}
+
 .cr-icon.small.black {
   width: 24px;
   /*margin-left: 5p;*/
   height: 24px;
   border-radius: 30px;
   background: linear-gradient(45deg, rgb(168, 154, 183) -0%, rgb(163, 158, 179) 110%);
+}
+
+.cr-icon.medium {
+  width: 24px;
+  /*margin-left: 3px;*/
+  /*padding: 3px;*/
+  height: 24px;
+  border-radius: 30px;
+  /*background: linear-gradient(45deg, rgb(168, 154, 183) -0%, rgb(163, 158, 179) 110%);*/
+}
+
+.cr-icon.medium img {
+  margin: 3px;
+  width: 18px;
+  filter: invert(82%) sepia(5%) saturate(1087%) hue-rotate(223deg) brightness(97%) contrast(91%);
+}
+
+.cr-icon.none {
+  /*width: 24px;*/
+  /*!*margin-left: 5p;*!*/
+  /*height: 24px;*/
+  box-shadow: none;
+  border-radius: 30px;
+  background: none;
+}
+
+.cr-icon.none img {
+  /*margin: 3px;*/
+  filter: invert(72%) sepia(5%) saturate(187%) hue-rotate(223deg) brightness(97%) contrast(91%);
 }
 
 .cr-icon.small img {
@@ -647,7 +755,20 @@ export default {
   /*background: linear-gradient(45deg, rgb(111, 98, 123) -0%, rgb(192, 178, 236) 110%);*/
 }
 
-.ctn-label{
+.blk-speed .ctn-value span {
+  font-size: 25px;
+  font-weight: bold;
+
+}
+
+.blk-speed .ctn-value .txt-unit {
+  color: #6f747f;
+  font-size: 20px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+.ctn-label {
   font-size: 86px;
   /*font-family: "Roboto", sans-serif;*/
 
@@ -655,7 +776,7 @@ export default {
   letter-spacing: 5px;
   color: rgba(67, 64, 70, 0.06);
   position: absolute;
-  top: 0;
+  top: -40px;
 }
 
 .ctn-units {
@@ -667,18 +788,18 @@ export default {
   justify-content: flex-end;
 }
 
-.ctn-speed-display{
+.ctn-speed-display {
   display: flex;
   height: 30px;
   justify-content: space-between;
 }
 
-.ctn-extreme-values{
+.ctn-extreme-values {
   display: flex;
   justify-content: space-between;
 }
 
-.elmt-extreme{
+.elmt-extreme {
   display: flex;
   position: relative;
   align-items: center;
@@ -692,7 +813,7 @@ export default {
   background: linear-gradient(45deg, rgb(47, 44, 47) -0%, rgb(57, 55, 62) 110%);
 }
 
-.elmt-extreme .comment{
+.elmt-extreme .comment {
   position: absolute;
   top: -14px;
   font-weight: normal;
@@ -702,23 +823,23 @@ export default {
   text-align: right;
 }
 
-.elmt-extreme img{
+.elmt-extreme img {
   width: 18px;
   filter: invert(70%);
 }
 
-.elmt-extreme .txt-value{
+.elmt-extreme .txt-value {
   font-size: 12px;
   color: #bdbfc5;
   letter-spacing: 1px;
 }
 
-.elmt-extreme .txt-unit{
+.elmt-extreme .txt-unit {
   color: #6f747f;
   margin-right: 5px;
 }
 
-.ctn-slider{
+.ctn-slider {
   width: 100%;
   position: relative;
   padding-right: 20px;
@@ -733,7 +854,7 @@ export default {
   background: #191919;
 }
 
-.ctn-slider .ctn{
+.ctn-slider .ctn {
   position: relative;
   /*width: 100%;*/
   margin-left: 20px;
@@ -762,7 +883,7 @@ export default {
   /*width: 50px;*/
   margin-left: 5px;
   border-radius: 50px;
-  border: 1px solid #65cebb;
+  border: 1px solid #bfb5ff;
   background: #222428;
   height: 18px;
   font-size: 11px;
@@ -770,7 +891,7 @@ export default {
   padding-left: 12px;
   padding-right: 12px;
   padding-top: 4px;
-  color: #65ceb6;
+  color: #d4b8ff;
   cursor: pointer;
 }
 
@@ -786,12 +907,12 @@ export default {
   /*background: linear-gradient(45deg, rgb(111, 98, 123) -0%, rgb(192, 178, 236) 110%);*/
 }
 
-.slct-view{
+.slct-view {
   /*border: 1px solid aliceblue;*/
   height: 30px;
 }
 
-.dsp-rates{
+.dsp-rates {
   /*border: 1px solid aliceblue;*/
   flex: 1 1 auto;
   display: flex;
@@ -800,21 +921,91 @@ export default {
   justify-content: space-between;
 }
 
-.rates{
+.rates {
   background: #191919;
   border-radius: 12px;
   box-shadow: rgba(9, 9, 9, 0.15) 0px 2px 5px 0px;
   margin-right: 20px;
+  display: flex;
+  flex-direction: column;
   /*background: #2b2d33;*/
   flex: 1 1 auto;
   /*border: 1px solid aliceblue;*/
 }
 
+.rates .ctn {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1 1 auto;
+}
 
-.graph{
+.rates .ctn .elmt-value {
+  display: flex;
+  flex: 0 1 auto;
+  width: 100%;
+  height: 50px;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 30px;
+  font-weight: bold;
+  color: #cbbeed;
+}
+
+
+.rates .ctn .elmt-value .txt-unit {
+  color: #65606d;
+  margin-left: 5px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.rates .ctn .elmt-fixed {
+  width: calc(100% - 40px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 10px;
+  padding-right: 10px;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  box-shadow: rgba(4, 3, 3, 0.15) 0px 5px 10px 0px;
+  color: #cac2d8;
+  height: 46px;
+  border-radius: 8px;
+  background: #49464f;
+  font-size: 16px;
+  /*font-weight: bold;*/
+}
+
+.rates .ctn .elmt-info{
+  display: flex;
+  align-items: center;
+}
+
+.rates .ctn .elmt-fixed .elmt {
+  display: flex;
+  align-items: center;
+}
+
+.rates .ctn .elmt-fixed .elmt .txt {
+  margin-left: 10px;
+}
+
+.rates .nav-type {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  height: 60px;
+}
+
+
+.graph {
   width: 250px;
   border-radius: 12px;
-    box-shadow: rgba(4, 3, 3, 0.15) 0px 2px 5px 0px;
+  box-shadow: rgba(4, 3, 3, 0.15) 0px 2px 5px 0px;
   background: #191919;
   height: 250px;
   /*background: #2b2d33;*/

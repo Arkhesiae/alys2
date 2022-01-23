@@ -18,33 +18,34 @@
     </div>
     <div class="law-edit-picker-container">
 
-      <div class="law-edit-box">
+      <div class="ctn-picker">
         <div class="picker-label">
           Speed
         </div>
+        <Picker v-on:speed="getSpeedValue" class="law-edit-pickerSpeed" type="speed" step="1" max-value="350" min-value="0" :key=0 :value-list="speedList" size="50" color="rgba(220,220,220,1)"></Picker>
+<!--        <div class="law-edit-picker law-edit-pickerSpeed">-->
 
-        <div class="law-edit-picker law-edit-pickerSpeed">
+<!--          <div class="picker-stopbar top"></div>-->
+<!--          <div class="picker-stopbar bottom"></div>-->
+<!--          <ul class="figure-list" id="speed">-->
+<!--            <li class="figure" v-bind:key="speed.value" v-for="speed in speedList">{{ speed.value }}</li>-->
+<!--          </ul>-->
 
-          <div class="picker-stopbar top"></div>
-          <div class="picker-stopbar bottom"></div>
-          <ul class="figure-list" id="speed">
-            <li class="figure" v-bind:key="speed.value" v-for="speed in speedList">{{ speed.value }}</li>
-          </ul>
-
-        </div>
+<!--        </div>-->
       </div>
-      <div class="law-edit-box">
+      <div class="ctn-picker">
         <div class="picker-label">
           Mach number
         </div>
-        <div class="law-edit-picker law-edit-pickerMach">
+        <Picker v-on:mach="getMachValue" class="law-edit-pickerMach" type="mach" step="1" max-value="350" min-value="0" :key=1 :value-list="machList" size="50" color="rgba(220,220,220,1)"></Picker>
+<!--        <div class="law-edit-picker law-edit-pickerMach">-->
 
-          <div class="picker-stopbar top"></div>
-          <div class="picker-stopbar bottom"></div>
-          <ul class="figure-list" id="mach">
-            <li class="figure" v-bind:key="mach.value" v-for="mach in machList">{{ mach.value }}</li>
-          </ul>
-        </div>
+<!--          <div class="picker-stopbar top"></div>-->
+<!--          <div class="picker-stopbar bottom"></div>-->
+<!--          <ul class="figure-list" id="mach">-->
+<!--            <li class="figure" v-bind:key="mach.value" v-for="mach in machList">{{ mach.value }}</li>-->
+<!--          </ul>-->
+<!--        </div>-->
       </div>
 
     </div>
@@ -68,10 +69,12 @@
 
 
 import {HpTrans, knotToMs, msToKnot} from "@/BADA/Misc/func"
+import Picker from "@/components/picker"
 
 export default {
   name: "lawEdit",
   props: ["icon", "speedRange"],
+  components: {Picker},
   data() {
     return {
       // speedList: [],
@@ -102,155 +105,167 @@ export default {
 
 
     for (var i = 0; i < figureLists.length; i++) {
-      let ref = this
-      let list = {
-        id: i,
-        type : figureLists[i].id,
-        listElement: figureLists[i],
-        currentCell: 0,
-        lastCell: 0,
-        mouseDown: false,
-        originY: 0,
-        deltaY: 0,
-        maxIndex: this.maxIndex(figureLists[i].id) - 1
-      }
+      // let ref = this
+      // let list = {
+      //   id: i,
+      //   type : figureLists[i].id,
+      //   listElement: figureLists[i],
+      //   currentCell: 0,
+      //   lastCell: 0,
+      //   mouseDown: false,
+      //   originY: 0,
+      //   deltaY: 0,
+      //   maxIndex: this.maxIndex(figureLists[i].id) - 1
+      // }
 
       // console.log(list.maxIndex)
 
-      list.listElement.addEventListener('click', function (event) {
-        for (let n = 0; n < list.listElement.children.length; n++) {
-          if (list.listElement.children.item(n) === event.target) {
-            list.currentCell = n
-            list.lastCell = n
-            list.listElement.style.transform = 'translateY(' + (-n * 50 + 50) + 'px)'
-            for (let n = 0; n < list.listElement.children.length; n++) {
-              let distance = Math.abs(n - list.currentCell)
-              list.listElement.children.item(n).style.opacity = 1 - distance / 1.2
-
-            }
-          }
-        }
-        ref.setSelectedValue(list.type, list.currentCell)
-      }, false);
-
-
-      list.listElement.addEventListener('mousedown', function (event) {
-        list.originY = event.clientY
-        list.mouseDown = true
-        drag_time = (new Date).getTime();
-      })
-
-      // let centerCell
-      // let speed = 0
-      // let lastClient = 0
-
-      window.addEventListener('mousemove', function (event) {
-        list.deltaY = list.originY - event.clientY
-        if (list.mouseDown) {
-          list.listElement.style.transition = 'all 0s ease'
-          list.listElement.style.transform = 'translateY(' + (-list.lastCell * 50 + 50 - list.deltaY) + 'px)'
-
-
-          list.currentCell = Math.min(Math.max(-Math.round((-list.lastCell * 50 + 50 - list.deltaY - 50) / 50), 0), list.maxIndex)
-          ref.setSelectedValue(list.type, list.currentCell)
-          for (let n = 0; n < list.listElement.children.length; n++) {
-            let distance = Math.abs(n - list.currentCell)
-            list.listElement.children.item(n).style.opacity = 1 - distance / 1.2
-
-          }
-        }
-      })
-
-      window.addEventListener('mouseup', function (event) {
-        if (list.mouseDown) {
-          list.deltaY = list.originY - event.clientY
-          let duration = ((new Date).getTime() - drag_time);
-          let speed = list.deltaY / duration
-          list.mouseDown = false
-          if (list.deltaY != 0) {
-            // centerCell =  -Math.round((-currentSel * 50 + 50 - deltaY - speed * 5 - 50) / 50)
-            list.originY = 0
-            list.listElement.style.transition = 'all ' + Math.abs(speed / 2) + 's ease-out'
-            list.listElement.style.transform = 'translateY(' + (-list.lastCell * 50 + 50 - list.deltaY - speed * 400) + 'px)'
-            list.currentCell = Math.min(Math.max(-Math.round((-list.lastCell * 50 + 50 - list.deltaY - speed * 400 - 50) / 50), 0), list.maxIndex)
-            list.listElement.style.transform = 'translateY(' + (-list.currentCell * 50 + 50) + 'px)'
-            ref.setSelectedValue(list.type, list.currentCell)
-            for (let n = 0; n < list.listElement.children.length; n++) {
-              let distance = Math.abs(n - list.currentCell)
-              list.listElement.children.item(n).style.opacity = Math.max(1 - distance / 1.2, 0.1)
-
-            }
-            list.lastCell = list.currentCell
-
-          }
-        }
-
-      })
-
-
-      list.listElement.addEventListener('touchstart', function (event) {
-        // console.log(event.e)
-        list.originY = event.touches[0].clientY
-        list.mouseDown = true
-        drag_time = (new Date).getTime();
-      })
-
-      // let centerCell
-      // let speed = 0
-      // let lastClient = 0
-      let lastMove
-
-      window.addEventListener('touchmove', function (event) {
-
-        list.deltaY = list.originY - event.touches[0].clientY
-        if (list.mouseDown) {
-          list.listElement.style.transition = 'all 0s ease'
-          list.listElement.style.transform = 'translateY(' + (-list.lastCell * 50 + 50 - list.deltaY) + 'px)'
-
-
-          list.currentCell = Math.min(Math.max(-Math.round((-list.lastCell * 50 + 50 - list.deltaY - 50) / 50), 0), list.maxIndex)
-          ref.setSelectedValue(list.type, list.currentCell)
-          for (let n = 0; n < list.listElement.children.length; n++) {
-            let distance = Math.abs(n - list.currentCell)
-            list.listElement.children.item(n).style.opacity = 1 - distance / 1.2
-
-          }
-        }
-        lastMove = event
-      })
-
-      window.addEventListener('touchend', function () {
-        if (list.mouseDown) {
-          // console.log(event.touches)
-          list.deltaY = list.originY - lastMove.touches[0].clientY
-          let duration = ((new Date).getTime() - drag_time);
-          let speed = list.deltaY / duration
-          list.mouseDown = false
-          if (list.deltaY != 0) {
-            // centerCell =  -Math.round((-currentSel * 50 + 50 - deltaY - speed * 5 - 50) / 50)
-            list.originY = 0
-            list.listElement.style.transition = 'all ' + Math.abs(speed / 2) + 's ease-out'
-            list.listElement.style.transform = 'translateY(' + (-list.lastCell * 50 + 50 - list.deltaY - speed * 400) + 'px)'
-            list.currentCell = Math.min(Math.max(-Math.round((-list.lastCell * 50 + 50 - list.deltaY - speed * 400 - 50) / 50), 0), list.maxIndex)
-            list.listElement.style.transform = 'translateY(' + (-list.currentCell * 50 + 50) + 'px)'
-            ref.setSelectedValue(list.type, list.currentCell)
-            for (let n = 0; n < list.listElement.children.length; n++) {
-              let distance = Math.abs(n - list.currentCell)
-              list.listElement.children.item(n).style.opacity = Math.max(1 - distance / 1.2, 0.1)
-
-            }
-            list.lastCell = list.currentCell
-
-          }
-        }
-
-      })
+      // list.listElement.addEventListener('click', function (event) {
+      //   for (let n = 0; n < list.listElement.children.length; n++) {
+      //     if (list.listElement.children.item(n) === event.target) {
+      //       list.currentCell = n
+      //       list.lastCell = n
+      //       list.listElement.style.transform = 'translateY(' + (-n * 50 + 50) + 'px)'
+      //       for (let n = 0; n < list.listElement.children.length; n++) {
+      //         let distance = Math.abs(n - list.currentCell)
+      //         list.listElement.children.item(n).style.opacity = 1 - distance / 1.2
+      //
+      //       }
+      //     }
+      //   }
+      //   ref.setSelectedValue(list.type, list.currentCell)
+      // }, false);
+      //
+      //
+      // list.listElement.addEventListener('mousedown', function (event) {
+      //   list.originY = event.clientY
+      //   list.mouseDown = true
+      //   drag_time = (new Date).getTime();
+      // })
+      //
+      // // let centerCell
+      // // let speed = 0
+      // // let lastClient = 0
+      //
+      // window.addEventListener('mousemove', function (event) {
+      //   list.deltaY = list.originY - event.clientY
+      //   if (list.mouseDown) {
+      //     list.listElement.style.transition = 'all 0s ease'
+      //     list.listElement.style.transform = 'translateY(' + (-list.lastCell * 50 + 50 - list.deltaY) + 'px)'
+      //
+      //
+      //     list.currentCell = Math.min(Math.max(-Math.round((-list.lastCell * 50 + 50 - list.deltaY - 50) / 50), 0), list.maxIndex)
+      //     ref.setSelectedValue(list.type, list.currentCell)
+      //     for (let n = 0; n < list.listElement.children.length; n++) {
+      //       let distance = Math.abs(n - list.currentCell)
+      //       list.listElement.children.item(n).style.opacity = 1 - distance / 1.2
+      //
+      //     }
+      //   }
+      // })
+      //
+      // window.addEventListener('mouseup', function (event) {
+      //   if (list.mouseDown) {
+      //     list.deltaY = list.originY - event.clientY
+      //     let duration = ((new Date).getTime() - drag_time);
+      //     let speed = list.deltaY / duration
+      //     list.mouseDown = false
+      //     if (list.deltaY != 0) {
+      //       // centerCell =  -Math.round((-currentSel * 50 + 50 - deltaY - speed * 5 - 50) / 50)
+      //       list.originY = 0
+      //       list.listElement.style.transition = 'all ' + Math.abs(speed / 2) + 's ease-out'
+      //       list.listElement.style.transform = 'translateY(' + (-list.lastCell * 50 + 50 - list.deltaY - speed * 400) + 'px)'
+      //       list.currentCell = Math.min(Math.max(-Math.round((-list.lastCell * 50 + 50 - list.deltaY - speed * 400 - 50) / 50), 0), list.maxIndex)
+      //       list.listElement.style.transform = 'translateY(' + (-list.currentCell * 50 + 50) + 'px)'
+      //       ref.setSelectedValue(list.type, list.currentCell)
+      //       for (let n = 0; n < list.listElement.children.length; n++) {
+      //         let distance = Math.abs(n - list.currentCell)
+      //         list.listElement.children.item(n).style.opacity = Math.max(1 - distance / 1.2, 0.1)
+      //
+      //       }
+      //       list.lastCell = list.currentCell
+      //
+      //     }
+      //   }
+      //
+      // })
+      //
+      //
+      // list.listElement.addEventListener('touchstart', function (event) {
+      //   // console.log(event.e)
+      //   list.originY = event.touches[0].clientY
+      //   list.mouseDown = true
+      //   drag_time = (new Date).getTime();
+      // })
+      //
+      // // let centerCell
+      // // let speed = 0
+      // // let lastClient = 0
+      // let lastMove
+      //
+      // window.addEventListener('touchmove', function (event) {
+      //
+      //   list.deltaY = list.originY - event.touches[0].clientY
+      //   if (list.mouseDown) {
+      //     list.listElement.style.transition = 'all 0s ease'
+      //     list.listElement.style.transform = 'translateY(' + (-list.lastCell * 50 + 50 - list.deltaY) + 'px)'
+      //
+      //
+      //     list.currentCell = Math.min(Math.max(-Math.round((-list.lastCell * 50 + 50 - list.deltaY - 50) / 50), 0), list.maxIndex)
+      //     ref.setSelectedValue(list.type, list.currentCell)
+      //     for (let n = 0; n < list.listElement.children.length; n++) {
+      //       let distance = Math.abs(n - list.currentCell)
+      //       list.listElement.children.item(n).style.opacity = 1 - distance / 1.2
+      //
+      //     }
+      //   }
+      //   lastMove = event
+      // })
+      //
+      // window.addEventListener('touchend', function () {
+      //   if (list.mouseDown) {
+      //     // console.log(event.touches)
+      //     list.deltaY = list.originY - lastMove.touches[0].clientY
+      //     let duration = ((new Date).getTime() - drag_time);
+      //     let speed = list.deltaY / duration
+      //     list.mouseDown = false
+      //     if (list.deltaY != 0) {
+      //       // centerCell =  -Math.round((-currentSel * 50 + 50 - deltaY - speed * 5 - 50) / 50)
+      //       list.originY = 0
+      //       list.listElement.style.transition = 'all ' + Math.abs(speed / 2) + 's ease-out'
+      //       list.listElement.style.transform = 'translateY(' + (-list.lastCell * 50 + 50 - list.deltaY - speed * 400) + 'px)'
+      //       list.currentCell = Math.min(Math.max(-Math.round((-list.lastCell * 50 + 50 - list.deltaY - speed * 400 - 50) / 50), 0), list.maxIndex)
+      //       list.listElement.style.transform = 'translateY(' + (-list.currentCell * 50 + 50) + 'px)'
+      //       ref.setSelectedValue(list.type, list.currentCell)
+      //       for (let n = 0; n < list.listElement.children.length; n++) {
+      //         let distance = Math.abs(n - list.currentCell)
+      //         list.listElement.children.item(n).style.opacity = Math.max(1 - distance / 1.2, 0.1)
+      //
+      //       }
+      //       list.lastCell = list.currentCell
+      //
+      //     }
+      //   }
+      //
+      // })
 
     }
 
   },
 
   methods: {
+    getSpeedValue(e){
+      console.log("Speed received")
+      this.selectedSpeed = e
+
+    },
+
+    getMachValue(e){
+      console.log("Mach received")
+      this.selectedMach = e
+      // console.log("hi")
+    },
+
     close() {
       this.$emit('close', 'someValue')
     },
@@ -398,9 +413,10 @@ export default {
   margin: 10px;
 }
 
-.law-edit-box {
+.ctn-picker {
   position: relative;
   display: flex;
+  width: 90px;
   flex-direction: column;
 }
 
@@ -439,6 +455,7 @@ export default {
   font-size: 8px;
   padding-left: 2px;
   color: #737d86;
+  width: 60px;
   padding-bottom: 2px;
 }
 
@@ -555,7 +572,7 @@ export default {
   bottom: 0;
   right: 0;
   box-shadow: rgba(5, 5, 5, 0.4) 0px 1px 3px 0px;
-  background: #d4a2f4;
+  background: #b1a1dd;
   border-radius: 20px;
   margin: 10px;
   width: 40px;
