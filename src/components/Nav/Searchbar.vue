@@ -1,15 +1,15 @@
 <template>
-  <div class="searchbar-container">
+  <div class="searchbar-container" >
     <div id="searchbar">
       <!--              STATIC-->
       <label for="search"></label>
-      <input autocomplete="off" placeholder="Search..." id="search" v-model="search">
+      <input autocomplete="off" placeholder="Search..." id="search" v-model="search" @focus="magic_flag = true">
       <div class="search-icon" @click="erase()"><img v-if="search!==''" src="../../assets/icons/clear_black_24dp.svg"
                                                      alt=""></div>
     </div>
     <ul class="wrapper">
-      <li class="card" v-bind:key="post.ICAO" v-for="post in filteredList">
-        <router-link style="text-decoration: none; color: inherit"
+      <li class="card" v-show="this.magic_flag" v-bind:key="post.ICAO" v-for="post in filteredList">
+        <router-link @click="magic_flag=false" style="text-decoration: none; color: inherit; width: 100%; height: 100%"
                      :to="'/plane/'+post.ICAO+'/'">
           <div class="text-container">
             <p>
@@ -45,12 +45,17 @@ export default {
   data() {
     return {
       search: '',
+      magic_flag : false,
       postList: []
     }
   },
 
   mounted() {
-     this.postList = formattedList
+    let ref = this
+    this.postList = formattedList
+    window.addEventListener('click', function (){
+      console.log(ref.magic_flag)
+    })
   },
 
   computed: {
@@ -127,16 +132,19 @@ export default {
 .search-icon {
   position: relative;
   width: 60px;
-  height: 60px;
+  height: 100%;
   /*display: inline;*/
   cursor: pointer;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
 }
 
 
 .search-icon img {
   width: 30px;
-  height: 30px;
-  margin: 15px;
+  height: 40%;
+  margin: auto;
   filter: invert(70%);
   /*display: inline;*/
   cursor: pointer;

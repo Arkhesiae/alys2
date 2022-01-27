@@ -312,12 +312,25 @@ export default {
     speedList : function (){
       let minSpeed = msToKnot(this.speedRange.minSpeed)
       let maxSpeed = (this.speedRange.VMO)
-
+      console.log(maxSpeed)
       let speedValues = []
-      for (let speed = minSpeed; speed <= maxSpeed; speed++) {
-        speedValues.push({
-          value: Math.floor(speed)
-        })
+      for (let speed = minSpeed; speed <= maxSpeed+5; speed+=5) {
+        if (speed === minSpeed || speed === maxSpeed){
+          speedValues.push({
+            value: Math.floor(speed)
+          })
+        } else if (speed >= maxSpeed){
+          speedValues.push({
+            value: Math.floor(maxSpeed)
+          })
+          break
+        }
+        else {
+          speedValues.push({
+            value: Math.floor(Math.floor(speed)/5)*5
+          })
+        }
+
       }
       return speedValues
     },
@@ -349,19 +362,23 @@ export default {
 
 <style scoped>
 .law-edit-container {
+  min-width: 200px;
+  max-width: 360px;
   width: 300px;
   height: 400px;
-  left: calc(50% - 150px);
-  top: calc(50% - 200px);
+  flex: 1 1 auto;
+  margin: 20px;
+  /*left: calc(50% - 150px);*/
+  /*top: calc(50% - 200px);*/
   z-index: 99999;
   background: #1f2023;
-  box-shadow: #1a1a1a 0 0 10px 0px;
-  opacity: 0.95;
+  box-shadow: rgba(0, 0, 0, 0.42) 0 1px 4px 0px, rgba(0, 0, 0, 0.32) 0 0 20px 4px;
+  opacity: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
   /*justify-content: center;*/
-  position: absolute;
+  position: relative;
   border-radius: 14px;
 }
 

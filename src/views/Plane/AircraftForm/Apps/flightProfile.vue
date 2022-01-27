@@ -1,105 +1,108 @@
 <template>
   <div class="frame-container">
     <div class="law-edit-frame" v-show="lawEditing">
-      <div class="law-edit-overlay"></div>
+      <div class="overlay"></div>
       <law-edit @close="lawEditing = false" @getLaw="setCustomSpeedLaw" :speedRange="envelopeSpeeds"></law-edit>
     </div>
     <div class="params-frame" v-show="params">
-      <div class="law-edit-overlay"></div>
+      <div class="overlay"></div>
       <parameters @close="params = false" @setParams="setCustomParams" :mass="this.coefficient.aircraftStandardMass"
                   @getLaw="setCustomSpeedLaw"></parameters>
     </div>
     <div id="flightProfile" class="current-frame frame">
       <transition name="pop-in" appear>
-        <div class="information-box-container">
-          <div id="infoboxFlightState" class="information-box information-box--active information-box--brown">
-            <div class="box__border"></div>
-            <div class="box__container">
-              <div class="box__label">
-                <span class="flight-phase-label">{{ currentPhase }}</span>
-                <span class="flight-phase-comment">Montée à 250kts (IAS)</span>
-              </div>
-              <div class="flight-state-info">
-                <div class="box__flight-state-value-container">
-                  <span class="flight-state-label">Speed</span>
-                  <div class="flight-state-value" v-if="selectedUnit.unit === 'IAS'">{{ currentProfilePoint.speed }}
-                    kts
+        <div class="ctn1">
+          <div class="information-box-container">
+            <div id="infoboxFlightState" class="information-box information-box--active information-box--brown">
+              <!--            <div class="box__border"></div>-->
+              <div class="box__container">
+                <div class="box__label">
+                  <span class="flight-phase-label">{{ currentPhase }}</span>
+                  <span class="flight-phase-comment">Montée à 250kts (IAS)</span>
+                </div>
+                <div class="flight-state-info">
+                  <div class="box__flight-state-value-container">
+                    <span class="flight-state-label">Speed</span>
+                    <div class="flight-state-value" v-if="selectedUnit.unit === 'IAS'">{{ currentProfilePoint.speed }}
+                      kts
+                    </div>
+                    <div class="flight-state-value" v-else-if="selectedUnit.unit === 'TAS'">
+                      {{ currentProfilePoint.speedTAS }} kts
+                    </div>
+                    <div class="flight-state-value" v-else>{{
+                        Math.round(currentProfilePoint.mach * 100) / 100
+                      }}
+                    </div>
                   </div>
-                  <div class="flight-state-value" v-else-if="selectedUnit.unit === 'TAS'">
-                    {{ currentProfilePoint.speedTAS }} kts
-                  </div>
-                  <div class="flight-state-value" v-else>{{
-                      Math.round(currentProfilePoint.mach * 100) / 100
-                    }}
+                  <div class="unit-selector-container">
+                    <div class="unit-selector" @click="changeUnit">TAS</div>
+                    <div class="unit-selector" @click="changeUnit">IAS</div>
+                    <div class="unit-selector" @click="changeUnit">Mach</div>
                   </div>
                 </div>
-                <div class="unit-selector-container">
-                  <div class="unit-selector" @click="changeUnit">TAS</div>
-                  <div class="unit-selector" @click="changeUnit">IAS</div>
-                  <div class="unit-selector" @click="changeUnit">Mach</div>
+                <div class="flight-state-info">
+                  <div class="box__flight-state-value-container">
+                    <span class="flight-state-label">Rate</span>
+                    <div class="flight-state-value">{{ currentProfilePoint.rate }} ft/min</div>
+                  </div>
                 </div>
-              </div>
-              <div class="flight-state-info">
-                <div class="box__flight-state-value-container">
-                  <span class="flight-state-label">Rate</span>
-                  <div class="flight-state-value">{{ currentProfilePoint.rate }} ft/min</div>
-                </div>
-              </div>
 
+              </div>
             </div>
-          </div>
-          <div class="h-button-container">
-            <h-button text="Épingler" icon="pin-outline.svg"></h-button>
-            <h-button text="Éditer" icon="circle-edit-outline.svg"></h-button>
-          </div>
-          <div id="infoboxDist" class="information-box information-box-otherInfo">
-            <div class="box__container">
-              <div class="infoboxType">
-                <span>Distance parcourue</span>
-                <div class="infoboxTypeValue">
-                  <span>{{ Math.round(currentProfilePoint.dist / 1852) }} Nm</span>
-                </div>
-                <div class="infoboxTypeValueBis">
-                  <span>{{ Math.round(currentProfilePoint.dist / 1000) }} km</span>
-                </div>
+            <div class="h-button-container">
+              <h-button text="Épingler" icon="pin-outline.svg"></h-button>
+              <h-button text="Éditer" icon="circle-edit-outline.svg"></h-button>
+            </div>
+            <div id="infoboxDist" class="information-box information-box-otherInfo">
+              <div class="box__container">
+                <div class="infoboxType">
+                  <span>Distance parcourue</span>
+                  <div class="infoboxTypeValue">
+                    <span>{{ Math.round(currentProfilePoint.dist / 1852) }} Nm</span>
+                  </div>
+                  <div class="infoboxTypeValueBis">
+                    <span>{{ Math.round(currentProfilePoint.dist / 1000) }} km</span>
+                  </div>
 
-              </div>
-              <div class="infoboxType">
-                <span>Temps de vol</span>
-                <div class="infoboxTypeValue">
+                </div>
+                <div class="infoboxType">
+                  <span>Temps de vol</span>
+                  <div class="infoboxTypeValue">
                     <span>{{
                         Math.floor(currentProfilePoint.index / 3600)
                       }}h{{ Math.floor(currentProfilePoint.index % 3600 / 60) }}min</span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-          <div id="infoboxAtm" class="information-box information-box-otherInfo">
-            <div class="ctn-param temp selected">
-              <div class="ctn-value">
-                <span class="value-param">{{ Math.round((currentProfilePoint.SAT - 273.15) * 10) / 10 }}</span><span
-                  class="unit">°C</span>
+            <div id="infoboxAtm" class="information-box information-box-otherInfo">
+              <div class="ctn-param temp selected">
+                <div class="ctn-value">
+                  <span class="value-param">{{ Math.round((currentProfilePoint.SAT - 273.15) * 10) / 10 }}</span><span
+                    class="unit">°C</span>
+                </div>
+                <span class="label-param">Température</span>
               </div>
-              <span class="label-param">Température</span>
-            </div>
-            <div class="ctn-param press">
-              <div class="ctn-value">
-                <span class="value-param">{{ Math.round(currentProfilePoint.atmPressure / 100) }}</span><span
-                  class="unit">hPa</span>
+              <div class="ctn-param press">
+                <div class="ctn-value">
+                  <span class="value-param">{{ Math.round(currentProfilePoint.atmPressure / 100) }}</span>
+                  <span class="unit">hPa</span>
+                </div>
+                <!--              <span  class="value-param"> hPa</span>-->
+                <span class="label-param">Pression</span>
               </div>
-              <!--              <span  class="value-param"> hPa</span>-->
-              <span class="label-param">Pression</span>
             </div>
-          </div>
 
-          <div class="information-box debug-box box__container">
-            <ul class="list">
-              <li class="element" v-bind:key="param.clef" v-for="param in this.list">
-                <InfoboxType :clef="param.clef" :value="param.value"></InfoboxType>
-              </li>
-            </ul>
+            <div class="information-box debug-box box__container">
+              <ul class="list">
+                <li class="element" v-bind:key="param.clef" v-for="param in this.list">
+                  <InfoboxType :clef="param.clef" :value="param.value"></InfoboxType>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
+
       </transition>
 
       <transition name="appear-in" appear>
@@ -123,7 +126,7 @@
             <span>Loi de montée</span>
 
           </div>
-<!--          <span>{{ customSpeedLaw }}</span>-->
+          <!--          <span>{{ customSpeedLaw }}</span>-->
         </div>
       </transition>
 
@@ -148,8 +151,6 @@
 
     </div>
   </div>
-
-
 </template>
 
 <script>
@@ -197,7 +198,7 @@ export default {
       {
         type: 'climb',
         speedInstruction: 'law',
-        FLTarget: 280,
+        FLTarget: "max",
       },
     ]
     this.climbSequence = climbSequence
@@ -208,12 +209,20 @@ export default {
       },
       {
         type: 'climb',
-        FLTarget: 300,
+        FLTarget: "max",
       },
       {
         type: 'level',
-        time: 600,
-      }]
+        time: 5000,
+      },
+      {
+        type: 'climb',
+        FLTarget: "max",
+      },
+      {
+        type: 'level',
+        time: 3000,
+      },]
     this.cruiseSequence = cruiseSequence
     let descentSequence = [
       {
@@ -225,11 +234,13 @@ export default {
   },
 
   computed: {
-
     flightProfile: function () {
       return flightProfile(this.climbSequence, this.cruiseSequence, this.descentSequence, this.law, this.coefficient, this.defaultSpeed, this.selectedMass)
     },
 
+    totalDistance: function () {
+      return this.flightProfile.full[this.flightProfile.full.length - 1]?.dist
+    },
 
     envelopeSpeeds: function () {
       let lastCruisePoint = this.flightProfile?.cruise[this.flightProfile.cruise.length - 1]
@@ -243,9 +254,8 @@ export default {
   },
 
   mounted() {
-    this.pointObject = ""
+    this.gphProfile = ""
     let frame = document.getElementsByClassName('frame__content')[0]
-    // output.innerHTML = slider.value; // Display the default slider value
     // eslint-disable-next-line no-undef
     let canvas = new fabric.Canvas("flightProfile-canvas", {
           preserveObjectStacking: true,
@@ -261,116 +271,116 @@ export default {
     canvas.setWidth(frame.offsetWidth)
     let ref = this
 
-    window.addEventListener('resize', function () {
-      canvas.setWidth(frame.offsetWidth);
-      canvas.setHeight(frame.offsetHeight);
-      let points = []
-      ref.fullProfileObject.forEach((point) => {
-        points.push({
-          profilePoint: point,
-          x: marginHorizontalLeft + (canvas.width - marginHorizontalRight - marginHorizontalLeft) / DTotal * point.dist,
-          y: -point.alt * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height
-        })
-      })
-      ref.pointObject.set({points: points})
-      ref.pointObject.setCoords()
-      canvas.requestRenderAll()
-      // canvas.calcOffset();
-    });
 
+    // letthis.marginVertical = canvas.height / 4
+    // letthis.marginHorizontalLeft = 300
+    this.marginVertical = canvas.height / 3.5
 
-    this.marginVertical = canvas.height / 4
-    let marginVertical = canvas.height / 4
-    let marginHorizontalLeft = 300
-    this.marginHorizontalLeft = 300
-    let marginHorizontalRight = 50
-    this.marginHorizontalRight = 50
-
-
-
-
-    let points = []
-    let pointsMaxAlt = []
-
-    this.profilePoints = points
-
-    let climbPoints = []
-    let cruisePoints = []
-    let descentPoints = []
-    let lastAnchor
-    let fullList
-
-    let profileObject = this.flightProfile
-    let profile = profileObject.full
-    this.fullProfileObject = profileObject.full
-    let DTotal = profile[profile.length - 1].dist
-    for (let point of profile) {
-      points.push({
-        profilePoint: point,
-        x: marginHorizontalLeft + (canvas.width - marginHorizontalRight - marginHorizontalLeft) / DTotal * point.dist,
-        y: -point.alt * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height
-      })
-      pointsMaxAlt.push({
-        x: marginHorizontalLeft + (canvas.width - marginHorizontalRight - marginHorizontalLeft) / DTotal * point.dist,
-        y: -point.maxAlt * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height
-      })
-    }
-    console.log(pointsMaxAlt)
-    for (let point of profileObject.climb) {
-      climbPoints.push({
-        profilePoint: point,
-        x: marginHorizontalLeft + (canvas.width - marginHorizontalRight - marginHorizontalLeft) / DTotal * point.dist,
-        y: -point.alt * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height
-      })
-    }
-    climbPoints.push({
-      x: climbPoints[climbPoints.length - 1].x,
-      y: canvas.height
-    })
-    lastAnchor = climbPoints[climbPoints.length - 1].x
-
-    for (let point of profileObject.cruise) {
-      cruisePoints.push({
-        profilePoint: point,
-        x: marginHorizontalLeft + (canvas.width - marginHorizontalRight - marginHorizontalLeft) / DTotal * point.dist,
-        y: -point.alt * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height
-      })
+    if(canvas.width < 500){
+      this.marginHorizontalLeft = canvas.width/6
+      this.marginHorizontalRight = canvas.width/6
+    } else {
+      this.marginHorizontalLeft = 300
+      this.marginHorizontalRight = 50
     }
 
-    fullList = climbPoints.concat(cruisePoints)
-    cruisePoints.push({
-      x: fullList[fullList.length - 1].x,
-      y: canvas.height
-    })
-    cruisePoints.push({
-      x: lastAnchor,
-      y: canvas.height
-    })
+    // letthis.marginHorizontalRight = 50
 
-    lastAnchor = fullList[fullList.length - 1].x
 
-    for (let point of profileObject.descent) {
-      descentPoints.push({
-        profilePoint: point,
-        x: marginHorizontalLeft + (canvas.width - marginHorizontalRight - marginHorizontalLeft) / DTotal * point.dist,
-        y: -point.alt * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height
-      })
-    }
-    fullList = fullList.concat(descentPoints)
+    this.computeFlightProfile()
 
-    descentPoints.push({
-      x: fullList[fullList.length - 1].x,
-      y: canvas.height
-    })
-    descentPoints.push({
-      x: lastAnchor,
-      y: canvas.height
-    })
+    // let points = []
+    // let pointsMaxAlt = []
+    //
+    // this.profilePoints = points
+    //
+    // let climbPoints = []
+    // let cruisePoints = []
+    // let descentPoints = []
+    // let lastAnchor
+    // let fullList
+    //
+    // let profileObject = this.flightProfile
+    //
+    // let profile = profileObject.full
+    // this.fullProfileObject = profileObject.full
+    //
+    // let DTotal = profile[profile.length - 1].dist
+    //
+    // // console.log(this.totalDistance)
+    //
+    // for (let point of profile) {
+    //   let coords = this.toCanvas(point.dist, point.alt)
+    //   let coordsMaxAlt = this.toCanvas(point.dist, point.maxAlt)
+    //   points.push({
+    //     profilePoint: point,
+    //     x: coords.x,
+    //     y: coords.y,
+    //   })
+    //   pointsMaxAlt.push({
+    //     x: coordsMaxAlt.x,
+    //     y: coordsMaxAlt.y,
+    //   })
+    // }
+    // // console.log(pointsMaxAlt)
+    // for (let point of profileObject.climb) {
+    //   let coords = this.toCanvas(point.dist, point.alt)
+    //   climbPoints.push({
+    //     profilePoint: point,
+    //     x: coords.x,
+    //     y: coords.y,
+    //   })
+    // }
+    // climbPoints.push({
+    //   x: climbPoints[climbPoints.length - 1].x,
+    //   y: canvas.height
+    // })
+    // lastAnchor = climbPoints[climbPoints.length - 1].x
+    //
+    // for (let point of profileObject.cruise) {
+    //   let coords = this.toCanvas(point.dist, point.alt)
+    //   cruisePoints.push({
+    //     profilePoint: point,
+    //     x: coords.x,
+    //     y: coords.y,
+    //   })
+    // }
+    //
+    // fullList = climbPoints.concat(cruisePoints)
+    // cruisePoints.push({
+    //   x: fullList[fullList.length - 1].x,
+    //   y: canvas.height
+    // })
+    // cruisePoints.push({
+    //   x: lastAnchor,
+    //   y: canvas.height
+    // })
+    //
+    // lastAnchor = fullList[fullList.length - 1].x
+    //
+    // for (let point of profileObject.descent) {
+    //   let coords = this.toCanvas(point.dist, point.alt)
+    //   descentPoints.push({
+    //     profilePoint: point,
+    //     x: coords.x,
+    //     y: coords.y,
+    //   })
+    // }
+    // fullList = fullList.concat(descentPoints)
+    //
+    // descentPoints.push({
+    //   x: fullList[fullList.length - 1].x,
+    //   y: canvas.height
+    // })
+    // descentPoints.push({
+    //   x: lastAnchor,
+    //   y: canvas.height
+    // })
 
     // let sampledPoints = profileSampling(fullList, 100)
 
     // eslint-disable-next-line no-undef
-    var grad = new fabric.Gradient({
+    let grad = new fabric.Gradient({
       type: 'linear',
       coords: {
         x1: canvas.width / 2,
@@ -392,7 +402,7 @@ export default {
     });
 
     // eslint-disable-next-line no-undef
-    var grad2 = new fabric.Gradient({
+    let grad2 = new fabric.Gradient({
       type: 'linear',
       coords: {
         x1: canvas.width / 2,
@@ -414,19 +424,31 @@ export default {
     });
 
     // eslint-disable-next-line no-undef
-    this.pointObject = new fabric.Polyline(points, {
+    this.gphProfile = new fabric.Polyline(this.points, {
       stroke: '#ca8ee3',
       strokeWidth: 0.5,
       // evented: false,
-      radius: 1,
+      // radius: 1,
       hoverCursor: 'pointer',
       selectable: false,
       objectCaching: false,
       fill: grad,
     })
+    canvas.add(this.gphProfile)
+    // eslint-disable-next-line no-undef
+    this.gphFollowLine = new fabric.Polyline([{x: 0, y: 0}, {x: canvas.width, y: canvas.height}], {
+      stroke: '#f5cbff',
+      strokeWidth: 1,
+      evented: false,
+      fill: 'rgba(0,0,0,0)',
+      hoverCursor: 'pointer',
+      objectCaching :false,
+      selectable: false,
+    })
+    canvas.add(this.gphFollowLine)
 
     // eslint-disable-next-line no-undef
-    this.pointMaxAltObject = new fabric.Polyline(pointsMaxAlt, {
+    this.gphMaxAlt = new fabric.Polyline(this.pointsMaxAlt, {
       stroke: '#76d6ff',
       strokeWidth: 1,
       strokeDashArray: [5, 5],
@@ -437,10 +459,9 @@ export default {
       objectCaching: false,
       fill: "rgba(0,0,0,0)",
     })
-    let pointObject = this.pointObject
-    let pointMaxAltObject = this.pointMaxAltObject
-    canvas.add(pointObject)
-    canvas.add(pointMaxAltObject)
+    canvas.add(this.gphMaxAlt)
+
+    // let pointMaxAltObject = this.gphMaxAlt
     // eslint-disable-next-line no-undef
     // let sampledObject = new fabric.Polyline(sampledPoints, {
     //   stroke: '#ff1f32',
@@ -454,7 +475,7 @@ export default {
     //
     // sampledPoints.forEach((point)=>{
     //   // eslint-disable-next-line no-undef
-    //   let cursor1 = new fabric.Rect({
+    //   let this.gphOuterCursor = new fabric.Rect({
     //     stroke: '#ff0c0c',
     //     width:1,
     //     height:300,
@@ -464,26 +485,16 @@ export default {
     //     selectable: false,
     //     fill: 'rgba(255,11,11,0.94)',
     //   })
-    //   canvas.add(cursor1)
+    //   canvas.add(this.gphOuterCursor)
     // })
     // canvas.add(sampledObject)
 
+
     // eslint-disable-next-line no-undef
-    this.followLine = new fabric.Polyline([{x: 0, y: 0}, {x: canvas.width, y: canvas.height}], {
-      stroke: '#f5cbff',
-      strokeWidth: 1,
-      evented: false,
-      fill: 'rgba(0,0,0,0)',
-      hoverCursor: 'pointer',
-      selectable: false,
-    })
-    let followLine = this.followLine
-    canvas.add(followLine)
-    // eslint-disable-next-line no-undef
-    let groundLabel = new fabric.Text('GROUND', {
+    this.gphGroundLabel = new fabric.Text('GROUND', {
       left: canvas.width - 50,
       fontSize: 10,
-      top: canvas.height - marginVertical + 5,
+      top: canvas.height - this.marginVertical + 5,
       fontFamily: 'Product Sans',
       fontWeight: 'Bold',
       radius: 1,
@@ -492,13 +503,13 @@ export default {
       selectable: false,
       fill: 'rgba(100,100,100,1)',
     })
-    canvas.add(groundLabel)
+    canvas.add(this.gphGroundLabel)
     // eslint-disable-next-line no-undef
-    let climbLabel = new fabric.Text('Climb', {
-      left: 0.5 * (canvas.width - marginHorizontalRight - marginHorizontalLeft) / 3 + marginHorizontalLeft - 20,
+    this.gphClimbLabel = new fabric.Text('Climb', {
+      left: 0.5 * (canvas.width - this.marginHorizontalRight - this.marginHorizontalLeft) / 3 + this.marginHorizontalLeft - 20,
       fontSize: 15,
       objectCaching: false,
-      top: canvas.height - marginVertical - 10,
+      top: canvas.height - this.marginVertical - 10,
       fontFamily: 'Product Sans',
       fontWeight: 'Bold',
       radius: 1,
@@ -506,59 +517,61 @@ export default {
       selectable: false,
       fill: 'rgb(113,68,59)',
     })
-    canvas.add(climbLabel)
+    canvas.add(this.gphClimbLabel)
     // eslint-disable-next-line no-undef
-    this.climbGraph = new fabric.Polygon(climbPoints, {
+    this.gphClimbPhase = new fabric.Polygon(this.climbPoints, {
       stroke: '#764637',
       strokeWidth: 0.0002,
       evented: false,
       radius: 1,
+      objectCaching : false,
       hoverCursor: 'pointer',
       selectable: false,
       fill: grad2,
     })
-    canvas.add(this.climbGraph)
+    canvas.add(this.gphClimbPhase)
     // eslint-disable-next-line no-undef
-    let cruiseLabel = new fabric.Text('Cruise', {
-      left: 1.5 * (canvas.width - marginHorizontalRight - marginHorizontalLeft) / 3 + marginHorizontalLeft - 20,
+    this.gphCruiseLabel = new fabric.Text('Cruise', {
+      left: 1.5 * (canvas.width - this.marginHorizontalRight - this.marginHorizontalLeft) / 3 + this.marginHorizontalLeft - 20,
       fontSize: 15,
       objectCaching: false,
-      top: canvas.height - marginVertical - 10,
+      top: canvas.height - this.marginVertical - 10,
       fontFamily: 'Product Sans',
       fontWeight: 'Bold',
       radius: 1,
       hoverCursor: 'pointer',
       selectable: false,
-      fill: 'rgb(133,223,196)',
+      fill: 'rgb(145,133,223)',
     })
-    canvas.add(cruiseLabel)
+    canvas.add(this.gphCruiseLabel)
     // eslint-disable-next-line no-undef
-    this.cruiseGraph = new fabric.Polygon(cruisePoints, {
+    this.gphCruisePhase = new fabric.Polygon(this.cruisePoints, {
       stroke: '#764637',
       strokeWidth: 0.0002,
       evented: false,
       radius: 1,
       hoverCursor: 'pointer',
       selectable: false,
+      objectCaching:false,
       fill: grad2,
     })
-    canvas.add(this.cruiseGraph)
+    canvas.add(this.gphCruisePhase)
     // eslint-disable-next-line no-undef
-    let descentLabel = new fabric.Text('Descent', {
-      left: 2.5 * (canvas.width - marginHorizontalRight - marginHorizontalLeft) / 3 + marginHorizontalLeft - 20,
+    this.gphDescentLabel = new fabric.Text('Descent', {
+      left: 2.5 * (canvas.width - this.marginHorizontalRight - this.marginHorizontalLeft) / 3 + this.marginHorizontalLeft - 20,
       fontSize: 15,
       objectCaching: false,
-      top: canvas.height - marginVertical - 10,
+      top: canvas.height - this.marginVertical - 10,
       fontFamily: 'Product Sans',
       fontWeight: 'Bold',
       radius: 1,
       hoverCursor: 'pointer',
       selectable: false,
-      fill: 'rgb(73,132,98)',
+      fill: 'rgb(88,73,132)',
     })
-    canvas.add(descentLabel)
+    canvas.add(this.gphDescentLabel)
     // eslint-disable-next-line no-undef
-    this.descentGraph = new fabric.Polygon(descentPoints, {
+    this.gphDescentPhase = new fabric.Polygon(this.descentPoints, {
       stroke: '#764637',
       strokeWidth: 0.0002,
       evented: false,
@@ -567,48 +580,49 @@ export default {
       selectable: false,
       fill: grad2,
     })
-    canvas.add(this.descentGraph)
+    canvas.add(this.gphDescentPhase)
 
     this.phaseObjects = {
       climb: {
-        label: climbLabel,
-        graph: this.climbGraph,
+        label: this.gphClimbLabel,
+        graph: this.gphClimbPhase,
       },
       cruise: {
-        label: cruiseLabel,
-        graph: this.cruiseGraph,
+        label: this.gphCruiseLabel,
+        graph: this.gphCruisePhase,
       },
       descent: {
-        label: descentLabel,
-        graph: this.descentGraph,
+        label: this.gphDescentLabel,
+        graph: this.gphDescentPhase,
       }
-
     }
 
     // eslint-disable-next-line no-undef
-    let verticalScale = new fabric.Rect({
+    this.gphVScale = new fabric.Rect({
       fill: 'rgba(100,100,100,1)',
       width: 0.5,
-      height: canvas.height - 2 * marginVertical,
+      objectCaching : false,
+      height: canvas.height - 2 * this.marginVertical,
       left: canvas.width - 10,
-      top: marginVertical,
+      top: this.marginVertical,
     })
-    canvas.add(verticalScale)
+    canvas.add(this.gphVScale)
     // eslint-disable-next-line no-undef
-    let verticalCursor = new fabric.Rect({
+    this.gphVCursor = new fabric.Rect({
       selectable: false,
-      fill: 'rgb(86,199,156)',
+      objectCaching:false,
+      fill: 'rgb(213,200,255)',
       width: 10,
       height: 2,
       left: canvas.width - 10,
-      top: marginVertical,
+      top: this.marginVertical,
     })
-    canvas.add(verticalCursor)
+    canvas.add(this.gphVCursor)
     // eslint-disable-next-line no-undef
-    let verticalCursorText = new fabric.Text('400', {
+    this.gphVCursorText = new fabric.Text('', {
       left: canvas.width - 40,
       fontSize: 14,
-      top: canvas.height - marginVertical,
+      top: canvas.height - this.marginVertical,
       fontFamily: 'Product Sans',
       fontWeight: "bold",
       radius: 1,
@@ -616,27 +630,27 @@ export default {
       selectable: false,
       fill: 'rgb(200,200,200)',
     })
-    canvas.add(verticalCursorText)
+    canvas.add(this.gphVCursorText)
     // eslint-disable-next-line no-undef
-    let cursor1 = new fabric.Circle({
-      stroke: '#4eaa81',
+    this.gphOuterCursor = new fabric.Circle({
+      stroke: 'rgba(237,183,222,0.13)',
       radius: 10,
       left: canvas.width / 2,
       hoverCursor: 'pointer',
       selectable: false,
-      fill: 'rgba(79,255,176,0.1)',
+      fill: 'rgba(129,79,255,0.1)',
     })
-    canvas.add(cursor1)
+    canvas.add(this.gphOuterCursor)
     // eslint-disable-next-line no-undef
-    let cursor2 = new fabric.Circle({
+    this.gphInnerCursor = new fabric.Circle({
       radius: 4,
       hoverCursor: 'pointer',
       selectable: false,
-      fill: '#85dfca',
+      fill: '#fdfcff',
     })
-    canvas.add(cursor2)
+    canvas.add(this.gphInnerCursor)
     // eslint-disable-next-line no-undef
-    let cursorLine = new fabric.Rect({
+    this.gphCursorLine = new fabric.Rect({
       fill: '#85eac3',
       width: 0.5,
       opacity: 0.2,
@@ -644,10 +658,10 @@ export default {
       hoverCursor: 'pointer',
       height: canvas.height,
       left: canvas.width - 10,
-      top: marginVertical,
+      top: this.marginVertical,
       selectable: false,
     })
-    canvas.add(cursorLine)
+    canvas.add(this.gphCursorLine)
     // eslint-disable-next-line no-undef
     this.hpTrans = new fabric.Rect({
       fill: 'rgba(205,189,246,0.98)',
@@ -655,7 +669,7 @@ export default {
       width: 10,
       left: canvas.width - 10,
       selectable: false,
-      top: -profile[0].hpTrans / 100 * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height,
+      top: -this.flightProfile.full[0].hpTrans / 100 * (canvas.height - 2 * this.marginVertical) / 410 - this.marginVertical + canvas.height,
     })
     canvas.add(this.hpTrans)
     // eslint-disable-next-line no-undef
@@ -668,40 +682,59 @@ export default {
       fontWeight: 'Bold',
       selectable: false,
       left: canvas.width - 80,
-      top: -profile[0].hpTrans / 100 * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height + 2,
+      top: -this.flightProfile.full[0].hpTrans / 100 * (canvas.height - 2 * this.marginVertical) / 410 - this.marginVertical + canvas.height + 2,
     })
     canvas.add(this.hpTransText)
+
+    let conjonctionPoint = this.findConjonctionPoint()
+    // eslint-disable-next-line no-unused-vars,no-undef
+    // this.conjonctionBug = new fabric.Circle({
+    //   selectable: false,
+    //   fill: 'rgb(125,201,255)',
+    //   radius: 2,
+    //   left: conjonctionPoint.x - 2,
+    //   top: conjonctionPoint.y - 2,
+    // })
+    // this.canvas.add(conjonctionBug)
+    // eslint-disable-next-line no-undef
+    this.conjonctionBug = new fabric.Circle({
+      selectable: false,
+      fill: 'rgb(125,201,255)',
+      radius: 2,
+      left: conjonctionPoint.x - 2,
+      top: conjonctionPoint.y - 2,
+    })
+    canvas.add(this.conjonctionBug)
 
     let PRESSED = false
     let GRABBING = false
     let HOVER = false
-    let group = [this.pointObject, cursor1, cursor2]
+    let group = [this.gphProfile, this.gphOuterCursor, this.gphInnerCursor]
 
-    canvas.on("mouse:down", (event) => {
-      console.log(event)
-      // if (event.target === cursor1 || event.target === cursor2) {
-        GRABBING = true
-        if (!PRESSED) {
-          cursor1.animate({
-            radius: 20,
-            left: this.currentPoint.x - 20,
-            top: this.currentPoint.y - 20,
-            fill: "rgba(100,188,162,0.52)"
+    canvas.on("mouse:down", () => {
+      // if (event.target === this.gphOuterCursor || event.target === this.gphInnerCursor) {
+      GRABBING = true
+      if (!PRESSED) {
+        this.gphOuterCursor.animate({
+          radius: 20,
+          left: this.currentPoint.x - 20,
+          top: this.currentPoint.y - 20,
+          fill: "rgba(169,158,181,0.74)"
 
-          }, {
-            onChange: function () {
-              canvas.requestRenderAll()
-            },
+        }, {
+          onChange: function () {
+            canvas.requestRenderAll()
+          },
 
-            easing: // eslint-disable-next-line no-unused-vars,no-undef
-                fabric.util.ease['easeOutQuad'],
-            duration: 100
-          });
-          // cursor1.set({'radius' : 20, 'left': this.currentPoint.x - 20, 'top': this.currentPoint.y - 20})
-          cursor1.setCoords()
-          canvas.requestRenderAll()
-          PRESSED = true
-        }
+          easing: // eslint-disable-next-line no-unused-vars,no-undef
+              fabric.util.ease['easeOutQuad'],
+          duration: 100
+        });
+        // this.gphOuterCursor.set({'radius' : 20, 'left': this.currentPoint.x - 20, 'top': this.currentPoint.y - 20})
+        this.gphOuterCursor.setCoords()
+        canvas.requestRenderAll()
+        PRESSED = true
+      }
 
       // }
       canvas.requestRenderAll()
@@ -711,7 +744,7 @@ export default {
       if (GRABBING) {
         GRABBING = false
         if (PRESSED) {
-          cursor1.animate({
+          this.gphOuterCursor.animate({
             fill: "rgba(10,10,10,0.01)"
 
           }, {
@@ -723,13 +756,13 @@ export default {
                 fabric.util.ease['easeOutQuad'],
             duration: 100
           });
-          // cursor1.set({'radius' : 20, 'left': this.currentPoint.x - 20, 'top': this.currentPoint.y - 20})
-          cursor1.setCoords()
+          // this.gphOuterCursor.set({'radius' : 20, 'left': this.currentPoint.x - 20, 'top': this.currentPoint.y - 20})
+          this.gphOuterCursor.setCoords()
           canvas.requestRenderAll()
         }
 
         if (!HOVER) {
-          cursor1.animate({
+          this.gphOuterCursor.animate({
             radius: 4,
             left: this.currentPoint.x - 4,
             top: this.currentPoint.y - 4
@@ -743,13 +776,13 @@ export default {
                 fabric.util.ease['easeOutQuad'],
             duration: 500
           });
-          // cursor1.set({'radius' : 20, 'left': this.currentPoint.x - 20, 'top': this.currentPoint.y - 20})
-          cursor1.setCoords()
+          // this.gphOuterCursor.set({'radius' : 20, 'left': this.currentPoint.x - 20, 'top': this.currentPoint.y - 20})
+          this.gphOuterCursor.setCoords()
           canvas.requestRenderAll()
         }
         PRESSED = false
       } else {
-        if (event.target !== this.pointObject && event.target !== cursor2 && event.target !== cursor1) {
+        if (event.target !== this.gphProfile && event.target !== this.gphInnerCursor && event.target !== this.gphOuterCursor) {
           HOVER = false
         }
         let pointer = canvas.getPointer(event.e);
@@ -773,19 +806,19 @@ export default {
         }
         let pt = this.currentPoint
         let followPoints = this.profilePoints.slice(0, this.profilePoints.indexOf(pt))
-        followLine.points = followPoints
-        followLine.dirty = true
-        followLine.setCoords()
+        this.gphFollowLine.points = followPoints
+        this.gphFollowLine.dirty = true
+        this.gphFollowLine.setCoords()
 
 
-        verticalCursor.set({top: pt.y - 2})
-        verticalCursorText.set({top: pt.y - 9, text: Math.round(this.currentProfilePoint.alt).toString()})
-        cursor1.set({left: pt.x - cursor1.radius, top: pt.y - cursor1.radius})
-        cursor1.setCoords()
-        cursor2.set({left: pt.x - 4, top: pt.y - 4})
-        cursor2.setCoords()
-        cursorLine.set({left: pt.x, top: pt.y})
-        cursorLine.setCoords()
+        this.gphVCursor.set({top: pt.y - 2})
+        this.gphVCursorText.set({top: pt.y - 9, text: Math.round(this.currentProfilePoint.alt).toString()})
+        this.gphOuterCursor.set({left: pt.x - this.gphOuterCursor.radius, top: pt.y - this.gphOuterCursor.radius})
+        this.gphOuterCursor.setCoords()
+        this.gphInnerCursor.set({left: pt.x - 4, top: pt.y - 4})
+        this.gphInnerCursor.setCoords()
+        this.gphCursorLine.set({left: pt.x, top: pt.y})
+        this.gphCursorLine.setCoords()
         canvas.requestRenderAll()
       }
 
@@ -814,26 +847,26 @@ export default {
         }
 
         let followPoints = this.profilePoints.slice(0, this.profilePoints.indexOf(pt))
-        followLine.points = followPoints
-        followLine.dirty = true
-        followLine.setCoords()
+        this.gphFollowLine.points = followPoints
+        this.gphFollowLine.dirty = true
+        this.gphFollowLine.setCoords()
 
 
-        verticalCursor.set({top: pt.y - 2})
-        verticalCursorText.set({top: pt.y - 9, text: Math.round(this.currentProfilePoint.alt).toString()})
-        cursor1.set({left: pt.x - cursor1.radius, top: pt.y - cursor1.radius})
-        cursor1.setCoords()
-        cursor2.set({left: pt.x - 4, top: pt.y - 4})
-        cursor2.setCoords()
-        cursorLine.set({left: pt.x, top: pt.y})
-        cursorLine.setCoords()
+        this.gphVCursor.set({top: pt.y - 2})
+        this.gphVCursorText.set({top: pt.y - 9, text: Math.round(this.currentProfilePoint.alt).toString()})
+        this.gphOuterCursor.set({left: pt.x - this.gphOuterCursor.radius, top: pt.y - this.gphOuterCursor.radius})
+        this.gphOuterCursor.setCoords()
+        this.gphInnerCursor.set({left: pt.x - 4, top: pt.y - 4})
+        this.gphInnerCursor.setCoords()
+        this.gphCursorLine.set({left: pt.x, top: pt.y})
+        this.gphCursorLine.setCoords()
         canvas.requestRenderAll()
       }
 
     })
 
     canvas.on("mouse:over", (event) => {
-      if (event.target === this.pointObject || event.target === cursor2 || event.target === cursor1) {
+      if (event.target === this.gphProfile || event.target === this.gphInnerCursor || event.target === this.gphOuterCursor) {
         if (HOVER) {
           return
         }
@@ -841,7 +874,7 @@ export default {
         if (GRABBING) {
           return
         }
-        cursor1.animate({
+        this.gphOuterCursor.animate({
           radius: 20,
           left: this.currentPoint.x - 20,
           top: this.currentPoint.y - 20
@@ -853,19 +886,18 @@ export default {
               fabric.util.ease['easeOutQuad'],
           duration: 200
         });
-        // cursor1.set({'radius' : 20, 'left': this.currentPoint.x - 20, 'top': this.currentPoint.y - 20})
-        cursor1.setCoords()
+        // this.gphOuterCursor.set({'radius' : 20, 'left': this.currentPoint.x - 20, 'top': this.currentPoint.y - 20})
+        this.gphOuterCursor.setCoords()
         canvas.requestRenderAll()
       }
     })
 
-
     canvas.on("mouse:out", (event) => {
       // console.log(event.nextTarget)
-      if ((event.target === this.pointObject || event.target === cursor2 || event.target === cursor1) && (!group.includes(event.nextTarget))) {
+      if ((event.target === this.gphProfile || event.target === this.gphInnerCursor || event.target === this.gphOuterCursor) && (!group.includes(event.nextTarget))) {
         if (HOVER && !GRABBING) {
           // console.log("MOUSE OUT")
-          cursor1.animate({
+          this.gphOuterCursor.animate({
             left: this.currentPoint.x - 4,
             top: this.currentPoint.y - 4,
             radius: 4,
@@ -877,7 +909,7 @@ export default {
                 fabric.util.ease['easeOutQuad'],
             duration: 200
           });
-          cursor1.setCoords()
+          this.gphOuterCursor.setCoords()
           canvas.requestRenderAll()
         }
         HOVER = false
@@ -887,6 +919,43 @@ export default {
 
       }
     })
+    this.resizeTimeOut = ""
+    window.addEventListener('resize', function () {
+      clearTimeout(ref.resizeTimeOut)
+      ref.resizeTimeOut = setTimeout(()=>{
+        canvas.setWidth(frame.offsetWidth);
+        canvas.setHeight(frame.offsetHeight);
+        canvas.calcOffset()
+        this.marginVertical = canvas.height / 3.5
+
+        if(canvas.width < 500){
+          this.marginHorizontalLeft = canvas.width/6
+          this.marginHorizontalRight = canvas.width/6
+        } else {
+          this.marginHorizontalLeft = 300
+          this.marginHorizontalRight = 50
+        }
+
+        let points = []
+        ref.flightProfile.full.forEach((point) => {
+          let coords = ref.toCanvas(point.dist, point.alt)
+          points.push({
+            profilePoint: point,
+            x: coords.x,
+            y: coords.y,
+          })
+        })
+        ref.gphProfile.set({points: points})
+        ref.gphProfile.setCoords()
+        ref.computeFlightProfile()
+        ref.updateGphObjects()
+        ref.updateStaticObjects()
+        canvas.requestRenderAll()
+      },500)
+
+      // canvas.calcOffset();
+    });
+
     canvas.requestRenderAll()
     this.currentPoint = this.getPoint(0)
     let pt = this.currentPoint
@@ -897,19 +966,19 @@ export default {
     }
 
     let followPoints = this.profilePoints.slice(0, this.profilePoints.indexOf(pt))
-    followLine.points = followPoints
-    followLine.dirty = true
-    followLine.setCoords()
+    this.gphFollowLine.points = followPoints
+    this.gphFollowLine.dirty = true
+    this.gphFollowLine.setCoords()
 
 
-    verticalCursor.set({top: pt.y - 2})
-    verticalCursorText.set({top: pt.y - 9, text: Math.round(this.currentProfilePoint.alt).toString()})
-    cursor1.set({left: pt.x - cursor1.radius, top: pt.y - cursor1.radius})
-    cursor1.setCoords()
-    cursor2.set({left: pt.x - 4, top: pt.y - 4})
-    cursor2.setCoords()
-    cursorLine.set({left: pt.x, top: pt.y})
-    cursorLine.setCoords()
+    this.gphVCursor.set({top: pt.y - 2})
+    this.gphVCursorText.set({top: pt.y - 9, text: Math.round(this.currentProfilePoint.alt).toString()})
+    this.gphOuterCursor.set({left: pt.x - this.gphOuterCursor.radius, top: pt.y - this.gphOuterCursor.radius})
+    this.gphOuterCursor.setCoords()
+    this.gphInnerCursor.set({left: pt.x - 4, top: pt.y - 4})
+    this.gphInnerCursor.setCoords()
+    this.gphCursorLine.set({left: pt.x, top: pt.y})
+    this.gphCursorLine.setCoords()
   },
 
   created() {
@@ -917,129 +986,160 @@ export default {
   },
 
   methods: {
+    toCanvas: function (dist, alt) {
+      let canvas = this.canvas
+      return {
+        x: this.marginHorizontalLeft + (canvas.width - this.marginHorizontalRight - this.marginHorizontalLeft) / this.totalDistance * dist,
+        y: -alt * (canvas.height - 2 * this.marginVertical) / 410 - this.marginVertical + canvas.height
+      }
+    },
+
     setCustomParams: function (parameters) {
-      console.log(parameters)
       this.selectedMass = parseFloat(parameters.mass)
       this.selectedISAdev = parameters.ISA
       this.selectedQNH = parameters.QNH
       this.computeFlightProfile()
+      this.updateGphObjects()
       this.canvas.requestRenderAll()
     },
 
     setCustomSpeedLaw: function (lawParameters) {
       this.customSpeedLaw = lawParameters
       this.law = this.customSpeedLaw
-      console.log(this.customSpeedLaw)
+
       this.hpTrans.set({
-        top: -this.customSpeedLaw.FL * (this.canvasHeight - 2 * this.marginVertical) / 410 - this.marginVertical + this.canvasHeight
+        top: -this.customSpeedLaw.FL * (this.canvas.height - 2 * this.marginVertical) / 410 - this.marginVertical + this.canvas.height
       })
       this.hpTrans.setCoords()
 
       this.hpTransText.set({
-        top: -this.customSpeedLaw.FL * (this.canvasHeight - 2 * this.marginVertical) / 410 - this.marginVertical + this.canvasHeight
+        top: -this.customSpeedLaw.FL * (this.canvas.height - 2 * this.marginVertical) / 410 - this.marginVertical + this.canvas.height
       })
       this.hpTransText.setCoords()
       this.computeFlightProfile()
+      this.updateGphObjects()
       this.canvas.requestRenderAll()
     },
 
     computeFlightProfile: function () {
       let canvas = this.canvas
-      let marginVertical = this.marginVertical
-      let marginHorizontalLeft = this.marginHorizontalLeft
-      let marginHorizontalRight = this.marginHorizontalRight
-      let points = []
+      this.points = []
+      this.pointsMaxAlt = []
+      this.profilePoints = this.points
 
-      this.profilePoints = points
-
-      let climbPoints = []
-      let cruisePoints = []
-      let descentPoints = []
+      this.climbPoints = []
+      this.cruisePoints = []
+      this.descentPoints = []
       let lastAnchor
       let fullList
 
       let profileObject = this.flightProfile
-      console.log(this.coefficient)
       let profile = profileObject.full
       this.profileObject = profileObject.full
-      let DTotal = profile[profile.length - 1].dist
+
       for (let point of profile) {
-        points.push({
-          profilePoint: point,
-          x: marginHorizontalLeft + (canvas.width - marginHorizontalRight - marginHorizontalLeft) / DTotal * point.dist,
-          y: -point.alt * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height
-        })
-      }
+          let coords = this.toCanvas(point.dist, point.alt)
+          let coordsMaxAlt = this.toCanvas(point.dist, point.maxAlt)
+          this.points.push({
+            profilePoint: point,
+            x: coords.x,
+            y: coords.y,
+          })
+          this.pointsMaxAlt.push({
+            x: coordsMaxAlt.x,
+            y: coordsMaxAlt.y,
+          })
+        }
       for (let point of profileObject.climb) {
-        climbPoints.push({
+        let coords = this.toCanvas(point.dist, point.alt)
+        this.climbPoints.push({
           profilePoint: point,
-          x: marginHorizontalLeft + (canvas.width - marginHorizontalRight - marginHorizontalLeft) / DTotal * point.dist,
-          y: -point.alt * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height
+          x: coords.x,
+          y: coords.y,
         })
       }
-      climbPoints.push({
-        x: climbPoints[climbPoints.length - 1].x,
+      this.climbPoints.push({
+        x: this.climbPoints[this.climbPoints.length - 1].x,
         y: canvas.height
       })
-      lastAnchor = climbPoints[climbPoints.length - 1].x
+      lastAnchor = this.climbPoints[this.climbPoints.length - 1].x
 
       for (let point of profileObject.cruise) {
-        cruisePoints.push({
+        let coords = this.toCanvas(point.dist, point.alt)
+        this.cruisePoints.push({
           profilePoint: point,
-          x: marginHorizontalLeft + (canvas.width - marginHorizontalRight - marginHorizontalLeft) / DTotal * point.dist,
-          y: -point.alt * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height
+          x: coords.x,
+          y: coords.y,
         })
       }
 
-      fullList = climbPoints.concat(cruisePoints)
-      cruisePoints.push({
+      fullList = this.climbPoints.concat(this.cruisePoints)
+      this.cruisePoints.push({
         x: fullList[fullList.length - 1].x,
         y: canvas.height
       })
-      cruisePoints.push({
+      this.cruisePoints.push({
         x: lastAnchor,
         y: canvas.height
       })
 
       lastAnchor = fullList[fullList.length - 1].x
 
-
       for (let point of profileObject.descent) {
-        descentPoints.push({
+        let coords = this.toCanvas(point.dist, point.alt)
+        this.descentPoints.push({
           profilePoint: point,
-          x: marginHorizontalLeft + (canvas.width - marginHorizontalRight - marginHorizontalLeft) / DTotal * point.dist,
-          y: -point.alt * (canvas.height - 2 * marginVertical) / 410 - marginVertical + canvas.height
+          x: coords.x,
+          y: coords.y,
         })
       }
-      fullList = fullList.concat(descentPoints)
+      fullList = fullList.concat(this.descentPoints)
 
-      descentPoints.push({
+      this.descentPoints.push({
         x: fullList[fullList.length - 1].x,
         y: canvas.height
       })
-      descentPoints.push({
+      this.descentPoints.push({
         x: lastAnchor,
         y: canvas.height
       })
 
       // console.log(points)
-      this.profilePoints = points
-      this.pointObject.set({points: points})
-      this.climbGraph.set({points: climbPoints})
-      this.cruiseGraph.set({points: cruisePoints})
-      this.descentGraph.set({points: descentPoints})
-      this.followLine.set({points: points})
 
-      let conjonctionPoint = this.findConjonctionPoint()
-      // eslint-disable-next-line no-unused-vars,no-undef
-      let conjonctionBug = new fabric.Circle({
-        selectable: false,
-        fill: 'rgb(125,201,255)',
-        radius: 2,
-        left: conjonctionPoint.x - 2,
-        top: conjonctionPoint.y - 2,
-      })
-      canvas.add(conjonctionBug)
+    },
+
+    updateGphObjects : function (){
+      this.profilePoints = this.points
+      this.gphProfile.set({points: this.points})
+      this.gphProfile.setCoords()
+      this.gphClimbPhase.set({points: this.climbPoints})
+      this.gphClimbPhase.setCoords()
+      this.gphMaxAlt.set({points: this.pointsMaxAlt})
+      this.gphMaxAlt.setCoords()
+      this.gphCruisePhase.set({points: this.cruisePoints})
+      this.gphCruisePhase.setCoords()
+      this.gphDescentPhase.set({points: this.descentPoints})
+      this.gphDescentPhase.setCoords()
+      this.gphFollowLine.set({points: this.points})
+      this.gphFollowLine.setCoords()
+    },
+
+    updateStaticObjects : function (){
+      this.gphVScale.set({left:this.canvas.width - 10 , height: this.canvas.height - 2 * this.marginVertical, top: this.marginVertical,})
+      this.gphVScale.setCoords()
+      this.gphVCursorText.set({left:this.canvas.width - 40})
+      this.gphVCursorText.setCoords()
+      this.gphVCursor.set({left:this.canvas.width - 10})
+      this.gphVCursor.setCoords()
+      this.hpTransText.set({left:this.canvas.width - 80})
+      this.hpTransText.setCoords()
+      this.hpTrans.set({left:this.canvas.width - 10})
+      this.hpTrans.setCoords()
+      this.gphGroundLabel.set({left : this.canvas.width - 50})
+      this.gphGroundLabel.setCoords()
+      this.gphDescentLabel.set({left : 2.5 * (this.canvas.width - this.marginHorizontalRight - this.marginHorizontalLeft) / 3 + this.marginHorizontalLeft - 20,})
+      this.gphCruiseLabel.set({left : 1.5 * (this.canvas.width - this.marginHorizontalRight - this.marginHorizontalLeft) / 3 + this.marginHorizontalLeft - 20,})
+      this.gphClimbLabel.set({left : 0.5 * (this.canvas.width - this.marginHorizontalRight - this.marginHorizontalLeft) / 3 + this.marginHorizontalLeft - 20,})
     },
 
     findConjonctionPoint: function () {
@@ -1077,13 +1177,12 @@ export default {
 
     updatePhaseDisplay: function () {
       let canvas = this.canvas
-      let marginVertical = this.marginVertical
       Object.keys(this.phaseObjects).forEach((key) => {
         if (key === this.currentPhase) {
           this.phaseObjects[key].label.animate({
             opacity: 1,
             fill: 'rgb(103,199,165)',
-            top: canvas.height - marginVertical - 10,
+            top: canvas.height - this.marginVertical - 10,
           }, {
             onChange: function () {
               canvas.requestRenderAll()
@@ -1117,7 +1216,7 @@ export default {
           this.phaseObjects[key].label.animate({
             opacity: 0.3,
             fill: 'rgb(59,113,84)',
-            top: canvas.height - marginVertical + 10,
+            top: canvas.height - this.marginVertical + 10,
           }, {
             onChange: function () {
               canvas.requestRenderAll()
@@ -1269,15 +1368,27 @@ export default {
 }
 
 
-.information-box-container {
+.ctn1 {
   position: absolute;
-  padding: 20px;
-  z-index: 999;
-  width: 250px;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  width: min-content;
+}
+
+.information-box-container {
+  position: relative;
+  padding: 20px;
+  z-index: 999;
+  box-sizing: border-box;
+  width: 250px;
+  display: flex;
+  /*min-height: 0;*/
+  flex-direction: column;
+  flex: 1 1 auto;
+  overflow-y: auto;
   justify-content: flex-start;
-  height: calc(100% - 160px)
+  /*height: calc(100% - 160px)*/
 }
 
 .unit-selector-container {
@@ -1343,7 +1454,7 @@ export default {
   position: relative;
   margin-bottom: 10px;
   width: 210px;
-  min-height: 100px;
+  /*min-height: 100px;*/
   height: auto;
 }
 
@@ -1530,22 +1641,48 @@ export default {
 }
 
 .law-edit-frame {
-  width: 100%;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  justify-content: space-around;
   z-index: 9999;
-  position: absolute;
-  height: calc(100% - 104px)
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh
 }
 
-.law-edit-overlay {
+.overlay {
   width: 100vw;
   position: fixed;
+  z-index:999;
   left: 0;
   top: 0;
   backdrop-filter: blur(2px);
   height: 100vh;
-  background: rgba(25, 24, 24, 0.52);
+  background: rgba(26, 24, 24, 0.52);
 }
 
+
+.params-frame {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  position: fixed;
+  height: 100vh;
+}
+
+.params-overlay {
+  width: 100%;
+  backdrop-filter: blur(5px);
+  height: 100%;
+}
 
 .validate img {
   margin: 8px;
@@ -1668,6 +1805,8 @@ export default {
 }
 
 .footer {
+  z-index: 999;
+  pointer-events: none;
   align-items: flex-end;
   position: absolute;
   width: auto;
@@ -1687,6 +1826,7 @@ export default {
 
 
 .law-edit {
+  pointer-events: auto;
   /*position: absolute;*/
   transform-origin: center;
   width: auto;

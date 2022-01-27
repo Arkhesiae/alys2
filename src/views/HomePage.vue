@@ -8,7 +8,7 @@
     <div class="page-container" id="container">
       <div class="page" id="home">
         <svg id="illus" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-             viewBox="0 0 1500 1750">
+             viewBox="200 0 900 800">
           <defs>
             <linearGradient id="Dégradé_sans_nom_90" x1="599.54" y1="948.11" x2="599.54" y2="560.01"
                             gradientUnits="userSpaceOnUse">
@@ -3742,6 +3742,13 @@ export default {
 
 <style scoped>
 
+html, html body, body #container {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  overflow-x: hidden;
+}
+
 .wire {
   opacity: 0.24;
   fill: none;
@@ -5069,7 +5076,7 @@ body {
   width: 80px;
   height: 80px;
   border-radius: 50px;
-  background: #34363a;
+  background: linear-gradient(45deg, rgb(66, 60, 67) -0%, rgb(193, 176, 244) 110%);
   z-index: 99;
   box-shadow: #1a1a1a 0px 1px 3px 1px;
 }
@@ -5130,7 +5137,7 @@ body {
 }
 
 .discover-button img {
-  filter: invert(70%);
+  filter: invert(5%);
 }
 
 .page-container {
@@ -5281,6 +5288,7 @@ body {
   overflow: hidden;
   /*font-weight: bold;*/
   letter-spacing: 1px;
+  z-index: -1;
   background: linear-gradient(237deg, rgba(48, 48, 48, 1) -30%, rgb(183, 134, 216) 150%);
 }
 

@@ -43,7 +43,9 @@
                    step="1" class="slider" v-model="selectedISADev">
           </div>
           <div class="value-holder">
-            <span>{{ (parseInt(selectedISADev)) + "°C" }}</span>
+            <span class="value-param">{{ parseInt(selectedISADev) }}</span>
+            <span class="unit">°C</span>
+
           </div>
         </div>
       </div>
@@ -58,7 +60,9 @@
                    step="1" class="slider" v-model="selectedQNH">
           </div>
           <div class="value-holder">
-            <span>{{ (parseInt(selectedQNH)) + "hPa" }}</span>
+            <span class="value-param">{{ parseInt(selectedQNH) }}</span>
+            <span class="unit">hPa</span>
+<!--            <span>{{ (parseInt(selectedQNH)) + "hPa" }}</span>-->
           </div>
         </div>
 
@@ -152,11 +156,19 @@ export default {
   color: #d4c9f6;
   font-weight: bold;
   box-sizing: border-box;
-  width: 120px;
+  /*width: 120px;*/
   border-radius: 8px;
   /*background: linear-gradient(45deg, rgb(91, 41, 50) -0%, rgb(197, 183, 202) 110%);*/
   overflow: hidden;
 }
+
+.value-holder .unit{
+  font-size: 16px;
+  margin-left: 10px;
+  font-weight: bold;
+  color: #7a808e;
+}
+
 
 .selectedMass {
   position: absolute;
@@ -216,7 +228,7 @@ input[type=range] {
   width: 16px; /* Set a specific slider handle width */
   height: 16px; /* Slider handle height */
   background: linear-gradient(45deg, rgb(187, 152, 230) -0%, rgb(184, 166, 241) 110%); /* Green background */
-  border : 3px #202020 solid;
+  border: 3px #202020 solid;
   cursor: pointer; /* Cursor on hover */
 }
 
@@ -230,13 +242,15 @@ input[type=range] {
 
 
 .params-container {
-  width: 400px;
+  max-width: 400px;
   height: 450px;
-  left: calc(50% - 200px);
-  top: calc(50% - 200px);
+  flex: 1 1 auto;
+  margin: 20px;
+  /*left: calc(50% - 200px);*/
+  /*top: calc(50% - 200px);*/
   z-index: 99999;
-  background: #1f2023;
-  box-shadow: #1a1a1a 0 0 10px 0px;
+  background: #222125;
+  box-shadow: rgba(0, 0, 0, 0.42) 0 1px 4px 0px, rgba(0, 0, 0, 0.32) 0 0 20px 4px;
   opacity: 1;
   display: flex;
   flex-direction: column;
@@ -306,7 +320,7 @@ input[type=range] {
   /*background: #be89d8;*/
   width: 200px;
   height: 20px;
-margin: 15px;
+  margin: 15px;
   border-radius: 12px;
   /*margin: 10px;*/
   /*padding-left: 8px;*/
@@ -315,19 +329,6 @@ margin: 15px;
   /*font-weight: bold;*/
   font-size: 14px;
   color: #aea0e8;
-}
-
-.params-frame {
-  width: 100%;
-  z-index: 9999;
-  position: absolute;
-  height: calc(100% - 104px)
-}
-
-.params-overlay {
-  width: 100%;
-  backdrop-filter: blur(5px);
-  height: 100%;
 }
 
 

@@ -4,7 +4,7 @@
       <Tile type="Performances"></Tile>
     </router-link>
     <router-link style="-webkit-user-drag: none; " :to="$route.fullPath+'aircraftForm/'+'dynamic'">
-      <Tile class="tile" @mousedown="createRipple" type="Profil de vol"></Tile>
+      <Tile class="tile" @mousedown="createRipple" type="Flight profile"></Tile>
     </router-link>
   </div>
 </template>

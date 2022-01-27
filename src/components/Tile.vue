@@ -1,7 +1,7 @@
 <template>
   <div :id=type class="tile">
     <div class="tile-lower-container">
-      <img class="rrua" src="../assets/icons/trending_up_black_24dp.svg">
+      <img class="rrua" :src="this.imageURL">
 <!--      <div class="tile-title-decoration"></div>-->
       <p>{{type}}</p>
     </div>
@@ -16,15 +16,45 @@
 <script>
 export default {
   name: "Tile",
-  props : ['type']
+  props : ['type'],
+
+  computed : {
+    imageURL : function (){
+      let icon = ""
+      console.warn(this.type)
+      switch (this.type){
+        case "Flight profile":
+
+          icon = "show_chart_black_24dp.svg"
+          break
+        case "Performances":
+          icon = "insert_chart_black_24dp.svg"
+          break
+      }
+      try {
+        // a path we KNOW is totally bogus and not a module
+        let url = require('@/assets/icons/' + icon)
+        return url
+      }
+      catch (e) {
+        console.log('No Image')
+        // console.log(e)
+        return ""
+      }
+
+      // return  ""
+    },
+  }
 }
+
+
 </script>
 
 <style scoped>
 
 
 .rrua{
-  filter: invert(81%) sepia(20%) saturate(1041%) hue-rotate(250deg) brightness(82%) contrast(88%);
+  filter: invert(11%) sepia(20%) saturate(141%) hue-rotate(250deg) brightness(82%) contrast(88%);
 }
 .tile {
   width: 290px;
@@ -32,14 +62,17 @@ export default {
   margin: 20px;
   cursor: pointer;
   border-radius: 8px;
-  background: linear-gradient(237deg, rgb(43, 36, 49) -30%, rgb(30, 28, 32) 150%);
+  background: linear-gradient(237deg, rgb(103, 100, 134) -30%, rgb(30, 28, 32) 150%);
   box-shadow: rgba(5, 5, 5, 0.2) 0px 1px 2px 0px, rgba(5, 5, 5, 0.2) 0px 2px 4px 2px;
-  font-size: 20px;
-  /*font-weight: bold;*/
+  font-size: 16px;
+  letter-spacing: 1px;
+  font-family: Roboto,serif;
+  text-transform: uppercase;
+  font-weight: bold;
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease-in-out;
-  color: rgb(108, 80, 135);
+  color: rgb(35, 30, 40);
 
 }
 

@@ -613,6 +613,10 @@ export class PhysicalPlane {
     }
 
     setTargetAltitude(targetZ) {
+        if (targetZ === "max"){
+            console.log(this.computeMaxAltitude())
+            targetZ = Math.round((this.computeMaxAltitude()-2000)/1000)*1000
+        }
         let targetHp
         let targetFL
         if (targetZ > 660) {
@@ -622,7 +626,7 @@ export class PhysicalPlane {
             targetHp = targetZ / 3.28084 * 100
             targetFL = targetZ
         }
-        if (Math.abs(this.flightParams.Hp - this.targetHp)<1) {
+        if (Math.abs(this.flightParams.Hp - targetHp)<100) {
             this.flightPhase = "LEVEL"
         }
         else if (this.flightParams.Hp > targetHp) {

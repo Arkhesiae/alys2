@@ -113,6 +113,10 @@ export default {
   user-select: none;
 }
 
+.ctn-all {
+  overflow: hidden;
+}
+
 .side-in-enter-active,
 .side-in-leave-active {
   transition: all 1s ease-in-out 0s;
@@ -138,6 +142,46 @@ export default {
   transition: all 1s ease-in-out 0s;
   padding-left: 100px;
   /*opacity: 0;*/
+}
+
+html, html body, body #ctn-all {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: none !important;
+  overflow-x: hidden;
+}
+
+@media (max-width: 1024px) and (min-width: 738px) {
+  html, html body, body #ctn-all {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    overflow-x: hidden;
+  }
+  .sidebar{
+    transition:all ease-in-out 1s;
+    /*transform-origin: top right;*/
+    margin-right: -320px !important;
+  }
+}
+
+@media (max-width: 737px) and (min-width: 100px) {
+  html, html body, body #ctn-all {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    overflow-x: hidden;
+  }
+
+  .nav-bar.reduced{
+    width: 100% !important;
+  }
+
+  .sidebar{
+    transition:all ease-in-out 1s;
+    /*transform-origin: top right;*/
+    margin-right: -320px !important;
+  }
 }
 
 

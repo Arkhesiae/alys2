@@ -2,7 +2,7 @@
   <div class="sideBar">
     <div class="ctn-all">
       <div class="picture">
-        <img alt="" :src="require('@/assets/Images/'+this.imageRef.imageIDs[0].toString()+'.jpg')"/>
+        <img alt="" :src="this.imageURL"/>
 <!--        <span>{{imageRef.imageIDs[0]}}</span>-->
 <!--        <img src="../assets/images/{{ ref.imageIDs[0]}}jpg"/>-->
       </div>
@@ -70,8 +70,29 @@ export default {
   name: "SideBar",
   props : ["aircraft", "imageRef"],
   beforeMount() {
+      // console.log('@/assets/images/'+this.imageRef.imageIDs[0].toString()+'.jpg')
+  },
+  computed : {
+    imageID : function (){
+      if (this.imageRef){
+        return this.imageRef.imageIDs[0].toString()
+      }
+      else return ""
+    },
 
-      console.log('@/assets/images/'+this.imageRef.imageIDs[0].toString()+'.jpg')
+    imageURL : function (){
+      try {
+        // a path we KNOW is totally bogus and not a module
+        let url = require('@/assets/Images/' + this.imageID + '.jpg')
+        return url
+      }
+      catch (e) {
+        console.log('No Image')
+        console.log(e)
+        return ""
+      }
+      // return  ""
+    },
   }
 }
 </script>
@@ -324,6 +345,7 @@ export default {
 .picture img {
   width: 100%;
   height: auto;
+  min-height: 65px;
   max-height: 500px;
   /*max-width: 100%;*/
   display: block;
