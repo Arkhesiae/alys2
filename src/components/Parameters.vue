@@ -1,4 +1,7 @@
 <template>
+
+
+
   <div class="params-container">
     <div class="params-title">
       <span>Paramètres avancés</span>
@@ -71,11 +74,19 @@
       <div class="std-button-box">
         <span>Reset to standard parameters</span>
       </div>
-      <div class="validate" @click="passParams()">
-        <img src="../assets/icons/check.svg">
+      <div class="ctn-button">
+        <div class="btn no" @click="close()">
+          <span class="btn-label">Annuler</span>
+          <!--        <img src="../assets/icons/check.svg">-->
+        </div>
+        <div class="btn yes" @click="passParams()">
+          <span class="btn-label">Définir</span>
+          <!--        <img src="../assets/icons/check.svg">-->
+        </div>
       </div>
     </div>
   </div>
+<!--  </transition>-->
 </template>
 
 <script>
@@ -116,6 +127,59 @@ export default {
 </script>
 
 <style scoped>
+.appear-in-enter-active,
+.appear-in-leave-active {
+  transition: all 0.6s cubic-bezier(.72, .02, .44, 1.38) 1s;
+}
+
+.appear-in-enter-from,
+.appear-in-leave-to {
+  transition: all 0.6s ease-in-out 1s;
+  transform: scale(0.8) translateY(20px);
+  opacity: 0;
+}
+
+
+.ctn-button{
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 20px;
+  justify-content: space-between;
+  height: 30px;
+}
+
+.btn{
+  margin-left: 10px;
+  height: 100%;
+  line-height: 100%;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: Roboto,serif;
+  font-size: 12px;
+  font-weight: 600;
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.btn-label{
+  line-height: 100%;
+}
+
+.btn.yes{
+  background: #cfc1ef;
+  color: #2a2a2a;
+}
+
+.btn.no{
+  border: 1px solid #3a3a3a;
+  background: none;
+  color: #bca8dc;
+}
 
 .params-content {
   width: 100%;
@@ -257,7 +321,7 @@ input[type=range] {
   align-items: center;
   /*justify-content: center;*/
   position: absolute;
-  border-radius: 14px;
+  border-radius: 10px;
 }
 
 .params-conjonction {
@@ -302,10 +366,24 @@ input[type=range] {
 .params-close {
   position: absolute;
   right: 0px;
+  border-radius: 20px;
+  /*background: #423b4d;*/
+  width: 24px;
+  height: 24px;
   top: 0px;
-  filter: invert(90%);
+
   cursor: pointer;
-  margin: 10px;
+  margin: 20px;
+}
+
+.params-close:hover{
+  background: #423b4d;
+}
+
+.params-close img{
+  margin: 3px;
+  width: 18px;
+  filter: invert(80%);
 }
 
 .params-box {
@@ -365,11 +443,11 @@ input[type=range] {
 
 
 .params-title {
-  margin-top: 12px;
+  margin-top: 20px;
   font-size: 14px;
   font-family: "Product Sans", sans-serif;
   /*font-weight: bold;*/
-  color: rgba(220, 226, 232, 0.86);
+  color: rgba(193, 189, 199, 0.86);
 }
 
 .params {

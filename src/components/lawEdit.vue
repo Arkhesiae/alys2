@@ -59,9 +59,19 @@
       </div>
 
     </div>
-    <div class="validate" @click="setCustomSpeedLaw()">
-      <img src="../assets/icons/check.svg">
+    <div class="ctn-button">
+      <div class="btn no" @click="close()">
+        <span class="btn-label">Annuler</span>
+<!--        <img src="../assets/icons/check.svg">-->
+      </div>
+      <div class="btn yes" @click="setCustomSpeedLaw()">
+        <span class="btn-label">Définir</span>
+<!--        <img src="../assets/icons/check.svg">-->
+      </div>
     </div>
+<!--    <div class="validate" @click="setCustomSpeedLaw()">-->
+<!--      <img src="../assets/icons/check.svg">-->
+<!--    </div>-->
   </div>
 </template>
 
@@ -361,6 +371,49 @@ export default {
 </script>
 
 <style scoped>
+.ctn-button{
+  display: flex;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  margin: 20px;
+  justify-content: space-between;
+  height: 30px;
+}
+
+.btn{
+  margin-left: 10px;
+  height: 100%;
+  line-height: 100%;
+  border-radius: 4px;
+  cursor: pointer;
+  font-family: Roboto,serif;
+  font-size: 12px;
+  font-weight: 600;
+  width: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+}
+
+.btn-label{
+  line-height: 100%;
+}
+
+.btn.yes{
+  background: #cfc1ef;
+  color: #2a2a2a;
+}
+
+.btn.no{
+  border: 1px solid #3a3a3a;
+  background: none;
+  color: #bca8dc;
+}
+
+
+
 .law-edit-container {
   min-width: 200px;
   max-width: 360px;
@@ -371,7 +424,7 @@ export default {
   /*left: calc(50% - 150px);*/
   /*top: calc(50% - 200px);*/
   z-index: 99999;
-  background: #1f2023;
+  background: #222125;
   box-shadow: rgba(0, 0, 0, 0.42) 0 1px 4px 0px, rgba(0, 0, 0, 0.32) 0 0 20px 4px;
   opacity: 1;
   display: flex;
@@ -393,14 +446,14 @@ export default {
   left: 0;
   bottom: 0;
   color: #959595;
-  margin: 15px;
+  margin: 20px;
 
 }
 
 .value {
   font-size: 12px;
   font-weight: 800;
-  color: #be89d8;
+  color: #d3a4ea;
 }
 
 
@@ -424,10 +477,24 @@ export default {
 .law-edit-close {
   position: absolute;
   right: 0px;
+  border-radius: 20px;
+  /*background: #423b4d;*/
+  width: 24px;
+  height: 24px;
   top: 0px;
-  filter: invert(90%);
+
   cursor: pointer;
-  margin: 10px;
+  margin: 20px;
+}
+
+.law-edit-close:hover{
+  background: #423b4d;
+}
+
+.law-edit-close img{
+  margin: 3px;
+  width: 18px;
+  filter: invert(80%);
 }
 
 .ctn-picker {
@@ -455,14 +522,14 @@ export default {
   margin: 8px;
 }
 
-.picker-stopbar {
-  position: absolute;
-  width: 80px;
-  left: 5px;
-  top: 50px;
-  height: 1px;
-  background: #abb1b9;
-}
+/*.picker-stopbar {*/
+/*  position: absolute;*/
+/*  width: 80px;*/
+/*  left: 5px;*/
+/*  top: 50px;*/
+/*  height: 1px;*/
+/*  background: #abb1b9;*/
+/*}*/
 
 .picker-label {
   /*position: absolute;*/
@@ -506,6 +573,10 @@ export default {
   box-sizing: border-box;
 }
 
+.ctn-picker .picker .picker-stopbar{
+  height: 2px !important;
+}
+
 
 .law-edit-picker.selected {
   border: 2px solid #bf8cef;
@@ -516,12 +587,12 @@ export default {
 }
 
 .param-option.selected span {
-  color: #c994f4;
+  color: #c6aff4;
 
 }
 
 .param-option.selected .bar {
-  background: #c38def;
+  background: rgba(208, 166, 243, 0.83);
 }
 
 .param-option span {

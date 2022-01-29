@@ -3470,7 +3470,7 @@
           <!--          </div>-->
           <!--          <div class="bloc2 bloc"></zdiv>-->
           <Searchbar></Searchbar>
-          <router-link style="text-decoration: none; color: inherit; position: relative" :to="{ name: ''}">
+          <router-link style="text-decoration: none; color: inherit; position: relative" :to="{ name: 'Browse'}">
             <div id="browse" @click="createRipple">
               Browse
             </div>

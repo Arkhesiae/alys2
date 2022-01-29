@@ -17,9 +17,10 @@
           <!--            </ul>-->
 
           <!--          </div>-->
+          <span class="label-param">Niveau</span>
         </div>
         <div class="blk-atm">
-          <div class="ctn-param temp selected">
+          <div class="ctn-param temp">
             <div class="ctn-value">
               <span class="value-param">{{ Math.round((atmParams.temperature - 273.15) * 10) / 10 }}</span><span
                 class="unit">°C</span>
@@ -111,7 +112,7 @@
                      step="1" class="slider" v-model="speed">
               <div class="slider-background"></div>
             </div>
-
+            <span class="label-param">Vitesse</span>
           </div>
 
 
@@ -562,10 +563,10 @@ export default {
 
 .ctn-all-section {
   display: flex;
-  padding-left: 30px;
+  padding-left: 20px;
   padding-top: 50px;
   padding-right: 30px;
-  padding-bottom: 60px;
+  padding-bottom: 20px;
   box-sizing: border-box;
   justify-content: space-between;
   width: 100%;
@@ -592,6 +593,7 @@ export default {
 
 .blk-fl {
   display: flex;
+  position: relative;
   justify-content: space-evenly;
   align-items: center;
   border-radius: 12px;
@@ -599,6 +601,12 @@ export default {
   height: 220px;
   background: linear-gradient(45deg, rgb(111, 98, 123) -0%, rgb(192, 178, 236) 110%);
 }
+
+.blk-fl .label-param{
+  font-weight: normal;
+  color: rgba(207, 200, 220, 0.53);
+}
+
 
 .cr-icon {
   width: 36px;
@@ -753,6 +761,10 @@ export default {
   flex-direction: column;
   /*border: 1px solid rgba(40, 40, 40, 0.4);*/
   /*background: linear-gradient(45deg, rgb(111, 98, 123) -0%, rgb(192, 178, 236) 110%);*/
+}
+
+.blk-speed .label-param{
+  color: rgba(74, 77, 79, 0.73);
 }
 
 .blk-speed .ctn-value span {
@@ -910,11 +922,14 @@ export default {
 .slct-view {
   /*border: 1px solid aliceblue;*/
   height: 30px;
+  right: 0;
+
 }
 
 .dsp-rates {
   /*border: 1px solid aliceblue;*/
   flex: 1 1 auto;
+  min-height: 300px;
   display: flex;
   z-index: 2;
   flex-direction: row;
@@ -924,6 +939,8 @@ export default {
 .rates {
   background: #191919;
   border-radius: 12px;
+  max-width: 320px;
+  min-width: 280px;
   box-shadow: rgba(9, 9, 9, 0.15) 0px 2px 5px 0px;
   margin-right: 20px;
   display: flex;
@@ -1007,7 +1024,8 @@ export default {
   border-radius: 12px;
   box-shadow: rgba(4, 3, 3, 0.15) 0px 2px 5px 0px;
   background: #191919;
-  height: 250px;
+  height: 100%;
+  flex: 1 1 auto;
   /*background: #2b2d33;*/
   /*border: 1px solid blue;*/
 }

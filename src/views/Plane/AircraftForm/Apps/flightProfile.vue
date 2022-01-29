@@ -2,13 +2,20 @@
   <div class="frame-container">
     <div class="law-edit-frame" v-show="lawEditing">
       <div class="overlay"></div>
-      <law-edit @close="lawEditing = false" @getLaw="setCustomSpeedLaw" :speedRange="envelopeSpeeds"></law-edit>
+      <transition name="pop-in-frame" appear>
+      <law-edit v-show="lawEditing" @close="lawEditing = false" @getLaw="setCustomSpeedLaw" :speedRange="envelopeSpeeds"></law-edit>
+      </transition>
     </div>
+
     <div class="params-frame" v-show="params">
       <div class="overlay"></div>
-      <parameters @close="params = false" @setParams="setCustomParams" :mass="this.coefficient.aircraftStandardMass"
+      <transition name="pop-in-frame" appear>
+      <parameters v-show="params" @close="params = false" @setParams="setCustomParams" :mass="this.coefficient.aircraftStandardMass"
                   @getLaw="setCustomSpeedLaw"></parameters>
+
+      </transition>
     </div>
+
     <div id="flightProfile" class="current-frame frame">
       <transition name="pop-in" appear>
         <div class="ctn1">
@@ -23,11 +30,14 @@
                 <div class="flight-state-info">
                   <div class="box__flight-state-value-container">
                     <span class="flight-state-label">Speed</span>
-                    <div class="flight-state-value" v-if="selectedUnit.unit === 'IAS'">{{ currentProfilePoint.speed }}
-                      kts
+                    <div class="flight-state-value" v-if="selectedUnit.unit === 'IAS'">
+                      <span class="value-param">{{ currentProfilePoint.speed  }}</span>
+                      <span class="unit">kts</span>
                     </div>
                     <div class="flight-state-value" v-else-if="selectedUnit.unit === 'TAS'">
-                      {{ currentProfilePoint.speedTAS }} kts
+                        <span class="value-param">{{ currentProfilePoint.speedTAS  }}</span>
+                        <span class="unit">kts</span>
+
                     </div>
                     <div class="flight-state-value" v-else>{{
                         Math.round(currentProfilePoint.mach * 100) / 100
@@ -43,7 +53,11 @@
                 <div class="flight-state-info">
                   <div class="box__flight-state-value-container">
                     <span class="flight-state-label">Rate</span>
-                    <div class="flight-state-value">{{ currentProfilePoint.rate }} ft/min</div>
+                    <div class="flight-state-value">
+                      <span class="value-param">{{ currentProfilePoint.rate }} </span>
+                      <span class="unit">ft/min</span>
+
+                    </div>
                   </div>
                 </div>
 
@@ -76,7 +90,7 @@
               </div>
             </div>
             <div id="infoboxAtm" class="information-box information-box-otherInfo">
-              <div class="ctn-param temp selected">
+              <div class="ctn-param temp" @mouseover="isHovering = true" @mouseout="isHovering = false" :class="{selected: isHovering}">
                 <div class="ctn-value">
                   <span class="value-param">{{ Math.round((currentProfilePoint.SAT - 273.15) * 10) / 10 }}</span><span
                     class="unit">°C</span>
@@ -1261,6 +1275,18 @@ export default {
   opacity: 0;
 }
 
+.pop-in-frame-enter-active,
+.pop-in-frame-leave-active {
+  transition: all 0.3s cubic-bezier(.52, .02, .44, 1.18) .0s;
+}
+
+.pop-in-frame-enter-from,
+.pop-in-frame-leave-to {
+  transition: all 0.3s ease-in-out 0s;
+  transform: scale(0.9) translateY(20px);
+  opacity: 0;
+}
+
 .appear-in-enter-active,
 .appear-in-leave-active {
   transition: all 0.6s cubic-bezier(.72, .02, .44, 1.38) 1s;
@@ -1306,7 +1332,7 @@ export default {
   /*position: relative;*/
   /*left: 1%;*/
   /*background: rgba(10,10,10,0.1);*/
-  border: 1px solid rgba(169, 163, 163, 0.001);
+  /*border: 1px solid rgba(169, 163, 163, 0.001);*/
   border-radius: 16px;
   display: flex;
   flex-direction: column;
@@ -1759,6 +1785,17 @@ export default {
   margin-top: 10px;
   font-weight: bold;
   letter-spacing: 1px;
+}
+
+.flight-state-value .value-param{
+  font-size: 14px;
+  margin: 0;
+  color: #c6b5de;
+}
+.flight-state-value .unit{
+  font-size: 10px;
+  margin-left: 3px;
+  color: #9486a7;
 }
 
 .label-param {
