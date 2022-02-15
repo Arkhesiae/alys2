@@ -1,39 +1,55 @@
 <template>
   <Background></Background>
-  <div class="ctn-all">
-    <div class="searchbar-container">
-      <div id="searchbar">
-        <!--              STATIC-->
-        <label for="search"></label>
-        <input autocomplete="off" placeholder="Search..." id="search" v-model="search" @focus="magic_flag = true">
-        <div class="search-icon" @click="erase()"><img v-if="search!==''" src="@/assets/icons/clear_black_24dp.svg"
-                                                       alt=""></div>
+  <div class="nav-bar">
+    <router-link style="text-decoration: none; color: inherit; position: relative" :to="{ name: 'BrowseHome'}">
+    <BackButton></BackButton>
+    </router-link>
+    <div class="ctn">
+      <div class="searchbar-container">
+        <div id="searchbar">
+          <!--              STATIC-->
+          <label for="search"></label>
+          <input autocomplete="off" placeholder="Search..." id="search" v-model="search" @focus="magic_flag = true">
+          <div class="search-icon" @click="erase()"><img v-if="search!==''" src="@/assets/icons/clear_black_24dp.svg"
+                                                         alt=""></div>
+        </div>
       </div>
-      <!--      <ul class="wrapper">-->
-      <!--        <li class="card" v-show="this.magic_flag" v-bind:key="post.ICAO" v-for="post in filteredList">-->
-      <!--          <router-link @click="magic_flag=false" style="text-decoration: none; color: inherit; width: 100%; height: 100%"-->
-      <!--                       :to="'/plane/'+post.ICAO+'/'">-->
-      <!--            <div class="text-container">-->
-      <!--              <p>-->
-      <!--                {{ post.ICAO.slice(0, post.ICAO.indexOf(search.toUpperCase())) }}</p>-->
-      <!--              <p class="highlight"> {{ search.toUpperCase() }}</p>-->
-      <!--              <p>-->
-      <!--                {{ post.ICAO.slice(post.ICAO.indexOf(search.toUpperCase()) + search.length, 8) }}</p>-->
-      <!--              <p class="fullName">{{ post.aircraftModel }}</p>-->
-
-      <!--            </div>-->
-      <!--          </router-link>-->
-      <!--        </li>-->
-      <!--      </ul>-->
     </div>
+
+  </div>
+  <div class="filters">
+    <HButton icon="jet.svg" text="Réacteur" :is-filter="true"></HButton>
+    <HButton icon="option2.svg" text="Turboprop" :is-filter="true"></HButton>
+    <HButton icon="piston.svg" text="Piston" :is-filter="true"></HButton>
+    <HButton icon="hammer-wrench.svg" text="Airbus" :is-filter="true"></HButton>
+    <HButton icon="hammer-wrench.svg" text="Boeing" :is-filter="true"></HButton>
+  </div>
+  <div class="ctn-all">
+
     <ul class="ctn-cards">
 
-      <li class="card" v-bind:key="post.ICAO" v-for="post in this.postList.slice(0, 900)">
-        <img alt="" :src="image(post)"/>
-        <div class="description">
+      <li class="card" v-bind:key="post.ICAO" v-for="post in this.filteredList.slice(0,500)">
+        <router-link style="text-decoration: none; color: inherit; width: 100%; height: 100%"
+                     :to="'/plane/'+post.ICAO+'/'">
+          <!--        <img alt="" :src="image(post)"/>-->
+          <div class="ctn">
+            <div class="description">
               <span class="ICAO">{{ post.ICAO }}</span>
               <span class="model">{{ post.aircraftModel }}</span>
-        </div>
+            </div>
+
+            <div class="details">
+<!--              <span class="engine">{{ post.engineType }}</span>-->
+              <img :src="imageSVG(icons[post.engineType.toLowerCase()])" alt="">
+              <div class="manufacturer">
+                <img src="@/assets/icons/hammer-wrench.svg" alt="">
+                <span class="manufacturer-name">{{ post.manufacturer }}</span>
+              </div>
+
+            </div>
+          </div>
+
+        </router-link>
         <!--          <div >-->
         <!--            -->
         <!--          </div>-->
@@ -60,16 +76,26 @@
 import Background from "@/components/Nav/Background"
 import {formattedList} from "@/BADA/Data/dataFormatting"
 import {imageData} from "@/BADA/Data/imagesRef"
+// import HamburgerButton from "@/components/Nav/HamburgerButton"
+import BackButton from "@/components/Nav/BackButton"
+import HButton from "@/components/Nav/hButton"
 // import url from "@/assets/icons/airplane-edit.svg"
 
 export default {
-  name: "Browse",
-  components: {Background},
+  name: "PlaneList",
+  components: {HButton, BackButton,  Background},
   data() {
     return {
       search: '',
       magic_flag: false,
-      postList: []
+      postList: [],
+      icons:
+          {
+            jet: "jet",
+            turboprop: "option2",
+            piston: "piston"
+          },
+
     }
   },
   mounted() {
@@ -100,20 +126,33 @@ export default {
 
     filteredList() {
       if (this.search == "") {
-        return
+        return this.postList
       }
       return this.postList.filter(post => {
-        return (post.ICAO.toLowerCase().includes(this.search.toLowerCase()))
-      }).slice(0, 7)
+        return (post.ICAO.toLowerCase().includes(this.search.toLowerCase())) || (post.aircraftModel?.toLowerCase().includes(this.search.toLowerCase()))
+      })
     },
 
   },
   methods: {
+
+    imageSVG(url) {
+      try {
+        // a path we KNOW is totally bogus and not a module
+        let imageUrl = require('@/assets/icons/' + url + '.svg')
+        return imageUrl
+      } catch (e) {
+        let imageUrl = require('@/assets/icons/airplane-edit.svg')
+
+        return imageUrl
+      }
+
+    },
     image(post) {
       let imageID = ""
       let imageRef = imageData.find(AC => AC.ICAO === post.ICAO)
       if (imageRef) {
-        imageID = imageRef.imageIDs[Math.floor(Math.random( )*imageRef.imageIDs.length)].toString()
+        imageID = imageRef.imageIDs[Math.floor(Math.random() * imageRef.imageIDs.length)].toString()
       }
       // else imageID =  ""
       try {
@@ -143,15 +182,39 @@ export default {
   user-select: none;
 }
 
+.filters{
+  display: flex;
+  padding-left: 40px;
+  overflow-x : auto;
+}
+
+.filters .container{
+  margin-right: 10px;
+}
+
+@media (max-width: 737px) and (min-width: 100px) {
+  .ctn-all{
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+  }
+}
+
+.nav-bar{
+  padding: 20px !important;
+  width: 100% !important;
+  box-sizing: border-box;
+  margin: 0 !important;
+}
+
 .ctn-all {
   display: flex;
   flex-direction: column;
   align-items: center;
   /*padding: 20px;*/
   width: 100%;
-  padding-top: 20px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-top: 30px;
+  padding-left: 40px;
+  padding-right: 40px;
   box-sizing: border-box;
   height: 100%;
 }
@@ -163,35 +226,79 @@ export default {
 
 .card {
   overflow: hidden;
-  max-width: 200px;
-  width: 200px;
+  /*max-width: 200px;*/
+  width: 100%;
   flex: 0 1 auto;
-  height: 220px;
+  height: 60px;
   border-radius: 8px;
   margin: 5px;
-  box-shadow: rgba(0, 0, 0, 0.59) 0 1px 3px 1px;
-  background: linear-gradient(45deg, rgb(39, 37, 40) -0%, rgb(42, 41, 46) 110%);
 
+  /*border: 1px solid #272727;*/
+  box-sizing: border-box;
+  box-shadow: rgba(0, 0, 0, 0.09) 0 1px 3px 1px;
+  background: #2b2937;
 }
 
-.card .description{
+.card .ctn {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: space-between;
+}
+
+.card .details {
+  margin-right: 10px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-evenly;
+  flex-direction: column;
+}
+
+.details img{
+  width: 20px;
+  height: 20px;
+  filter: invert(95%) sepia(20%) saturate(841%) hue-rotate(200deg) brightness(90%) contrast(88%);
+}
+
+.manufacturer {
+  color: rgba(137, 138, 208, 0.53);
+  height: 16px;
+  display: flex;
+}
+
+.manufacturer img {
+  height: 16px;
+  filter: invert(45%) sepia(20%) saturate(841%) hue-rotate(200deg) brightness(90%) contrast(88%);
+
+  width: 16px;
+  margin-right: 5px;
+}
+
+.manufacturer span {
+  line-height: 16px;
+  font-size: 16px !important;
+  padding: 0;
+  margin: 0;
+}
+
+.card .description {
   display: flex;
   padding: 10px;
   /*height: 200px;*/
   box-sizing: border-box;
-  flex:1 1 auto;
+  flex: 1 1 auto;
   flex-direction: column;
   justify-content: space-evenly;
 }
 
-.card .ICAO{
+.card .ICAO {
   font-size: 20px;
-  color: #d1cbcb;
+  color: rgba(191, 187, 199, 0.89);
   font-weight: bold;
 }
 
 .card .model {
-  color: #a5a4a4;
+  color: rgba(167, 161, 197, 0.63);
   font-size: 12px;
   /*font-weight: bold;*/
 }
@@ -209,9 +316,9 @@ export default {
   margin: 0;
   margin-top: 40px;
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   flex-wrap: wrap;
-  flex: 1 1 auto;
+  /*flex: 1 1 auto;*/
   width: calc(100% - 40px);
 }
 
@@ -220,8 +327,9 @@ export default {
   flex-basis: auto;
   border-radius: 12px;
   flex-grow: 1;
-  background: #1a1a1a;
+  background: #3A354A;
   min-width: 300px;
+  /*max-width: 50%;*/
   position: relative;
 }
 

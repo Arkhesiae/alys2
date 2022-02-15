@@ -38,14 +38,14 @@ div.Gripple {
   position: absolute; /* The absolute position we mentioned earlier */
   border-radius: 50%;
   transform: scale(0);
-  animation: Gripple 600ms linear;
+  animation: Gripple 600ms linear forwards;
   background-color: rgba(210, 171, 243, 0.7);
 }
 
 @keyframes Gripple {
   to {
     transform: scale(4);
-    opacity: 0;
+    opacity: 0.5;
   }
 }
 

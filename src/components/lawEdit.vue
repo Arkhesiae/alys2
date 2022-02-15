@@ -388,6 +388,7 @@ export default {
   border-radius: 4px;
   cursor: pointer;
   font-family: Roboto,serif;
+  letter-spacing: 1px;
   font-size: 12px;
   font-weight: 600;
   width: 100px;

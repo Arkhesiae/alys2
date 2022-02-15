@@ -168,15 +168,19 @@ export let imageData = [{
     "model": "Airbus A350-900",
     "ICAO": "A359",
     "imageIDs": ["6659131", "6658887", "2275243"]
-}, {"name": "A350-1000",
+}, {
+    "name": "A350-1000",
     "model": "Airbus A350-1000",
     "ICAO": "A35K",
-    "imageIDs": ["6454431"]
+    "imageIDs": ["6454431"],
+    "png": "a35k"
+
 }, {
     "name": "A380",
     "model": "Airbus A380-800",
     "ICAO": "A388",
-    "imageIDs": ["2194956", "1932603", "0962924"]
+    "imageIDs": ["2194956", "1932603", "0962924"],
+    "png": "a388"
 }, {
     "name": "Beechcraft 1900",
     "model": "Beechcraft 1900",
@@ -191,7 +195,8 @@ export let imageData = [{
     "name": "Cessna 172",
     "model": "Cessna 172",
     "ICAO": "C172",
-    "imageIDs": ["1072668", "1923371", "1711195"]
+    "imageIDs": ["1072668", "1923371", "1711195"],
+    "png": "c172"
 }, {
     "name": "Cessna 208",
     "model": "Cessna 208 Caravan",

@@ -129,6 +129,11 @@ export default {
   /*box-shadow: #ffffff 2px 2px 5px 5px;*/
 }
 
+
+.wrapper {
+  background: #3A354A !important;
+}
+
 .search-icon {
   position: relative;
   width: 60px;
@@ -196,11 +201,12 @@ export default {
 
 .card .text-container {
   display: flex;
+  position: relative;
 }
 
 .card p, .card h1 {
   font-size: 20px;
-  color: #595064;
+  color: #8c7f9b;
   padding: 0;
   margin: 0;
 
@@ -209,14 +215,20 @@ export default {
 p.fullName {
 
 
-  color: #886599;
-  font-size: 14px !important;
-  padding-left: 20px !important;
-  padding-top: 5px !important;
+  color: #5f5766;
+ right: 0;
+  text-align: right;
+
+  position: absolute;
+  padding-right: 20px;
+  /*bottom: -15px;*/
+  font-size: 12px !important;
+  /*padding-left: 20px !important;*/
+  /*padding-top: 5px !important;*/
 }
 
 .card .highlight {
-  color: #dfa8ec;
+  color: #ddc3f8;
 }
 
 </style>

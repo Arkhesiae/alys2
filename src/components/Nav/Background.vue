@@ -15,10 +15,13 @@ export default {
 #background{
   position: absolute;
   width: 100%;
+  z-index: -100;
   overflow: hidden;
   height: 100%;
   /*background: linear-gradient(237deg, rgba(39,42,51,1) -00%, rgba(30,30,36,1) 50%);*/
-  background: linear-gradient(205deg, rgb(20 19 20) 11%,  rgb(24 23 24) 100%)
+  /*background: linear-gradient(205deg, rgb(20 19 20) 11%,  rgb(24 23 24) 100%)*/
+  /*background: linear-gradient(205deg, #262331 -40%,  rgb(24 23 24) 100%)*/
+  background: linear-gradient(205deg, #25232a -40%,  rgb(24 23 24) 100%)
   /*background: linear-gradient(237deg, rgb(88, 76, 67) -100%, rgba(30,30,36,1) 80%);*/
 }
 

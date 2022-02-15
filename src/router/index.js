@@ -9,7 +9,8 @@ import PlanePage from "@/views/PlanePage/PlanePage"
 import NotFound from "@/components/NotFound"
 import flightProfile from "@/views/Plane/AircraftForm/Apps/flightProfile"
 import StaticPerformances from "@/views/Plane/AircraftForm/Apps/StaticPerformances"
-import Browse from "@/views/Browse"
+import PlaneList from "@/views/PlaneList"
+import BrowseHome from "@/views/BrowseHome"
 
 // import SelectScreen from "../views/SelectScreen.vue"
 
@@ -36,8 +37,13 @@ const routes = [
   },
   {
     path: '/browse',
-    name: 'Browse',
-    component: Browse
+    name: 'BrowseHome',
+    component: BrowseHome
+  },
+  {
+    path: '/planeList',
+    name: 'PlaneList',
+    component: PlaneList
   },
   {
     path: '/graph',

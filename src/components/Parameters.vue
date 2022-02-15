@@ -154,6 +154,7 @@ export default {
   margin-left: 10px;
   height: 100%;
   line-height: 100%;
+  letter-spacing: 1px;
   border-radius: 4px;
   cursor: pointer;
   font-family: Roboto,serif;

@@ -1,13 +1,13 @@
 <template>
   <Background/>
   <div class="nav-bar" :class="{reduced : $route.path.includes('aircraftForm')}">
-    <MenuButton/>
+    <HamburgerButton/>
 <!--    <IconButton class="icon-button" :aircraft="aircraft"></IconButton>-->
 
 <!--    <AppButton text="" icon="show_chart_black_24dp.svg"/>-->
-    <div class="nav-button" @click="showNav">
-      <img src="@/assets/icons/chevron-right.svg"/>
-    </div>
+<!--    <div class="nav-button" @click="showNav">-->
+<!--      <img src="@/assets/icons/chevron-right.svg"/>-->
+<!--    </div>-->
     <div class="ctn">
       <Searchbar/>
     </div>
@@ -25,12 +25,13 @@
 // @ is an alias to /src
 
 import Background from "../../components/Nav/Background"
-import MenuButton from "../../components/Nav/MenuButton"
+// import MenuButton from "../../components/Nav/MenuButton"
 import Searchbar from "@/components/Nav/Searchbar"
 import {coef} from "@/BADA/Data/coefficients"
 import {defPerf} from "@/BADA/performancePref"
 import {formattedList} from "@/BADA/Data/dataFormatting"
 import {imageData} from "@/BADA/Data/imagesRef"
+import HamburgerButton from "@/components/Nav/HamburgerButton"
 // import AppButton from "@/components/appButton"
 // Vue.createApp(Demo).mount('#home')
 
@@ -46,9 +47,10 @@ export default {
   },
 
   components: {
+    HamburgerButton,
     Searchbar,
     // AppButton,
-    MenuButton,
+    // MenuButton,
     Background,
   },
 
@@ -203,14 +205,7 @@ export default {
     /*overflow: hidden !important;*/
   }
 
-  .nav-container{
-    /*width: 100% !important;*/
-    margin: 0 !important;
-    margin-top: 20vh !important;
-    align-items: center;
-    margin-left: 20px !important;
-    margin-right: 20px !important;
-  }
+
 
   .searchbar-container{
     z-index: 10;
@@ -252,6 +247,35 @@ export default {
   #searchbar #search {
     height: 48px !important;
     font-size: 14px !important;
+  }
+
+  #browse{
+    background: none !important;
+    box-shadow: none !important;
+    color: #9d92c5 !important;
+  }
+
+  .discover-container{
+    left: 0 !important;
+    width: 100% !important;
+    padding: 20px;
+    box-sizing: border-box;
+  }
+
+  .discover-container span{
+    background: linear-gradient(237deg, rgb(121, 118, 132) -30%, rgb(196, 176, 236) 150%);
+
+    /*text-transform: uppercase;*/
+    color: #1a1a1a !important;
+    text-align: center;
+    height: 48px;
+    line-height: 48px;
+    border-radius: 24px;
+    width: 100%;
+  }
+
+  .discover-button{
+    display: none !important;
   }
 
   #ctn-aircraft{
@@ -339,6 +363,7 @@ export default {
 
   .searchbar-container{
     min-width: 100% !important;
+    border-radius: 50px !important;
   }
 
   .sidebar{
