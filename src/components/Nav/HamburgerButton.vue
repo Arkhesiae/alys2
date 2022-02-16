@@ -33,9 +33,12 @@ export default {
 }
 
 .button {
+
   position: relative;
   overflow: hidden;
   cursor: pointer;
+  flex: 0 0 auto;
+  margin-right: 10px;
   border-radius: 60px;
   /*background: rgba(87, 81, 88, 0.27);*/
   height: 60px;

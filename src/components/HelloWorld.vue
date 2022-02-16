@@ -1,12 +1,5 @@
 <template>
-  <div id="tile-container">
-    <router-link :to="$route.fullPath+'aircraftForm/'+'static'">
-      <Tile type="Performances"></Tile>
-    </router-link>
-    <router-link style="-webkit-user-drag: none; " :to="$route.fullPath+'aircraftForm/'+'dynamic'">
-      <Tile class="tile" @mousedown="createRipple" type="Flight profile"></Tile>
-    </router-link>
-  </div>
+
 </template>
 
 <script>

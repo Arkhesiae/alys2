@@ -212,7 +212,7 @@ export default {
   align-items: center;
   /*padding: 20px;*/
   width: 100%;
-  padding-top: 30px;
+  /*padding-top: 30px;*/
   padding-left: 40px;
   padding-right: 40px;
   box-sizing: border-box;
@@ -314,7 +314,8 @@ export default {
   /*padding-right: 10px;*/
   /*padding-left: 10px;*/
   margin: 0;
-  margin-top: 40px;
+  padding-top: 30px;
+  margin-top: 10px;
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;

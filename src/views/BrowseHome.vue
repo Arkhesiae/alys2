@@ -1,6 +1,12 @@
 <template>
   <Background></Background>
-  <HamburgerButton></HamburgerButton>
+  <div class="nav-bar">
+    <router-link style="text-decoration: none; color: inherit; position: relative" :to="{ name: 'BrowseHome'}">
+      <HamburgerButton></HamburgerButton>
+    </router-link>
+
+  </div>
+
   <div class="ctn">
     <div class="elmt">
       <div class="header">

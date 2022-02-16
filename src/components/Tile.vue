@@ -1,9 +1,10 @@
 <template>
   <div :id=type class="tile">
     <div class="tile-lower-container">
-      <img class="rrua" :src="this.imageURL">
+      <img class="rruaa" :src="this.imageURL">
 <!--      <div class="tile-title-decoration"></div>-->
       <p>{{type}}</p>
+      <img class="rrua" src="@/assets/icons/chevron-right.svg" alt="">
     </div>
 <!--    <div class="tile-bubble-container">-->
 <!--      <div class="bubble" id="bubble1"></div>-->
@@ -56,19 +57,25 @@ export default {
 .rrua{
   filter: invert(11%) sepia(20%) saturate(141%) hue-rotate(250deg) brightness(82%) contrast(88%);
 }
+.rruaa{
+  width: 16px;
+  filter: invert(11%) sepia(20%) saturate(141%) hue-rotate(250deg) brightness(82%) contrast(88%);
+}
+
+
 .tile {
   width: 290px;
-  height: 60px;
+  height: 48px;
   margin: 20px;
   cursor: pointer;
   border-radius: 8px;
-  background: linear-gradient(237deg, rgb(103, 100, 134) -30%, rgb(30, 28, 32) 150%);
+  background: linear-gradient(237deg, rgb(144, 141, 178) -30%, rgb(190, 174, 206) 150%);
   box-shadow: rgba(5, 5, 5, 0.2) 0px 1px 2px 0px, rgba(5, 5, 5, 0.2) 0px 2px 4px 2px;
   font-size: 16px;
   letter-spacing: 1px;
   font-family: Roboto,serif;
-  text-transform: uppercase;
-  font-weight: bold;
+  /*text-transform: uppercase;*/
+  /*font-weight: bold;*/
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease-in-out;
@@ -103,11 +110,14 @@ export default {
   bottom: 0;
   z-index: 99;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  padding-right: 10px;
+  padding-left: 10px;
+  box-sizing: border-box;
   align-items: center;
   position: absolute;
   width: 100%;
-  height: 60px;
+  height: 100%;
 }
 
 .tile-lower-container p {

@@ -21,8 +21,7 @@
     </div>
     <transition name="slidy" appear>
       <div id="ctn-aircraft">
-        <router-link style="text-decoration: none; color: inherit"
-                     :to="'/plane/'+aircraft.ICAO+'/'">
+        <router-link style="text-decoration: none; color: inherit" :to="'/plane/'+aircraft.ICAO+'/'">
           <transition name="side-in" appear>
             <div id="context">
               <span class="context-name">{{aircraft.ICAO}}</span>
@@ -31,7 +30,6 @@
                   <img src="../../../assets/icons/show_chart_black_24dp.svg">
                 </div>
                 <span>Profil de Vol</span>
-
               </div>
 
             </div>

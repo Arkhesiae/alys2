@@ -37,6 +37,8 @@ export default {
 .button {
   position: relative;
   overflow: hidden;
+  flex: 0 0 auto;
+  margin-right: 10px;
   cursor: pointer;
   border-radius: 60px;
   /*background: rgba(87, 81, 88, 0.27);*/
