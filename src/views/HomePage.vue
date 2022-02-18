@@ -7,23 +7,23 @@
         <Searchbar></Searchbar>
         <router-link style="text-decoration: none; color: inherit; position: relative" :to="{ name: 'BrowseHome'}">
           <div id="browse" @click="createRipple">
-            Browse
+            Parcourir
           </div>
         </router-link>
       </div>
 
 
-      <div class="discover-container" @click="discover()">
-        <span>Discover ALICE</span>
-        <div class="discover-button">
-          <div class="bg">
-            <img src="../assets/icons/chevron-double-down.svg">
-          </div>
-          <div class="ripple ripple1"></div>
-          <div class="ripple ripple2"></div>
+<!--      <div class="discover-container" @click="discover()">-->
+<!--        <span>Discover ALICE</span>-->
+<!--        <div class="discover-button">-->
+<!--          <div class="bg">-->
+<!--            <img src="../assets/icons/chevron-double-down.svg">-->
+<!--          </div>-->
+<!--          <div class="ripple ripple1"></div>-->
+<!--          <div class="ripple ripple2"></div>-->
 
-        </div>
-      </div>
+<!--        </div>-->
+<!--      </div>-->
 
 
     </div>
@@ -39,14 +39,14 @@
 
   </div>
   <!--    </transition>-->
-  <div class="page-displayer">
-    <div class="pg-number selected" @click="select"></div>
-    <div class="pg-number" @click="select"></div>
-    <div class="pg-number" @click="select"></div>
-    <div class="pg-number" @click="select"></div>
-    <div class="pg-number" @click="select"></div>
-    <!--    <div class="pg-number" @click="select()"></div>-->
-  </div>
+<!--  <div class="page-displayer">-->
+<!--    <div class="pg-number selected" @click="select"></div>-->
+<!--    <div class="pg-number" @click="select"></div>-->
+<!--    <div class="pg-number" @click="select"></div>-->
+<!--    <div class="pg-number" @click="select"></div>-->
+<!--    <div class="pg-number" @click="select"></div>-->
+<!--    &lt;!&ndash;    <div class="pg-number" @click="select()"></div>&ndash;&gt;-->
+<!--  </div>-->
 
   <!--  <router-view v-slot="{ Component }">-->
 
@@ -1854,14 +1854,14 @@ body {
   margin-left: 50px;
   width: 200px;
   cursor: pointer;
-  box-shadow: rgba(5, 5, 5, 0.3) 0px 1px 3px 1px;
+  /*box-shadow: rgba(5, 5, 5, 0.3) 0px 1px 3px 1px;*/
   /*width: 500px;*/
   border: 0px solid rgb(183, 134, 216);
   height: 60px;
   box-sizing: border-box;
   border-radius: 8px;
   text-align: center;
-  color: rgb(46, 32, 56);
+  color: rgb(165, 156, 204);
   padding-top: 18px;
   font-family: Roboto;
   font-size: 20px;
@@ -1870,7 +1870,7 @@ body {
   /*font-weight: bold;*/
   letter-spacing: 1px;
   z-index: -1;
-  background: linear-gradient(237deg, rgb(121, 118, 132) -30%, rgb(196, 176, 236) 150%);
+  /*background: linear-gradient(237deg, rgb(121, 118, 132) -30%, rgb(196, 176, 236) 150%);*/
 }
 
 #browse:hover {

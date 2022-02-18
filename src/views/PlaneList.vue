@@ -2,14 +2,17 @@
   <Background></Background>
   <div class="nav-bar">
     <router-link style="text-decoration: none; color: inherit; position: relative" :to="{ name: 'BrowseHome'}">
-    <BackButton></BackButton>
+      <BackButton></BackButton>
     </router-link>
     <div class="ctn">
       <div class="searchbar-container">
         <div id="searchbar">
           <!--              STATIC-->
           <label for="search"></label>
-          <input autocomplete="off" placeholder="Search..." id="search" v-model="search" @focus="magic_flag = true">
+
+          <span class="placeholder" :class="{collapsed : collapse}">Type d'appareil</span>
+          <input autocomplete="off" placeholder="" id="search" v-model="search" @blur="focused = false" @focus="magic_flag = true; focused = true">
+<!--          <input autocomplete="off" placeholder="Search..." id="search" v-model="search" @focus="magic_flag = true">-->
           <div class="search-icon" @click="erase()"><img v-if="search!==''" src="@/assets/icons/clear_black_24dp.svg"
                                                          alt=""></div>
         </div>
@@ -18,11 +21,8 @@
 
   </div>
   <div class="filters">
-    <HButton icon="jet.svg" text="Réacteur" :is-filter="true"></HButton>
-    <HButton icon="option2.svg" text="Turboprop" :is-filter="true"></HButton>
-    <HButton icon="piston.svg" text="Piston" :is-filter="true"></HButton>
-    <HButton icon="hammer-wrench.svg" text="Airbus" :is-filter="true"></HButton>
-    <HButton icon="hammer-wrench.svg" text="Boeing" :is-filter="true"></HButton>
+    <HButton @click="filter.active = !filter.active" :icon="filter.icon" :text="filter.name" :is-filter="true"
+             :class="{selected : filter.active}" v-bind:key="filter.name" v-for="filter in filters"></HButton>
   </div>
   <div class="ctn-all">
 
@@ -39,7 +39,7 @@
             </div>
 
             <div class="details">
-<!--              <span class="engine">{{ post.engineType }}</span>-->
+              <!--              <span class="engine">{{ post.engineType }}</span>-->
               <img :src="imageSVG(icons[post.engineType.toLowerCase()])" alt="">
               <div class="manufacturer">
                 <img src="@/assets/icons/hammer-wrench.svg" alt="">
@@ -83,10 +83,38 @@ import HButton from "@/components/Nav/hButton"
 
 export default {
   name: "PlaneList",
-  components: {HButton, BackButton,  Background},
+  components: {HButton, BackButton, Background},
   data() {
     return {
+      filters: {
+        jet: {
+          active: false,
+          icon: "jet.svg",
+          name: "Réacteur"
+        },
+        turboprop: {
+          active: false,
+          icon: "option.svg",
+          name: "Turboprop."
+        },
+        piston: {
+          active: false,
+          icon: "piston.svg",
+          name: "Piston"
+        },
+        airbus: {
+          active: false,
+          icon: "aircraft-edit.svg",
+          name: "Airbus"
+        },
+        boeing: {
+          active: false,
+          icon: "aircraft-edit.svg",
+          name: "Boeing"
+        },
+      },
       search: '',
+      focused: false,
       magic_flag: false,
       postList: [],
       icons:
@@ -99,38 +127,59 @@ export default {
     }
   },
   mounted() {
-    let ref = this
     this.postList = formattedList
-    // this.postList = formattedList
-    window.addEventListener('click', function () {
-      console.log(ref.magic_flag)
-    })
   },
 
   beforeMount() {
-    console.warn("MOUNT")
     // this.imageRef = imageData.find(AC => AC.ICAO === this.aircraft.ICAO)
 
   },
 
 
   computed: {
+    collapse(){
+      return (this.focused || this.search !== "")
+    },
     // imageID : function (){
     //
     // },
     //
-    // imageURL : function (){
+    // activeFilters() {
     //
-    //   // return  ""
+    //     console.log(this.filters)
+    //     return Object.keys(this.filters).find((object)=>object.active)
     // },
 
-    filteredList() {
+    searchList(){
       if (this.search == "") {
         return this.postList
       }
+
+
       return this.postList.filter(post => {
-        return (post.ICAO.toLowerCase().includes(this.search.toLowerCase())) || (post.aircraftModel?.toLowerCase().includes(this.search.toLowerCase()))
+        return (((post.ICAO.toLowerCase().includes(this.search.toLowerCase())) || (post.aircraftModel?.toLowerCase().includes(this.search.toLowerCase()))))
       })
+    },
+
+    filteredList() {
+      let activeFilters = []
+      Object.keys(this.filters).forEach((filter) => {
+        // console.log(filter)
+        if (this.filters[filter].active) {
+          activeFilters.push(filter)
+        }
+      })
+
+      if (activeFilters.length === 0){
+        return this.searchList
+      } else{
+        return  this.searchList.filter(post => {
+          return activeFilters.includes(post.engineType.toLowerCase())
+        })
+      }
+
+
+
     },
 
   },
@@ -178,28 +227,32 @@ export default {
 
 
 <style scoped>
+ul {
+  list-style: none;
+}
+
 * {
   user-select: none;
 }
 
-.filters{
+.filters {
   display: flex;
   padding-left: 40px;
-  overflow-x : auto;
+  overflow-x: auto;
 }
 
-.filters .container{
+.filters .container {
   margin-right: 10px;
 }
 
 @media (max-width: 737px) and (min-width: 100px) {
-  .ctn-all{
+  .ctn-all {
     padding-left: 5px !important;
     padding-right: 5px !important;
   }
 }
 
-.nav-bar{
+.nav-bar {
   padding: 20px !important;
   width: 100% !important;
   box-sizing: border-box;
@@ -254,7 +307,7 @@ export default {
   flex-direction: column;
 }
 
-.details img{
+.details img {
   width: 20px;
   height: 20px;
   filter: invert(95%) sepia(20%) saturate(841%) hue-rotate(200deg) brightness(90%) contrast(88%);
@@ -328,7 +381,7 @@ export default {
   flex-basis: auto;
   border-radius: 12px;
   flex-grow: 1;
-  background: #3A354A;
+  background: #2c2a32;
   min-width: 300px;
   /*max-width: 50%;*/
   position: relative;
@@ -342,7 +395,7 @@ export default {
   box-sizing: border-box;
   /*border: 1px rgba(86, 86, 86, 0.04) solid;*/
   height: 60px;
-  overflow: hidden;
+  /*overflow: hidden;*/
   /*background: rgba(43, 47, 55, 0.06);*/
   /*display: inline;*/
   width: calc(100%);
@@ -355,12 +408,13 @@ export default {
   position: relative;
   border: none;
   background: none;
-  color: #afafaf;
+  color: rgba(197, 194, 206, 0.93);
   font-family: inherit;
-  font-size: inherit;
-  /*font-weight: bold;*/
+  /*font-size: inherit;*/
+  font-weight: normal !important;
   box-sizing: border-box;
   outline: none;
+  letter-spacing: 1px;
   padding-left: 40px;
   /*display: inline;*/
   width: calc(100% - 60px);
@@ -368,8 +422,27 @@ export default {
 
   /*border-radius: 60px;*/
   height: 60px;
-  font-size: 20px;
+  font-size: 16px;
   /*box-shadow: #ffffff 2px 2px 5px 5px;*/
+}
+
+#searchbar .placeholder {
+  position: absolute;
+  height: 60px;
+  line-height: 60px;
+  pointer-events: none;
+  padding-left: 40px;
+  top: 0px;
+  font-size: 16px;
+  color: rgba(110, 106, 123, 0.93);
+  transition: all 0.4s ease-in-out;
+  /*box-shadow: #ffffff 2px 2px 5px 5px;*/
+}
+
+span.placeholder.collapsed {
+  top: -40px !important;
+  padding-left: 20px !important;
+  font-size: 12px !important;
 }
 
 .search-icon {

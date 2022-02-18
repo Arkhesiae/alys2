@@ -122,7 +122,8 @@ export let imageData = [{
     "name": "A320",
     "model": "Airbus A320neo",
     "ICAO": "A20N",
-    "imageIDs": ["1102381", "0090861", "1221957"]
+    "imageIDs": ["1102381", "0090861", "1221957"],
+    "png":"a320",
 }, {
     "name": "A321",
     "model": "Airbus A321",
@@ -337,5 +338,11 @@ export let imageData = [{
     "model": "Yakovlev Yak-42",
     "ICAO": "YK42",
     "imageIDs": ["1790927", "0944239", "0733079"]
-}
+},
+    {
+        "name": "Yak-42",
+        "model": "antonov",
+        "ICAO": "A225",
+        "png": "a225",
+    }
 ]

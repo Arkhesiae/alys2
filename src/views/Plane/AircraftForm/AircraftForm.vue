@@ -47,7 +47,7 @@
         <router-view :defaultSpeed="defaultSpeed" :coefficient="coefficient"/>
 
         <transition name="side-in" appear>
-          <SideBar class="sidebar" :aircraft="aircraft" :imageRef="imageRef"></SideBar>
+          <SideBar class="sidebar" :aircraft="aircraft" :coefficient="coefficient" :imageRef="imageRef"></SideBar>
         </transition>
 
       </div>
@@ -171,9 +171,8 @@ html, html body, body #ctn-all {
     overflow-x: hidden;
   }
 
-  .nav-bar.reduced{
-    width: 100% !important;
-  }
+
+
 
   .sidebar{
     transition:all ease-in-out 1s;
@@ -299,9 +298,9 @@ html, html body, body #ctn-all {
   transition: transform 0.5s  cubic-bezier(.72, .02, .44, 1.38);
   user-select: none;
   user-focus: none;
-  background: linear-gradient(45deg, rgb(111, 98, 123) -0%, rgb(192, 178, 236) 110%);
+  background: linear-gradient(45deg, rgb(105, 98, 123) -0%, rgb(192, 178, 236) 110%);
   height: 64px;
-  border-radius: 20px;
+  border-radius: 122px;
   /*background: rgba(94, 98, 107, 0.08);*/
   width: 64px;
   transform: scale(0);
@@ -316,7 +315,7 @@ html, html body, body #ctn-all {
 .ctn-btn-app img{
   position: relative;
   z-index: 2;
-  filter: invert(80%) sepia(97%) saturate(949%) hue-rotate(215deg) brightness(110%) contrast(80%);
+  filter: invert(80%) sepia(97%) saturate(949%) hue-rotate(185deg) brightness(110%) contrast(80%);
   margin: 20px;
 }
 

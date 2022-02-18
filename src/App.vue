@@ -39,7 +39,7 @@ div.Gripple {
   border-radius: 50%;
   transform: scale(0);
   animation: Gripple 600ms linear forwards;
-  background-color: rgba(210, 171, 243, 0.7);
+  background-color: rgba(209, 197, 248, 0.7);
 }
 
 @keyframes Gripple {
@@ -50,6 +50,7 @@ div.Gripple {
 }
 
 *{
+  -webkit-tap-highlight-color: transparent !important;
   font-family: "Product Sans", sans-serif;
   /*outline: 1px solid #7f7f7f;*/
 }

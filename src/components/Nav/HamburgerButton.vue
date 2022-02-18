@@ -1,5 +1,5 @@
 <template>
-  <div class="button"  @mousedown="createRipple">
+  <div class="button"  @touchstart="createRipple" @mousedown="createRipple" @touchend="stop" @mouseup="removeRipple">
     <img src="@/assets/icons/menu.svg">
   </div>
 </template>
@@ -10,10 +10,25 @@ import {createRipple} from "@/BADA/Misc/ripple"
 export default {
   name: "HamburgerButton",
   methods: {
+
     createRipple(event) {
-      console.log("bite")
       createRipple(event)
     },
+
+    stop(event){
+      this.removeRipple(event)
+      event.preventDefault()
+      event.stopPropagation()
+    },
+
+    removeRipple(event){
+      let button = event.currentTarget;
+      const ripple = button.getElementsByClassName("Gripple")[0];
+      if (ripple) {
+        ripple.remove()
+      }
+
+    }
   }
 }
 </script>

@@ -7,24 +7,26 @@
 <!--        <img src="../assets/images/{{ ref.imageIDs[0]}}jpg"/>-->
       </div>
       <div class="content">
-        <div class="engine">
-          <img src="../assets/icons/jet.svg"/>
-          <div class="engine-number">2</div>
-          <div class="engine-description">Réacteur</div>
-          <div class="wake-turbulence">M</div>
-        </div>
-        <div class="presentation">
+<!--        <div class="engine">-->
+<!--          <img :src="this.imageSVG"/>-->
+<!--          <div class="engine-number">{{ coefficient.acTypeData.numberOfEngines }}</div>-->
+<!--          <div class="engine-description">{{ coefficient.acTypeData.engineType.toLowerCase() }}</div>-->
+<!--          <div class="wake-turbulence">{{ coefficient.acTypeData.wakeTurbulenceCategory.slice(0,1) }}</div>-->
+<!--        </div>-->
+<!--        <div class="presentation">-->
 
-          <div class="header">
-            <div class="name">{{ aircraft.aircraftModel }}</div>
-            <div class="lower-header">
-              <div class="bar"/>
-              <div class="ICAO-code">{{ aircraft.ICAO }}</div>
-            </div>
-            <!--            <div class="class-icon"><img src="../assets/jet.svg"/></div>-->
-            <div class="menu-option"></div>
-          </div>
-        </div>
+<!--          <div class="header">-->
+<!--            <div class="name">{{ aircraft.aircraftModel }}</div>-->
+<!--            <div class="lower-header">-->
+<!--              <div class="bar"/>-->
+<!--              <div class="ICAO-code">{{ aircraft.ICAO }}</div>-->
+<!--            </div>-->
+<!--            &lt;!&ndash;            <div class="class-icon"><img src="../assets/jet.svg"/></div>&ndash;&gt;-->
+<!--            <div class="menu-option"></div>-->
+<!--          </div>-->
+<!--        </div>-->
+        <PlaneTile  :ICAO="aircraft.ICAO" :name="aircraft.aircraftModel" img=""
+                    :manufactuer="aircraft.manufacturer" :engineType="aircraft.engineType" style="height : 80px ; width: 100%"></PlaneTile>
         <div class="container">
 
           <div class="charac">
@@ -66,10 +68,25 @@
 <script>
 // import {imageData} from "@/BADA/Data/imagesRef"
 
+import PlaneTile from "@/components/Browse/PlaneTile"
+
 export default {
   name: "SideBar",
-  props : ["aircraft", "imageRef"],
+  props : ["aircraft", "imageRef", "coefficient"],
+  components: {PlaneTile},
+  data() {
+    return {
+      icons:
+          {
+            jet: "jet",
+            turboprop: "option2",
+            piston: "piston"
+          },
+    }
+  },
   beforeMount() {
+    console.log(this.coefficient)
+    this.icon = this.icons[this.coefficient.acTypeData.engineType.toLowerCase()]
       // console.log('@/assets/images/'+this.imageRef.imageIDs[0].toString()+'.jpg')
   },
   computed : {
@@ -78,6 +95,20 @@ export default {
         return this.imageRef.imageIDs[0].toString()
       }
       else return ""
+    },
+
+    imageSVG : function (){
+      try {
+        // a path we KNOW is totally bogus and not a module
+        let url = require('@/assets/icons/' + this.icon + '.svg')
+        return url
+      }
+      catch (e) {
+        console.log('No Image')
+        console.log(e)
+        return ""
+      }
+      // return  ""
     },
 
     imageURL : function (){
@@ -161,8 +192,8 @@ export default {
   align-self: center;
   border-radius: 8px;
   background: linear-gradient(45deg, rgb(88, 65, 80) 0%, rgb(88, 65, 80) 100%);
-  box-shadow: rgba(5, 5, 5, 0.2) 0px 10px 15px 2px;
-  width: 80%;
+  /*box-shadow: rgba(5, 5, 5, 0.052) 0px 10px 15px 2px;*/
+  width: 100%;
 }
 
 .engine{
@@ -176,8 +207,8 @@ export default {
   backdrop-filter: blur(5px);
   justify-content: space-between;
   display: flex;
-  border-radius: 80px;
-  background: linear-gradient(45deg, rgba(59, 53, 62, 0.9) 0%, rgb(46, 42, 44) 100%);
+  border-radius: 8px;
+  background: linear-gradient(45deg, rgba(59, 53, 62, 0.9) 0%, rgb(51, 48, 50) 100%);
   box-shadow: rgba(5, 5, 5, 0.07) 0px 10px 15px 2px;
   width: 80%;
 }
@@ -194,7 +225,7 @@ export default {
 
   height: 30px;
   border-radius: 30px;
-  background:linear-gradient(45deg, rgb(166, 155, 195) 0%, rgb(88, 65, 80) 100%); ;
+  background:linear-gradient(45deg, rgb(166, 155, 195) 0%, rgb(190, 167, 182) 100%); ;
 
 }
 
@@ -203,14 +234,20 @@ export default {
   font-weight: 900;
   font-family: Arial;
   left : 22px;
+  text-shadow: black 0 0 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 4px;
+  /*background: #9da6ba;*/
   font-size: 9px;
   top : 13px;
-  color: #e6cbf6;
+  color: #ffffff;
 }
 
 .engine-description{
   margin-right: 10px;
   font-weight: bold;
+  text-transform: capitalize;
   padding-top: 11px;
   font-size: 14Px;
   flex: 1 1 auto;
@@ -221,7 +258,7 @@ export default {
 
 .engine img{
   margin: 5px;
-  filter: invert(81%) sepia(20%) saturate(841%) hue-rotate(220deg) brightness(82%) contrast(88%);
+  filter: invert(71%) sepia(20%) saturate(641%) hue-rotate(220deg) brightness(82%) contrast(88%);
   margin-left: 10px;
   width: 30px;
   height: 30px;
@@ -229,7 +266,7 @@ export default {
 
 .charac, .misc{
   background: linear-gradient(45deg, rgb(46, 42, 43) 0%, rgb(46, 42, 44) 100%);
-  box-shadow: rgba(5, 5, 5, 0.2) 0px 10px 15px 2px;
+  box-shadow: rgba(5, 5, 5, 0.05) 0px 10px 15px 2px;
 }
 
 .charac .description{
@@ -272,7 +309,7 @@ export default {
 .type h2 {
   font-size: 15px;
   line-height: 15px;
-  color: #1d102c;
+  color: #36333a;
   margin: 0;
   padding: 0;
 }
@@ -280,8 +317,8 @@ export default {
 .type p {
   font-size: 12px;
   margin-top: 2px;
-  font-weight: bold;
-  color: #3d274f;
+  /*font-weight: bold;*/
+  color: #413d3d;
   line-height: 12px;
 }
 
@@ -297,7 +334,7 @@ export default {
   display: flex;
   height: 60px;
   box-shadow: rgba(5, 5, 5, 0.1) 0px 8px 8px 2px, rgba(5, 5, 5, 0.2) 0px 2px 4px 2px;
-  background: linear-gradient(237deg, rgba(48, 48, 48, 1) -30%, rgb(206, 178, 248) 150%);
+  background: linear-gradient(237deg, rgb(146, 141, 164) -30%, rgb(206, 178, 248) 150%);
   border-radius: 8px;
 }
 
@@ -359,15 +396,15 @@ export default {
   letter-spacing: 3px;
   font-weight: bold;
   font-family: "Product Sans", sans-serif;
-  color: #9da6ba;
+  color: #a39dba;
 }
 
 .bar {
-  width: 3px;
+  width: 2px;
   height: 24px;
   margin: 3px;
   margin-left: 5px;
-  background: #d38eea;
+  background: #ecccf6;
   border-radius: 20px;
 }
 

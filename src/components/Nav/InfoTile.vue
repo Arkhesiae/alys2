@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="info-tile-container">
     <div class="info-header">
       <span>{{ label }}</span>
       <img src="@/assets/icons/information-outline.svg" v-show="infoIcon" alt="">
@@ -61,17 +61,18 @@ span.unit{
   width: 20px;
 }
 
-.container {
+.info-tile-container {
   box-shadow: rgba(0, 0, 0, 0.19) 0px 2px 8px 1px;
   display: flex;
+  margin-right: 10px;
   align-items: flex-end;
   /*justify-content: space-evenly;*/
   flex-direction: column;
   height: 110px;
-  /*flex: 1 1 auto;*/
-  min-width: 200px;
+  flex: 1 1 auto;
+  min-width: 100px;
   max-width: 300px;
   border-radius: 14px;
-  background: #34313D;
+  background: #2a272e;
 }
 </style>

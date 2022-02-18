@@ -1,14 +1,15 @@
 <template>
-  <div class="searchbar-container" >
+  <div class="searchbar-container purple" >
     <div id="searchbar">
       <!--              STATIC-->
       <label for="search"></label>
-      <input autocomplete="off" placeholder="Search..." id="search" v-model="search" @focus="magic_flag = true">
+      <input autocomplete="off" placeholder="" id="search" v-model="search" @blur="focused = false" @focus="magic_flag = true; focused = true">
+      <span class="placeholder" :class="{collapsed : collapse}">Type d'appareil</span>
       <div class="search-icon" @click="erase()"><img v-if="search!==''" src="../../assets/icons/clear_black_24dp.svg"
                                                      alt=""></div>
     </div>
     <ul class="wrapper">
-      <li class="card" v-show="this.magic_flag" v-bind:key="post.ICAO" v-for="post in filteredList">
+        <li class="card" v-show="this.magic_flag" v-bind:key="post.ICAO" v-for="post in filteredList">
         <router-link @click="magic_flag=false" style="text-decoration: none; color: inherit; width: 100%; height: 100%"
                      :to="'/plane/'+post.ICAO+'/'">
           <div class="text-container">
@@ -17,6 +18,8 @@
             <p class="highlight"> {{ search.toUpperCase() }}</p>
             <p>
               {{ post.ICAO.slice(post.ICAO.indexOf(search.toUpperCase()) + search.length, 8) }}</p>
+
+
             <p class="fullName">{{ post.aircraftModel }}</p>
 
           </div>
@@ -44,6 +47,7 @@ export default {
   name: "Searchbar",
   data() {
     return {
+      focused : false,
       search: '',
       magic_flag : false,
       postList: []
@@ -51,21 +55,21 @@ export default {
   },
 
   mounted() {
-    let ref = this
     this.postList = formattedList
-    window.addEventListener('click', function (){
-      console.log(ref.magic_flag)
-    })
   },
 
   computed: {
+    collapse(){
+      return (this.focused || this.search !== "")
+    },
+
     filteredList() {
       if (this.search == "") {
         return
       }
       return this.postList.filter(post => {
-        return (post.ICAO.toLowerCase().includes(this.search.toLowerCase()))
-      }).slice(0,7)
+        return (((post.ICAO.toLowerCase().includes(this.search.toLowerCase())) || (post.aircraftModel?.toLowerCase().includes(this.search.toLowerCase()))))
+      }).slice(0,5)
     },
 
   },
@@ -87,7 +91,7 @@ export default {
 .searchbar-container {
   flex-basis: auto;
   flex-grow: 1;
-  min-width: 300px;
+  min-width: 400px;
   position: relative;
 }
 
@@ -99,7 +103,7 @@ export default {
   box-sizing: border-box;
   /*border: 1px rgba(86, 86, 86, 0.04) solid;*/
   height: 60px;
-  overflow: hidden;
+  /*overflow: hidden;*/
   /*background: rgba(43, 47, 55, 0.06);*/
   /*display: inline;*/
   width: calc(100%);
@@ -112,12 +116,13 @@ export default {
   position: relative;
   border: none;
   background: none;
-  color: #afafaf;
+  color: rgba(197, 194, 206, 0.93);
   font-family: inherit;
-  font-size: inherit;
-  /*font-weight: bold;*/
+  /*font-size: inherit;*/
+  font-weight: normal !important;
   box-sizing: border-box;
   outline: none;
+  letter-spacing: 1px;
   padding-left: 40px;
   /*display: inline;*/
   width: calc(100% - 60px);
@@ -125,13 +130,47 @@ export default {
 
   /*border-radius: 60px;*/
   height: 60px;
-  font-size: 20px;
+  font-size: 16px;
   /*box-shadow: #ffffff 2px 2px 5px 5px;*/
 }
 
+#searchbar .placeholder {
+  position: absolute;
+  height: 60px;
+  line-height: 60px;
+  pointer-events: none;
+  padding-left: 40px;
+  top: 0px;
+  font-size: 16px;
+  color: rgba(110, 106, 123, 0.93);
+  transition: all 0.4s ease-in-out;
+  /*box-shadow: #ffffff 2px 2px 5px 5px;*/
+}
 
-.wrapper {
-  background: #3A354A !important;
+span.placeholder.collapsed {
+  top: -40px !important;
+  padding-left: 20px !important;
+  font-size: 12px !important;
+}
+
+
+
+/*#searchbar input:focus input::placeholder {*/
+/*  !*position: absolute;*!*/
+/*  display: none;*/
+/*  !*left : 50px;*!*/
+/*  !*opacity: 1;*!*/
+/*  !*color: rgba(110, 106, 123, 0.93);*!*/
+
+/*  !*box-shadow: #ffffff 2px 2px 5px 5px;*!*/
+/*}*/
+
+/*.wrapper {*/
+/*  background: #3A354A !important;*/
+/*}*/
+
+.searchbar-container.purple .wrapper {
+  background: #2c2a32 !important;
 }
 
 .search-icon {

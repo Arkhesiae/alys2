@@ -145,7 +145,7 @@
       </transition>
 
       <transition name="pop-in" appear>
-        <div class="add-point">
+        <div class="add-point" style="display: none">
           <div class="add-box" @mousedown="createRipple">
             <img src="../../../../assets/icons/add_black_24dp.svg"/>
           </div>
@@ -1560,7 +1560,7 @@ export default {
 }
 
 .information-box.information-box--brown .box__container {
-  background: linear-gradient(45deg, rgb(66, 60, 67) -0%, rgb(193, 176, 244) 110%);
+  background: linear-gradient(45deg, rgb(146, 134, 158) -0%, rgb(171, 162, 202) 110%);
 }
 
 .information-box.information-box--blue.information-box--active .box__container {
@@ -1896,7 +1896,7 @@ export default {
 }
 
 .law-edit-box span {
-  color: #bd94e3;
+  color: #b5a6e1;
 
   padding-right: 20px;
   padding-top: 14px;
@@ -1904,7 +1904,7 @@ export default {
 
 .law-edit img {
   margin: 13px;
-  filter: invert(97%) sepia(97%) saturate(2849%) hue-rotate(225deg) brightness(92%) contrast(80%);
+  filter: invert(87%) sepia(30%) saturate(5049%) hue-rotate(205deg) brightness(80%) contrast(80%);
   height: 24px;
 }
 

@@ -24,11 +24,11 @@ export default {
       let icon = ""
       console.warn(this.type)
       switch (this.type){
-        case "Flight profile":
+        case "Profile de vol":
 
           icon = "show_chart_black_24dp.svg"
           break
-        case "Performances":
+        case "Performances et taux":
           icon = "insert_chart_black_24dp.svg"
           break
       }

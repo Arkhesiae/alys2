@@ -235,14 +235,27 @@ export default {
   /*}*/
 
   .nav-bar.reduced{
-    width: 100% !important;
-    margin: 0 !important;
-    justify-content: center;
+    width: calc(100% - 40px) !important;
+    margin-left: 20px !important;
+    margin-right: 20px !important;
+
   }
 
   #searchbar {
     height: 48px !important;
   }
+
+  #searchbar .placeholder {
+    height: 48px !important;
+    line-height: 48px !important;
+  }
+
+  #searchbar input:focus ~ .placeholder,
+  #searchbar input:focus ~ .placeholder {
+    top: -32px !important;
+
+  }
+
 
   #searchbar #search {
     height: 48px !important;
@@ -453,7 +466,7 @@ export default {
 
 .nav-bar.reduced{
   width: calc(100% - 380px);
-  margin-left: 13px;
+  margin-left: 20px;
 }
 
 .nav-bar.reduced #home-button{

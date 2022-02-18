@@ -31,7 +31,7 @@ export default {
 }
 
 .app-button-icon-container img{
-  filter : invert(81%) sepia(20%) saturate(1041%) hue-rotate(250deg) brightness(92%) contrast(88%);
+  filter : invert(81%) sepia(20%) saturate(741%) hue-rotate(220deg) brightness(92%) contrast(88%);
   transition: transform cubic-bezier(.72, .02, .44, 1.38) 0.7s;
 }
 
@@ -75,7 +75,7 @@ export default {
   border-radius: 24px;
   width: max-content;
   transition: 0.2s all ease-in-out;
-  background: rgba(68, 58, 69, 0.2);
+  background: rgba(96, 88, 97, 0.2);
 }
 
 .app-button:hover{

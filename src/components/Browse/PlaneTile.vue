@@ -1,6 +1,9 @@
 <template>
   <div class="tile">
-    <img class="png" :src="imagePNG(img)">
+    <div v-show="img!==''">
+      <img  class="png" :src="imagePNG(img)">
+    </div>
+
     <div class="ctn">
       <div class="txt txt-name">
         <span class="ICAO">{{ ICAO }}</span>

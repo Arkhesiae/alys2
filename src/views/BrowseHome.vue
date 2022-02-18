@@ -21,8 +21,13 @@
           </router-link>
       </div>
       <ul class="content">
-        <PlaneTile v-bind:key="ac.name" v-for="ac in tileList" :ICAO="ac.ICAO" :name="ac.aircraftModel" :img="ac.png"
-                   :manufactuer="ac.manufacturer" :engineType="ac.engineType"></PlaneTile>
+        <li v-bind:key="ac.name" v-for="ac in tileList">
+          <router-link style="text-decoration: none; color: inherit; position: relative"  :to="'/plane/'+ac.ICAO+'/'">
+          <PlaneTile  :ICAO="ac.ICAO" :name="ac.aircraftModel" :img="ac.png"
+                     :manufactuer="ac.manufacturer" :engineType="ac.engineType" style="height : 160px"></PlaneTile>
+         </router-link>
+        </li>
+
       </ul>
     </div>
 

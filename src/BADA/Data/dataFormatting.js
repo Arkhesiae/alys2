@@ -66,3 +66,5 @@ export function formatData(){
 }
 
 export let formattedList = formatData()
+
+console.log(formattedList)

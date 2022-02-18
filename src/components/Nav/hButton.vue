@@ -41,12 +41,21 @@ height: 28px;
 }
 
 .container.filter{
-  color: #dbe5c1;
+  color: #dddaf3;
   background: #27252f;
 }
 
 .container.filter img{
-  filter: invert(69%) sepia(14%) saturate(1299%) hue-rotate(30deg) brightness(99%) contrast(98%);
+  filter: invert(89%) sepia(14%) saturate(1299%) hue-rotate(200deg) brightness(99%) contrast(98%);
+}
+
+.container.filter.selected{
+  color: #cdc1e5;
+  background: #615c76;
+}
+
+.container.filter.selected img{
+  filter: invert(69%) sepia(14%) saturate(1299%) hue-rotate(220deg) brightness(99%) contrast(98%);
 }
 
 img{
