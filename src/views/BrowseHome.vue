@@ -2,11 +2,11 @@
   <Background></Background>
   <div class="nav-bar">
     <router-link style="text-decoration: none; color: inherit; position: relative" :to="{ name: 'BrowseHome'}">
-      <HamburgerButton></HamburgerButton>
+      <HamburgerButton @touchstart="showMenu = !showMenu" @mousedown="showMenu = !showMenu"></HamburgerButton>
     </router-link>
 
   </div>
-
+  <Menu :class="{visible : showMenu}"></Menu>
   <div class="ctn">
     <div class="elmt">
       <div class="header">
@@ -66,12 +66,14 @@ import {formattedList, Manufacturers} from "@/BADA/Data/dataFormatting"
 import Manufacturer from "@/components/Browse/Manufacturer"
 import PlaneTile from "@/components/Browse/PlaneTile"
 import {imageData} from "@/BADA/Data/imagesRef"
+import Menu from "@/components/Nav/Menu"
 
 export default {
   name: "BrowseHome",
-  components: {PlaneTile, Manufacturer, Category, Background, HamburgerButton},
+  components: {PlaneTile, Manufacturer, Category, Background, HamburgerButton, Menu},
   data() {
     return {
+      showMenu : false,
       manufacturers: "",
       highlights : [],
       categories: [

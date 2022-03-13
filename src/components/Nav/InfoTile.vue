@@ -1,13 +1,13 @@
 <template>
-  <div class="info-tile-container">
+  <div class="info-tile-container" :style="{background : background}">
     <div class="info-header">
-      <span>{{ label }}</span>
+      <span :style="{color : color}">{{ label }}</span>
       <img src="@/assets/icons/information-outline.svg" v-show="infoIcon" alt="">
 
     </div>
     <div class="info-value">
-      <span>{{ value }}</span>
-      <span class="unit">{{ unit }}</span>
+      <span :style="{color : color}">{{ value }}</span>
+      <span :style="{color : color}" class="unit">{{ unit }}</span>
 
     </div>
   </div>
@@ -16,7 +16,7 @@
 <script>
 export default {
   name: "InfoTile",
-  props: ["label", "value", "infoIcon", "unit"]
+  props: ["label", "value", "infoIcon", "unit", "background", "color"]
 }
 </script>
 
@@ -24,13 +24,16 @@ export default {
 
 .info-value{
   display: flex;
-  align-items: center;
+
+  align-items: flex-end;
   margin-right: 20px;
 }
 
 .info-value span{
   color: #ccc0fd;
-  font-size: 32px;
+  font-size: 28px;
+  line-height: 100%;
+  opacity: 0.9;
   letter-spacing: 2px;
   font-weight: bold;
 }
@@ -38,7 +41,9 @@ export default {
 span.unit{
   font-size: 20px;
   margin-left: 10px;
-  color: #7c7786;
+  padding-bottom: 1px;
+  color: #a494c5;
+  opacity: 0.7;
 }
 
 .info-header {
@@ -52,6 +57,7 @@ span.unit{
 
 .info-header span {
   color: #8f89a2;
+  opacity: 0.5;
   letter-spacing: 1px;
 
 }
@@ -68,11 +74,11 @@ span.unit{
   align-items: flex-end;
   /*justify-content: space-evenly;*/
   flex-direction: column;
-  height: 110px;
+  height: 100px;
   flex: 1 1 auto;
   min-width: 100px;
   max-width: 300px;
   border-radius: 14px;
-  background: #2a272e;
+  background: #2c2934;
 }
 </style>

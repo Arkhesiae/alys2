@@ -897,13 +897,14 @@ export default {
   border-radius: 50px;
   border: 1px solid #bfb5ff;
   background: #222428;
+  color: #d4b8ff;
   height: 18px;
   font-size: 11px;
   font-weight: bold;
   padding-left: 12px;
   padding-right: 12px;
   padding-top: 4px;
-  color: #d4b8ff;
+
   cursor: pointer;
 }
 

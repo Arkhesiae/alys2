@@ -1,23 +1,35 @@
 <template>
   <Background/>
-  <div class="nav-bar" :class="{reduced : $route.path.includes('aircraftForm')}">
-    <HamburgerButton/>
-<!--    <IconButton class="icon-button" :aircraft="aircraft"></IconButton>-->
+  <div class="ctn plane-page">
+    <Menu :class="{visible : showMenu}"></Menu>
+    <div class="nav-bar" :class="{reduced : $route.path.includes('aircraftForm')}">
+      <HamburgerButton v-show="!$route.path.includes('aircraftForm')" @touchstart="showMenu = !showMenu" @mousedown="showMenu = !showMenu"/>
+      <router-link :to="'/plane/'+aircraft.ICAO+'/'">
+        <BackButton v-show="$route.path.includes('aircraftForm')" />
+      </router-link>
+      <router-link :to="'/'">
+        <div class="logo"><img src="@/assets/fullLogo.png" alt=""/></div>
+      </router-link>
 
-<!--    <AppButton text="" icon="show_chart_black_24dp.svg"/>-->
-<!--    <div class="nav-button" @click="showNav">-->
-<!--      <img src="@/assets/icons/chevron-right.svg"/>-->
-<!--    </div>-->
-    <div class="ctn">
-      <Searchbar/>
+
+      <!--    <IconButton class="icon-button" :aircraft="aircraft"></IconButton>-->
+
+      <!--    <AppButton text="" icon="show_chart_black_24dp.svg"/>-->
+      <!--    <div class="nav-button" @click="showNav">-->
+      <!--      <img src="@/assets/icons/chevron-right.svg"/>-->
+      <!--    </div>-->
+      <div class="ctn">
+        <Searchbar/>
+      </div>
+      <div class="icon-button">
+        <img alt="" :src="this.imageURL" @error="imageLoadError"/>
+      </div>
     </div>
-    <div class="icon-button">
-      <img alt="" :src="this.imageURL" @error="imageLoadError"/>
-    </div>
+
+
+    <router-view :coefficient="aircraftCoef" :aircraft="aircraft" :defaultSpeed="defaultSpeed"></router-view>
   </div>
 
-
-  <router-view class="plane-view" :coefficient="aircraftCoef" :aircraft="aircraft" :defaultSpeed="defaultSpeed"></router-view>
 <!--  <div class="truc" @click="show=!show"></div>-->
 </template>
 
@@ -32,27 +44,33 @@ import {defPerf} from "@/BADA/performancePref"
 import {formattedList} from "@/BADA/Data/dataFormatting"
 import {imageData} from "@/BADA/Data/imagesRef"
 import HamburgerButton from "@/components/Nav/HamburgerButton"
+import BackButton from "@/components/Nav/BackButton"
 // import AppButton from "@/components/appButton"
 // Vue.createApp(Demo).mount('#home')
-
+import Menu from "@/components/Nav/Menu"
 
 export default {
   name: 'PlanePage',
   props : ['id'],
   data() {
     return {
+      showMenu : false,
       show: true
 
     }
   },
 
   components: {
+    Menu,
+    BackButton,
     HamburgerButton,
     Searchbar,
     // AppButton,
     // MenuButton,
     Background,
   },
+
+
 
 
 
@@ -156,6 +174,16 @@ export default {
   overflow: hidden;
 }
 
+.ctn.plane-page{
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+}
+
+.nav-bar.reduced .ctn{
+  width: auto !important;
+}
+
 @media (max-width: 737px) and (min-width: 100px) {
   html, html body, body #ctn-all {
     width: 100% !important;
@@ -250,8 +278,7 @@ export default {
     line-height: 48px !important;
   }
 
-  #searchbar input:focus ~ .placeholder,
-  #searchbar input:focus ~ .placeholder {
+  #searchbar .placeholder.collapsed{
     top: -32px !important;
 
   }
@@ -453,7 +480,7 @@ export default {
 }
 
 .nav-bar{
-  z-index: 9999;
+  z-index: 999999;
   position: relative;
   display: flex;
   padding-top: 20px;
@@ -463,6 +490,18 @@ export default {
   margin-left: 20px;
   margin-right: 20px;
 }
+
+.logo {
+  position: absolute;
+  left: 80px;
+  /*top: 40px;*/
+
+}
+
+.logo img {
+  width: 80px;
+}
+
 
 .nav-bar.reduced{
   width: calc(100% - 380px);
@@ -476,7 +515,7 @@ export default {
 }
 
 .ctn {
-  width: 40%;
+  /*width: 40%;*/
   /*display: none;*/
 }
 

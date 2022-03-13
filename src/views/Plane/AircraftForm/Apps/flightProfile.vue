@@ -29,7 +29,7 @@
                 </div>
                 <div class="flight-state-info">
                   <div class="box__flight-state-value-container">
-                    <span class="flight-state-label">Speed</span>
+                    <span class="flight-state-label">Vitesse</span>
                     <div class="flight-state-value" v-if="selectedUnit.unit === 'IAS'">
                       <span class="value-param">{{ currentProfilePoint.speed  }}</span>
                       <span class="unit">kts</span>
@@ -52,7 +52,7 @@
                 </div>
                 <div class="flight-state-info">
                   <div class="box__flight-state-value-container">
-                    <span class="flight-state-label">Rate</span>
+                    <span class="flight-state-label">Taux</span>
                     <div class="flight-state-value">
                       <span class="value-param">{{ currentProfilePoint.rate }} </span>
                       <span class="unit">ft/min</span>
@@ -207,7 +207,7 @@ export default {
   props: ["coefficient", "defaultSpeed"],
 
   beforeMount() {
-
+    console.warn(this.defaultSpeed)
     let climbSequence = [
       {
         type: 'climb',
@@ -519,7 +519,7 @@ export default {
     })
     canvas.add(this.gphGroundLabel)
     // eslint-disable-next-line no-undef
-    this.gphClimbLabel = new fabric.Text('Climb', {
+    this.gphClimbLabel = new fabric.Text('Montée', {
       left: 0.5 * (canvas.width - this.marginHorizontalRight - this.marginHorizontalLeft) / 3 + this.marginHorizontalLeft - 20,
       fontSize: 15,
       objectCaching: false,
@@ -545,7 +545,7 @@ export default {
     })
     canvas.add(this.gphClimbPhase)
     // eslint-disable-next-line no-undef
-    this.gphCruiseLabel = new fabric.Text('Cruise', {
+    this.gphCruiseLabel = new fabric.Text('Croisière', {
       left: 1.5 * (canvas.width - this.marginHorizontalRight - this.marginHorizontalLeft) / 3 + this.marginHorizontalLeft - 20,
       fontSize: 15,
       objectCaching: false,
@@ -571,7 +571,7 @@ export default {
     })
     canvas.add(this.gphCruisePhase)
     // eslint-disable-next-line no-undef
-    this.gphDescentLabel = new fabric.Text('Descent', {
+    this.gphDescentLabel = new fabric.Text('Descente', {
       left: 2.5 * (canvas.width - this.marginHorizontalRight - this.marginHorizontalLeft) / 3 + this.marginHorizontalLeft - 20,
       fontSize: 15,
       objectCaching: false,
@@ -1195,7 +1195,7 @@ export default {
         if (key === this.currentPhase) {
           this.phaseObjects[key].label.animate({
             opacity: 1,
-            fill: 'rgb(103,199,165)',
+            fill: 'rgb(180,171,218)',
             top: canvas.height - this.marginVertical - 10,
           }, {
             onChange: function () {
@@ -1229,7 +1229,7 @@ export default {
           });
           this.phaseObjects[key].label.animate({
             opacity: 0.3,
-            fill: 'rgb(59,113,84)',
+            fill: 'rgb(69,59,113)',
             top: canvas.height - this.marginVertical + 10,
           }, {
             onChange: function () {
@@ -1325,7 +1325,7 @@ export default {
 .current-frame {
   position: absolute;
   /*margin: 20px;*/
-  box-shadow: rgba(5, 5, 5, 0.1) 0px 1px 3px 1px;
+  /*box-shadow: rgba(5, 5, 5, 0.1) 0px 1px 3px 1px;*/
   width: calc(100% - 40px);
   /*top: 0%;*/
   height: max-content;
@@ -1433,7 +1433,7 @@ export default {
   /*width: 50px;*/
   margin-left: 5px;
   border-radius: 50px;
-  background: #3e3543;
+  background: #524a56;
   border: 1px solid rgba(101, 143, 206, 0);
   height: 18px;
   font-size: 11px;
@@ -1441,7 +1441,7 @@ export default {
   padding-left: 12px;
   padding-right: 12px;
   padding-top: 4px;
-  color: #b48fc1;
+  color: #b6a0d0;
   cursor: pointer;
 }
 
@@ -1449,15 +1449,15 @@ export default {
   /*width: 50px;*/
   margin-left: 5px;
   border-radius: 50px;
-  border: 1px solid #65cebb;
+  border: 1px solid #e1dfff;
   background: #222428;
+  color: #cec9fb;
   height: 18px;
   font-size: 11px;
   font-weight: bold;
   padding-left: 12px;
   padding-right: 12px;
   padding-top: 4px;
-  color: #65ceb6;
   cursor: pointer;
 }
 
@@ -1507,7 +1507,7 @@ export default {
   /*font-weight: bold;*/
   /*text-transform: uppercase;*/
   letter-spacing: 1px;
-  color: #bdafc0;
+  color: #787082;
   font-size: 12px;
 }
 
@@ -1717,7 +1717,7 @@ export default {
 .box__container {
   width: 100%;
   display: flex;
-  background: linear-gradient(45deg, rgb(33, 30, 33) -0%, rgb(40, 39, 44) 110%);
+  background: rgba(52, 49, 61, 0.64);
   flex-direction: column;
   backdrop-filter: blur(1px);
   border-radius: 14px;
@@ -1725,7 +1725,7 @@ export default {
   position: relative;
   top: 0;
   left: 0;
-  box-shadow: rgba(5, 5, 5, 0.3) 0px 1px 10px 3px;
+  box-shadow: rgba(5, 5, 5, 0.03) 0px 1px 10px 3px;
   height: max-content;
   transform: translateY(0px);
   justify-content: space-between;

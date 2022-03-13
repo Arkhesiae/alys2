@@ -51,7 +51,7 @@
         <div class="misc">
           <img src="../assets/icons/information-outline.svg"/>
           <p>
-            L'Airbus A319 est une version raccourcie de l'A320
+            {{aircraftInfo.anecdote}}
           </p>
         </div>
       </div>
@@ -69,6 +69,7 @@
 // import {imageData} from "@/BADA/Data/imagesRef"
 
 import PlaneTile from "@/components/Browse/PlaneTile"
+import {acInfo} from "@/BADA/Data/acInfo"
 
 export default {
   name: "SideBar",
@@ -90,6 +91,10 @@ export default {
       // console.log('@/assets/images/'+this.imageRef.imageIDs[0].toString()+'.jpg')
   },
   computed : {
+    aircraftInfo : function (){
+      return acInfo.find(AC => AC.ICAO === this.aircraft.ICAO)
+    },
+
     imageID : function (){
       if (this.imageRef){
         return this.imageRef.imageIDs[0].toString()
@@ -132,9 +137,9 @@ export default {
 .sideBar {
   /*position: absolute;*/
   width: 320px;
-  box-shadow: rgba(5, 5, 5, 0.1) 0px 1px 3px 1px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 5px 1px;
   /*border-left: 1px solid rgba(60, 60, 60, 0.07);*/
-  background: rgba(29, 28, 30, 1);
+  /*background: rgba(29, 28, 30, 1);*/
   /*background-size: auto 100%;*/
   /*top:0;*/
   height: 100%;
@@ -152,22 +157,24 @@ export default {
 .misc {
   position: relative;
   border-radius: 8px;
-  background: rgb(33, 33, 39);
-  background: linear-gradient(45deg, rgba(45,49,60,1) 0%, rgba(65,72,88,1) 100%);
+  min-height: 40px;
+  background: rgb(40, 38, 46);
+
   box-shadow: rgba(5, 5, 5, 0.2) 0px 10px 15px 2px;
-  height: 80px;
+  /*height: 80px;*/
 }
 
 .misc p {
   width: 90%;
+  padding-right: 10px;
   box-sizing: border-box;
   margin: 20px;
-  padding-left: 40px;
+  padding-left: 20px;
   font-style: italic;
   letter-spacing: 0px;
   color: #abb2c0;
   font-family: "Product Sans", sans-serif;
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .misc img{
@@ -191,8 +198,6 @@ export default {
   position: relative;
   align-self: center;
   border-radius: 8px;
-  background: linear-gradient(45deg, rgb(88, 65, 80) 0%, rgb(88, 65, 80) 100%);
-  /*box-shadow: rgba(5, 5, 5, 0.052) 0px 10px 15px 2px;*/
   width: 100%;
 }
 
@@ -265,7 +270,7 @@ export default {
 }
 
 .charac, .misc{
-  background: linear-gradient(45deg, rgb(46, 42, 43) 0%, rgb(46, 42, 44) 100%);
+  background: linear-gradient(45deg, rgb(50, 48, 58) 0%, rgb(59, 55, 63) 100%);
   box-shadow: rgba(5, 5, 5, 0.05) 0px 10px 15px 2px;
 }
 
@@ -334,7 +339,7 @@ export default {
   display: flex;
   height: 60px;
   box-shadow: rgba(5, 5, 5, 0.1) 0px 8px 8px 2px, rgba(5, 5, 5, 0.2) 0px 2px 4px 2px;
-  background: linear-gradient(237deg, rgb(146, 141, 164) -30%, rgb(206, 178, 248) 150%);
+  background: linear-gradient(237deg, rgb(104, 97, 127) -30%, rgb(213, 198, 251) 150%);
   border-radius: 8px;
 }
 
@@ -361,8 +366,8 @@ export default {
   border-radius: 16px;
   position: relative;
   margin-top: -20px;
-  box-shadow: rgba(5, 5, 5, 0.2) 0px 1px 2px 0px, rgba(5, 5, 5, 0.2) 0px 2px 4px 2px;
-  background: rgba(29, 28, 30, 1);
+  /*box-shadow: rgba(5, 5, 5, 0.2) 0px 1px 2px 0px, rgba(5, 5, 5, 0.2) 0px 2px 4px 2px;*/
+  background: rgb(40, 38, 46);
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;

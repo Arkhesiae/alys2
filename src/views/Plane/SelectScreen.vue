@@ -1,22 +1,15 @@
 <template>
 
   <!--    <HelloWorld  />-->
-  <div class="tile-container" style="{opacity: 0}">
-    <router-link :to="$route.fullPath+'aircraftForm/'+'sPerformances'">
-      <Tile type="Performances et taux"></Tile>
-    </router-link>
-    <router-link style="-webkit-user-drag: none; " :to="$route.fullPath+'aircraftForm/'+'dynamic'">
-      <Tile class="tile" type="Profile de vol"></Tile>
-    </router-link>
-  </div>
-  <div class="ctn-all">
+
+  <div class="ctn-all aircraft-form">
     <div class="ctn-large">
       <div class="ctn-tech">
         <div class="ctn-context">
           <div class="context">
             <span class="context-name">{{ aircraft.ICAO }}</span>
             <div class="context-app">
-              <span>{{aircraft.aircraftModel}}</span>
+              <span>{{ aircraft.aircraftModel }}</span>
             </div>
 
           </div>
@@ -29,24 +22,31 @@
           </div>
         </div>
         <div class="ctn-information-simplified">
-          <div class="nav">
-            <ul class="nav-section-ctn">
-              <li class="nav-section">Vitesse</li>
-              <li class="nav-section">Masse et plafond</li>
-              <li class="nav-section">Autre</li>
-            </ul>
-            <div class="nav-lower-bar"></div>
-          </div>
+          <!--          <div class="nav">-->
+          <!--            <ul class="nav-section-ctn">-->
+          <!--              <li class="nav-section">Vitesse</li>-->
+          <!--              <li class="nav-section">Masse et plafond</li>-->
+
+          <!--            </ul>-->
+          <!--            <div class="nav-lower-bar"></div>-->
+          <!--          </div>-->
           <div class="information-simplified-content speed">
             <div class="information-section">
               <div class="header">
                 <div class="name">
                   <span>Vitesse maximales</span>
                 </div>
+                <div class="sub">
+                  <span>Vitesse minimales</span>
+                  <img src="@/assets/icons/information-outline.svg" alt="">
+                </div>
               </div>
               <div class="content line">
-                <InfoTile label="VMO" :info-icon="true" :value="parseFloat(coefficient.aircraftFlightEnvelope.maxOperatingSpeed)/10" unit="kts" ></InfoTile>
-                <InfoTile label="MMO" :v-show="MMO" :value="MMO" unit=""></InfoTile>
+
+                <InfoTile label="VMO" :info-icon="false"
+                          :value="parseFloat(coefficient.aircraftFlightEnvelope.maxOperatingSpeed)/10"
+                          unit="kts" background="#C9B8E1" color="#1C1924"></InfoTile>
+                <InfoTile label="MMO" :v-show="MMO" :value="MMO" unit="" background="linear-gradient(255deg, rgb(165, 152, 250) -40%, #C9B8E1 100%)" color="#1C1924"></InfoTile>
               </div>
             </div>
             <div class="information-section">
@@ -57,25 +57,16 @@
               </div>
               <div class="content">
                 <InfoTile label="Loi de vitesse" :info-icon="true" value="xxxx" unit="kts"></InfoTile>
+                <InfoTile label="Loi de vitesse" :info-icon="true" value="xxxx" unit="kts"></InfoTile>
+                <InfoTile label="Loi de vitesse" :info-icon="true" value="xxxx" unit="kts"></InfoTile>
                 <div class="more-info-tile">
                   <div>
                     <img src="@/assets/icons/alert-outline.svg"/>
                     <span> La loi de vitesse dépend fortement d'un vol à un autre, ces valeurs ne sont fournies qu'à titre indicatif car...</span>
                   </div>
 
-                   <img src="@/assets/icons/chevron-down.svg"/>
+                  <img src="@/assets/icons/chevron-down.svg"/>
                 </div>
-              </div>
-            </div>
-            <div class="graph">
-              <div class="graph2">
-                work in progress
-              </div>
-            </div>
-
-            <div class="graph">
-              <div class="graph2">
-                work in progress
               </div>
             </div>
 
@@ -84,41 +75,71 @@
 
           </div>
 
-            <div class="information-simplified-content mass ceiling" style="{display: none}">
-              <div class="information-section">
-                <div class="header">
-                  <div class="name">
-                    <span>Masse</span>
+          <div class="information-simplified-content mass ceiling" style="{display: none}">
+            <div class="information-section">
+              <div class="header">
+                <div class="name">
+                  <span>Plafond</span>
+                </div>
+              </div>
+              <div class="content">
+                <div class="info-tile-container">
+                  <div class="info-header">
+                    <span></span>
+                    <img src="@/assets/icons/information-outline.svg" v-show="true" alt="">
                   </div>
-                </div>
-                <div class="content">
-                  <InfoTile label="Masse max. au décollage" :info-icon="true" value="30000" unit="t" ></InfoTile>
-                  <InfoTile label="Masse à vide" value="30000" unit="t"></InfoTile>
-                </div>
-              </div>
-              <div class="graph">
-                <div class="graph2">
-                  work in progress aaa
-                </div>
-              </div>
-              <div class="information-section">
-                <div class="header">
-                  <div class="name">
-                    <span>Plafond</span>
+                  <div class="info-value">
+                    <span>41000</span>
+                    <span class="unit">ft</span>
+
                   </div>
+                  <div class="mass-cursor">
+                    <div class="label">MASSE</div>
+                    <div class="slider-container">
+                      <input type="range" :min="0"
+                             :max="1000"
+                             v-bind:style="{  }"
+                             step="10" class="slider" v-model="selectedMass">
+                    </div>
+                  </div>
+
                 </div>
-                <div class="content">
-                  <InfoTile label="Plafond absolu" :info-icon="true" value="41000" unit="ft"></InfoTile>
-                </div>
-              </div>
-              <div class="graph">
-                <div class="graph2">
-                  work in progress aaa
-                </div>
+<!--                <InfoTile label="" :info-icon="true" value="41000" unit="ft"></InfoTile>-->
               </div>
 
+            </div>
+            <div class="information-section mass">
+              <div class="header">
+                <div class="name">
+                  <span>Masse</span>
+                </div>
+              </div>
+              <div class="content">
+                <div class="more-info-tile warn" v-show="coefficient.aircraftType !== aircraft.ICAO">
+                  <img class="warn" src="@/assets/icons/aliceWarn.svg"/>
+                  <div>
 
-<!--              work in progress aaa-->
+                    <span>Ces informations sont basées sur {{coefficient.aircraftType}} : des erreurs peuvent subsister, n'hésitez pas à nous les faire remonter !</span>
+                  </div>
+                </div>
+                <InfoTile label="Masse max. au décollage" :info-icon="true" :value="parseFloat(coefficient.aircraftStandardMass.maximumMass)/1000" unit="t"></InfoTile>
+                <InfoTile label="Masse à vide" :value="parseFloat(coefficient.aircraftStandardMass.minimumMass)/1000" unit="t"></InfoTile>
+              </div>
+            </div>
+<!--            <div class="graph">-->
+<!--              <div class="graph2">-->
+<!--                work in progress aaa-->
+<!--              </div>-->
+<!--            </div>-->
+
+<!--            <div class="graph">-->
+<!--              <div class="graph2">-->
+<!--                work in progress aaa-->
+<!--              </div>-->
+<!--            </div>-->
+
+
+            <!--              work in progress aaa-->
 
           </div>
         </div>
@@ -129,8 +150,27 @@
       <div class="elmt-presentation">
         <img class="main-img" :src="imageURL" alt=""/>
         <div class="misc">
-          <img src="@/assets/icons/information-outline.svg" alt="">
-          <span>L'airbus A380-800 est le plus gros avion commercial au monde</span>
+          <img src="@/assets/icons/aliceInfo.svg" alt="">
+          <span>{{ aircraftInfo.anecdote }}</span>
+        </div>
+        <div class="elmt-explore">
+          <div class="header">
+            <div class="name">
+              <span>Explorer</span>
+            </div>
+            <div class="details">
+              Afficher des informations détaillées sur le profil ou les
+              taux de montée /descente
+            </div>
+          </div>
+          <div class="tile-container" style="{opacity: 0}">
+            <router-link :to="$route.fullPath+'aircraftForm/'+'sPerformances'">
+              <Tile type="Performances et taux"></Tile>
+            </router-link>
+            <router-link style="-webkit-user-drag: none; " :to="$route.fullPath+'aircraftForm/'+'dynamic'">
+              <Tile class="tile" type="Profil de vol"></Tile>
+            </router-link>
+          </div>
         </div>
       </div>
     </div>
@@ -154,7 +194,12 @@
 
 import Tile from "@/components/Tile"
 import {imageData} from "@/BADA/Data/imagesRef"
+// import {aircraftInfo} from "@/BADA/Data/imagesRef"
 import InfoTile from "@/components/Nav/InfoTile"
+import {acInfo} from "@/BADA/Data/acInfo"
+
+
+// import * as aircraftInfo from "cheerio/lib/api/traversing"
 // import url from "@/assets/icons/airplane-edit.svg"
 // import {formattedList} from "@/BADA/Data/dataFormatting"
 // import {coef} from "@/BADA/Data/coefficients"
@@ -163,6 +208,7 @@ export default {
   name: "SelectScreen",
 
   components: {
+
     InfoTile,
 
     Tile,
@@ -173,6 +219,7 @@ export default {
 
   data() {
     return {
+      selectedMass: "",
       currentSet: ["static", "dynamic"],
       currentIndex: 0,
       transformStyle: 'translateX(0)',
@@ -191,11 +238,13 @@ export default {
 
   beforeMount() {
     // this.MMO = parseFloat(this.coefficient.aircraftFlightEnvelope.maxOperatingMachNumber)
-    this.imageRef = imageData.find(AC => AC.ICAO === this.aircraft.ICAO)
+    // this.aircraftInfo = acInfo.find(AC => AC.ICAO === this.aircraft.ICAO)
+
   },
 
 
-  mounted() {
+  created() {
+    console.warn("MOUNT")
     // window.addEventListener("keydown", (event)=>{
     //   if (event.code==="ArrowRight"){
     //     this.currentIndex = this.currentIndex < this.maxIndex ? this.currentIndex+1 : this.maxIndex
@@ -246,7 +295,15 @@ export default {
 
   },
   computed: {
-    MMO : function (){
+    aircraftInfo: function () {
+      return acInfo.find(AC => AC.ICAO === this.aircraft.ICAO)
+    },
+
+    imageRef: function () {
+      return imageData.find(AC => AC.ICAO === this.aircraft.ICAO)
+    },
+
+    MMO: function () {
       return parseFloat(this.coefficient.aircraftFlightEnvelope.maxOperatingMachNumber)
     },
 
@@ -296,17 +353,20 @@ export default {
 <style scoped>
 
 
-.more-info-tile{
-  box-shadow: rgba(0, 0, 0, 0.19) 0px 2px 8px 1px;
+.more-info-tile {
+  /*box-shadow: rgba(0, 0, 0, 0.19) 0px 2px 8px 1px;*/
   display: flex;
   margin-top: 20px;
-  color: #8d83a0;
+  color: rgba(255, 209, 238, 0.73);
   margin-right: 10px;
   align-items: center;
   justify-content: space-evenly;
   flex-direction: column;
-  height: 110px;
-  font-size: 14px;
+  /*height: 110px;*/
+  padding-top: 10px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  font-size: 12px;
   flex: 1 1 auto;
   box-sizing: border-box;
   min-width: 100px;
@@ -314,53 +374,213 @@ export default {
   border-radius: 14px;
   padding-left: 20px;
   padding-right: 20px;
-  background: #2a272e;
+  border: 1px solid rgba(255, 133, 162, 0.32);
+  background: rgba(139, 80, 104, 0.37);
 }
 
+.more-info-tile.warn{
+  display: flex;
+  flex-direction: row;
+}
 
-.more-info-tile div img{
+.more-info-tile div img {
   width: 16px;
   height: 16px;
   margin-right: 4px;
   filter: invert(70%) sepia(20%) saturate(1541%) hue-rotate(290deg) brightness(98%) contrast(88%);
 }
 
-.more-info-tile  img{
+.more-info-tile img.warn {
+  width: 30px;
+  height: 30px;
+  margin-right: 15px;
+  filter: invert(70%) sepia(20%) saturate(1541%) hue-rotate(300deg) brightness(98%) contrast(88%);
+}
+
+.more-info-tile img {
   filter: invert(80%);
 }
+
 /**{*/
 /*  border : 1px solid blue*/
 /*}*/
 
-.information-section{
+.information-section {
   /*display: flex;*/
 
   width: 320px;
+}
+
+.information-section.mass .info-tile-container{
+  margin-bottom: 20px;
+
+}
+
+.information-simplified-content.mass {
+
+  margin-left: 10px;
 }
 
 .content .container {
   margin-top: 10px
 }
 
-.speed .content.line{
+.speed .content.line {
   display: flex;
   justify-content: space-between;
   flex-direction: row;
 }
 
-.content{
+.info-value{
+  display: flex;
+  align-items: center;
+  margin-right: 20px;
+}
+
+.info-value span{
+  color: #ccc0fd;
+  font-size: 28px;
+  letter-spacing: 2px;
+  font-weight: bold;
+}
+
+span.unit{
+  font-size: 20px;
+  margin-left: 10px;
+  color: #7c7786;
+}
+
+.info-header {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 20px;
+  display: flex;
+  height: 60px;
+  justify-content: space-between;
+}
+
+.info-header span {
+  color: #8f89a2;
+  letter-spacing: 1px;
+
+}
+
+.info-header img {
+  filter: invert(80%);
+  width: 20px;
+}
+
+.info-tile-container {
+  box-shadow: rgba(0, 0, 0, 0.13) 0px 2px 8px 1px;
+  display: flex;
+  margin-right: 10px;
+  align-items: flex-end;
+  /*justify-content: space-evenly;*/
+  flex-direction: column;
+  /*height: 110px;*/
+  flex: 1 1 auto;
+  min-width: 100px;
+  max-width: 300px;
+  border-radius: 14px;
+  background: #2c2934;
+}
+
+.mass-cursor{
+  display: flex;
+  height: 60px;
+  color: #797187;
+  font-size: 10px;
+  font-weight: bold;
+  width: 100%;
+  align-items: center;
+  justify-content: space-evenly;
+}
+
+.slider-container{
+  /*height: 40px;*/
+  display: flex;
+  align-items: center;
+}
+
+input[type=range] {
+  /*transform-origin: center;*/
+  width: 100%;
+  height: 2px;
+
+  /*margin: 10px;*/
+
+  /*transform: rotateZ(270deg);*/
+  /*padding: 0 5px;*/
+  /*-webkit-appearance: slider-vertical;  !* Override default CSS styles *!*/
+  appearance: none;
+  background: #534a6b; /* Grey background */
+  border-radius: 50px;
+  outline: none; /* Remove outline */
+  opacity: 1; /* Set transparency (for mouse-over effects on hover) */
+  -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+  transition: opacity .2s;
+}
+
+/* Mouse-over effects */
+.slider:hover {
+  opacity: 1; /* Fully shown on mouse-over */
+}
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+.slider::-webkit-slider-thumb {
+  /*-webkit-appearance: slider-vertical; !* Override default look *!*/
+  appearance: none;
+  outline: none;
+  border-radius: 50px;
+  width: 12px; /* Set a specific slider handle width */
+  height: 12px; /* Slider handle height */
+  background: linear-gradient(45deg, rgb(187, 152, 230) -0%, rgb(184, 166, 241) 110%); /* Green background */
+  border: 1px #2f2a37 solid;
+  cursor: pointer; /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+  appearance: none;
+  width: 16px; /* Set a specific slider handle width */
+  height: 16px; /* Slider handle height */
+  background: linear-gradient(45deg, rgb(187, 152, 230) -0%, rgb(184, 166, 241) 110%); /* Green background */
+  cursor: pointer; /* Cursor on hover */
+}
+
+.content {
   position: relative;
   padding-left: 20px;
 }
 
-.header {
+.information-section .header {
   margin-top: 30px;
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header .sub{
+  display: flex;
+  align-items: center;
+  font-size: 10px;
+  color: #d3bef4;
+}
+
+
+
+.header .sub img{
+  width: 16px;
+  filter: invert(77%) sepia(22%) saturate(535%) hue-rotate(211deg) brightness(100%) contrast(91%);
+
+  margin-left: 5px;
+  height: 16px;
+  color: #d3bef4;
 }
 
 .name {
   align-self: center;
-  font-size: 15px;
+  font-size: 18px;
   letter-spacing: 2px;
   font-weight: bold;
   font-family: "Product Sans", sans-serif;
@@ -402,11 +622,6 @@ export default {
   display: flex;
 }
 
-.tile-container {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-}
 
 .ctn-tech {
   display: flex;
@@ -419,19 +634,56 @@ export default {
 
 .information-simplified-content {
   /*flex: 1 0 auto;*/
-  min-width: 600px;
-  height: 100%;
+  min-width: 300px;
+  margin-top: 5px;
+  /*height: 100%;*/
   align-content: flex-start;
-  flex-wrap: wrap;
+  /*flex-wrap: wrap;*/
 
   display: flex;
   flex-direction: column;
   /*justify-content: space-between;*/
   position: relative;
-  padding-left: 20px;
+  /*padding-left: 20px;*/
   /*flex: 1 1 auto;*/
   /*overflow-y: auto;*/
   padding-right: 40px;
+}
+
+.information-simplified-content{
+  overflow-y: auto;
+  transition: all ease-in-out 0.6s;
+
+}
+
+.information-simplified-content:hover::-webkit-scrollbar {
+  display: flex;
+  transition: all ease-in-out 0.6s;
+}
+
+.information-simplified-content::-webkit-scrollbar {
+  width: 4px;
+  transition: all ease-in-out 0.6s;
+  display: none;
+
+  background: rgba(241, 241, 241, 0.00);
+  border-radius: 20px;
+}
+
+/* Track */
+.information-simplified-content::-webkit-scrollbar-track {
+  background: rgba(241, 241, 241, 0.00);
+}
+
+/* Handle */
+.information-simplified-content::-webkit-scrollbar-thumb {
+  background: rgba(94, 90, 97, 0.58);
+  border-radius: 20px;
+}
+
+/* Handle on hover */
+.information-simplified-content::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 @media (max-width: 1024px) and (min-width: 738px) {
@@ -451,13 +703,15 @@ export default {
 
 .ctn-information-simplified {
   position: relative;
+  padding-left: 20px;
+  box-sizing: border-box;
   height: calc(100% - 64px);
   /*min-width: max-content;*/
   /*padding-left: 20px;*/
   display: flex;
   /*border: 1px solid black;*/
   justify-content: space-between;
-  flex-direction: column;
+  /*flex-direction: column;*/
   /*flex: 1 0 min-content;*/
 }
 
@@ -609,14 +863,14 @@ export default {
   border-radius: 12px;
 }
 
-.ctn-all {
+.aircraft-form.ctn-all {
   height: calc(100% - 80px);
   box-sizing: border-box;
   display: flex;
-  padding-bottom: 80px;
-  padding-top: 80px;
-  padding-left: 60px;
-  padding-right: 60px;
+  padding-bottom: 40px;
+  padding-top: 40px;
+  padding-left: 40px;
+  padding-right: 40px;
 }
 
 .manufacturer {
@@ -644,15 +898,51 @@ export default {
 .elmt-presentation {
   flex: 0 1 400px;
   display: flex;
+  justify-content: space-between;
   flex-direction: column;
   /*width: 400px;*/
+}
+
+.elmt-explore {
+  display: flex;
+  flex-direction: column;
+  background: rgba(52, 49, 61, 0.64);
+  border-radius: 16px;
+}
+
+.elmt-explore .header {
+  margin-top: 10px;
+  flex-direction: column;
+  align-items: flex-start !important;
+}
+
+.elmt-explore .details {
+  color: #d2c8ed;
+  margin-top: 10px;
+  opacity: 0.8;
+  font-size: 12px;
+  padding-left: 30px;
+  padding-right: 30px;
+
+}
+
+.elmt-explore .name {
+  font-size: 18px;
+  color: #D3D3E6;
+  padding-left: 20px;
+}
+
+.elmt-explore .tile-container {
+  align-self: flex-end;
+  width: auto;
 }
 
 .misc {
   display: flex;
   box-shadow: rgba(0, 0, 0, 0.19) 0px 2px 8px 1px;
   width: 100%;
-  margin-top: 40px;
+  /*margin-top: 40px;*/
+  /*margin-bottom: 20px;*/
   padding-left: 20px;
   padding-top: 20px;
   padding-bottom: 20px;
@@ -663,7 +953,7 @@ export default {
   font-size: 12px;
   color: #bfbdd0;
   font-style: italic;
-  background: #34313D;
+  background: rgba(52, 49, 61, 0.64);
 }
 
 .misc span {
@@ -675,7 +965,7 @@ export default {
   width: 16px;
   height: 100%;
   margin-right: 20px;
-  filter: invert(90%) sepia(20%) saturate(641%) hue-rotate(210deg) brightness(90%) contrast(88%);
+  filter: invert(65%) sepia(20%) saturate(541%) hue-rotate(210deg) brightness(95%) contrast(88%);
 }
 
 .nav-bar div {

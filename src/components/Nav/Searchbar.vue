@@ -13,14 +13,16 @@
         <router-link @click="magic_flag=false" style="text-decoration: none; color: inherit; width: 100%; height: 100%"
                      :to="'/plane/'+post.ICAO+'/'">
           <div class="text-container">
-            <p>
-              {{ post.ICAO.slice(0, post.ICAO.indexOf(search.toUpperCase())) }}</p>
-            <p class="highlight"> {{ search.toUpperCase() }}</p>
-            <p>
-              {{ post.ICAO.slice(post.ICAO.indexOf(search.toUpperCase()) + search.length, 8) }}</p>
+            <p>{{ beforeHighlight(post.ICAO) }}</p>
+<!--            <p>{{ post.ICAO.slice(0, post.ICAO.indexOf(search.toUpperCase())) }}</p>-->
+            <p class="highlight">{{ highlight(post.ICAO) }}</p>
+            <p >{{ afterHighlight(post.ICAO) }}</p>
+<!--            <p>{{ post.ICAO.slice(post.ICAO.indexOf(search.toUpperCase()) + search.length, 8) }}</p>-->
 
 
             <p class="fullName">{{ post.aircraftModel }}</p>
+<!--            <p class="fullName highlight">{{ post.aircraftModel?.slice(post.aircraftModel?.indexOf(search.toUpperCase()), post.aircraftModel?.indexOf(search.toUpperCase()) + search.length ) }}</p>-->
+<!--            <p class="fullName">{{ post.aircraftModel?.slice(post.aircraftModel?.indexOf(search.toUpperCase()) + search.length, 9) }}</p>-->
 
           </div>
         </router-link>
@@ -59,6 +61,10 @@ export default {
   },
 
   computed: {
+
+
+
+
     collapse(){
       return (this.focused || this.search !== "")
     },
@@ -74,6 +80,27 @@ export default {
 
   },
   methods: {
+    beforeHighlight(text){
+      // console.log(text, this.search)
+      if (text.indexOf(this.search.toUpperCase()) === -1){
+        return text
+      } else return text.slice(0, text.indexOf(this.search.toUpperCase()))
+    },
+
+    highlight(text){
+      // console.log(text, this.search)
+      if (text.indexOf(this.search.toUpperCase()) === -1){
+        // console.log("bite")
+        return ""
+      } else return text.slice(text.indexOf(this.search.toUpperCase()), text.indexOf(this.search.toUpperCase()) + this.search.length)
+    },
+
+    afterHighlight(text){
+      if (text.indexOf(this.search.toUpperCase()) === -1){
+        return ""
+      } else return text.slice(text.indexOf(this.search.toUpperCase()) + this.search.length, 8)
+    },
+
     erase() {
       this.search = ""
       // document.getElementById('search').value = ""
@@ -170,7 +197,7 @@ span.placeholder.collapsed {
 /*}*/
 
 .searchbar-container.purple .wrapper {
-  background: #2c2a32 !important;
+  background: rgb(45, 42, 55) !important;
 }
 
 .search-icon {

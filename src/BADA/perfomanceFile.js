@@ -198,6 +198,7 @@ export function maxFLAtROCD(FL, speed, loi, ROCD, coef) {
     plane.setParameters(54000)
     plane.setInitialState((FL - 5) * 100 / 3.28084, knotToMs(speed), 0, 0)
     // console.log(FL, speed)
+
     plane.setLoiMontee(loi.speed, loi.mach)
     let maxThrustFL
     plane.climbInstruction('', '', ROCD * 197, '')
@@ -235,6 +236,24 @@ export function maxFLAtROCD(FL, speed, loi, ROCD, coef) {
     return maxThrustFL
 }
 
+export function specificRange(coef){
+    let plane = new PhysicalPlane(coef)
+    plane.setParameters(80)
+
+    for (let FL = 260; FL<430 ; FL += 20){
+        console.log(plane.flightParams.mass/plane.force.drag)
+        for (let mach = 0.70 ; mach < 0.84 ; mach += 0.02){
+            plane.setInitialState((FL) * 100 / 3.28084, "", 0, 0, mach)
+            plane.levelInstruction(10)
+            plane.flyLoop()
+            plane.updateConditions()
+
+        }
+    }
+
+
+}
+
 
 
 
@@ -249,7 +268,7 @@ export function flightProfile(climbSequence, cruiseSequence, descentSequence, la
         return
     }
 
-
+    specificRange(coefficients)
     let plane = new PhysicalPlane(coefficients, defaultSpeeds)
 
     if (law){
@@ -260,7 +279,7 @@ export function flightProfile(climbSequence, cruiseSequence, descentSequence, la
 
     if (mass){
         plane.setMass(mass)
-    } else plane.setParameters(95)
+    } else plane.setParameters(85)
 
     let profile = {
         climb : [],

@@ -111,6 +111,8 @@ export default {
   user-select: none;
 }
 
+
+
 .ctn-all {
   overflow: hidden;
 }
@@ -201,11 +203,12 @@ html, html body, body #ctn-all {
   margin-left: 30px;
   z-index: 9999999999;
   cursor: pointer;
+  display: none;
   margin-top: 20px;
   top: 0;
   left: 0;
 
-  display: flex;
+  /*display: flex;*/
   flex-direction: column;
 }
 
@@ -240,7 +243,7 @@ html, html body, body #ctn-all {
 
 #ctn-all {
   width: 100%;
-  background: #2c2b2e;
+  /*background: #2c2b2e;*/
   display: flex;
   position: relative;
   height: 100%
@@ -250,7 +253,7 @@ html, html body, body #ctn-all {
   height: 100%;
   box-sizing: border-box;
   width: 100px;
-  background: #2c2b2e;
+  background: rgba(44, 43, 46, 0.02);
   display: flex;
   justify-content: space-around;
   padding-top: 15%;
@@ -272,8 +275,8 @@ html, html body, body #ctn-all {
   display: flex;
   z-index: 99 ;
   /*margin-left: 0;*/
-  background: #121212;
-  box-shadow: rgba(0, 0, 0, 0.49) -2px 0px 8px 1px;
+  /*background: #121212;*/
+  /*box-shadow: rgba(0, 0, 0, 0.49) -2px 0px 8px 1px;*/
   position: relative;
   align-items: center;
   width: 100%;
@@ -298,7 +301,7 @@ html, html body, body #ctn-all {
   transition: transform 0.5s  cubic-bezier(.72, .02, .44, 1.38);
   user-select: none;
   user-focus: none;
-  background: linear-gradient(45deg, rgb(105, 98, 123) -0%, rgb(192, 178, 236) 110%);
+  /*background: linear-gradient(45deg, rgb(105, 98, 123) -0%, rgb(192, 178, 236) 110%);*/
   height: 64px;
   border-radius: 122px;
   /*background: rgba(94, 98, 107, 0.08);*/
@@ -308,14 +311,15 @@ html, html body, body #ctn-all {
 
 
 .ctn-btn-app.selected img{
-  filter: invert(10%);
+
+  filter: invert(60%) sepia(1007%) saturate(2049%) hue-rotate(232deg) brightness(180%) contrast(100%);
   margin: 20px;
 }
 
 .ctn-btn-app img{
   position: relative;
   z-index: 2;
-  filter: invert(80%) sepia(97%) saturate(949%) hue-rotate(185deg) brightness(110%) contrast(80%);
+  filter: invert(50%);
   margin: 20px;
 }
 

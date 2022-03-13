@@ -24,7 +24,7 @@ export default {
       let icon = ""
       console.warn(this.type)
       switch (this.type){
-        case "Profile de vol":
+        case "Profil de vol":
 
           icon = "show_chart_black_24dp.svg"
           break
@@ -64,14 +64,14 @@ export default {
 
 
 .tile {
-  width: 290px;
-  height: 48px;
+  width: 250px;
+  height: 42px;
   margin: 20px;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 12px;
   background: linear-gradient(237deg, rgb(144, 141, 178) -30%, rgb(190, 174, 206) 150%);
   box-shadow: rgba(5, 5, 5, 0.2) 0px 1px 2px 0px, rgba(5, 5, 5, 0.2) 0px 2px 4px 2px;
-  font-size: 16px;
+  font-size: 14px;
   letter-spacing: 1px;
   font-family: Roboto,serif;
   /*text-transform: uppercase;*/

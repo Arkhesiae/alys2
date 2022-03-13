@@ -2,7 +2,7 @@
   <Background/>
   <div class="page-container" id="container">
     <div class="page" id="home">
-      <div class="logo"><img src="../assets/img.png" alt=""/></div>
+      <div class="logo"><img src="../assets/fullLogo.png" alt=""/></div>
       <div class="nav-container">
         <Searchbar></Searchbar>
         <router-link style="text-decoration: none; color: inherit; position: relative" :to="{ name: 'BrowseHome'}">
@@ -1682,8 +1682,8 @@ body {
 
 .logo {
   position: absolute;
-  left: 20px;
-  top: 20px;
+  left: 40px;
+  top: 40px;
 
 }
 
@@ -1864,7 +1864,7 @@ body {
   color: rgb(165, 156, 204);
   padding-top: 18px;
   font-family: Roboto;
-  font-size: 20px;
+  font-size: 18px;
   position: relative;
   overflow: hidden;
   /*font-weight: bold;*/
