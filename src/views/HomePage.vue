@@ -2,7 +2,7 @@
   <Background/>
   <div class="page-container" id="container">
     <div class="page" id="home">
-      <div class="logo"><img src="../assets/fullLogo.png" alt=""/></div>
+      <div class="alice-logo"><img src="../assets/fullLogo.png" alt=""/></div>
       <div class="nav-container">
         <Searchbar></Searchbar>
         <router-link style="text-decoration: none; color: inherit; position: relative" :to="{ name: 'BrowseHome'}">
@@ -11,8 +11,6 @@
           </div>
         </router-link>
       </div>
-
-
 <!--      <div class="discover-container" @click="discover()">-->
 <!--        <span>Discover ALICE</span>-->
 <!--        <div class="discover-button">-->
@@ -21,10 +19,8 @@
 <!--          </div>-->
 <!--          <div class="ripple ripple1"></div>-->
 <!--          <div class="ripple ripple2"></div>-->
-
 <!--        </div>-->
 <!--      </div>-->
-
 
     </div>
     <div class="page hidden" id="about-us">
@@ -35,8 +31,6 @@
         </div>
       </div>
     </div>
-
-
   </div>
   <!--    </transition>-->
 <!--  <div class="page-displayer">-->
@@ -49,8 +43,6 @@
 <!--  </div>-->
 
   <!--  <router-view v-slot="{ Component }">-->
-
-
 </template>
 
 <script>
@@ -249,7 +241,6 @@ export default {
   },
 
 }
-
 
 </script>
 
@@ -1680,14 +1671,14 @@ body {
 
 }
 
-.logo {
+.alice-logo {
   position: absolute;
   left: 40px;
   top: 40px;
 
 }
 
-.logo img {
+.alice-logo img {
   width: 80px;
 }
 

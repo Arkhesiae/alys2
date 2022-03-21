@@ -55,6 +55,7 @@ span.unit{
   justify-content: space-between;
 }
 
+
 .info-header span {
   color: #8f89a2;
   opacity: 0.5;
@@ -77,7 +78,7 @@ span.unit{
   height: 100px;
   flex: 1 1 auto;
   min-width: 100px;
-  max-width: 300px;
+  /*max-width: 300px;*/
   border-radius: 14px;
   background: #2c2934;
 }

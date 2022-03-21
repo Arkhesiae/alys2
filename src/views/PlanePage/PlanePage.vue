@@ -2,32 +2,41 @@
   <Background/>
   <div class="ctn plane-page">
     <Menu :class="{visible : showMenu}"></Menu>
-    <div class="nav-bar" :class="{reduced : $route.path.includes('aircraftForm')}">
-      <HamburgerButton v-show="!$route.path.includes('aircraftForm')" @touchstart="showMenu = !showMenu" @mousedown="showMenu = !showMenu"/>
-      <router-link :to="'/plane/'+aircraft.ICAO+'/'">
-        <BackButton v-show="$route.path.includes('aircraftForm')" />
-      </router-link>
-      <router-link :to="'/'">
-        <div class="logo"><img src="@/assets/fullLogo.png" alt=""/></div>
-      </router-link>
+    <div class="ctn form">
+      <div class="nav-bar" >
+        <HamburgerButton v-show="!$route.path.includes('aircraftForm')" @touchstart="showMenu = !showMenu" @mousedown="showMenu = !showMenu"/>
+        <router-link :to="'/plane/'+aircraft.ICAO+'/'">
+          <BackButton v-show="$route.path.includes('aircraftForm')" />
+        </router-link>
+        <router-link :to="'/'">
+          <div class="logo"><img src="@/assets/fullLogo.png" alt=""/></div>
+        </router-link>
 
 
-      <!--    <IconButton class="icon-button" :aircraft="aircraft"></IconButton>-->
+        <!--    <IconButton class="icon-button" :aircraft="aircraft"></IconButton>-->
 
-      <!--    <AppButton text="" icon="show_chart_black_24dp.svg"/>-->
-      <!--    <div class="nav-button" @click="showNav">-->
-      <!--      <img src="@/assets/icons/chevron-right.svg"/>-->
-      <!--    </div>-->
-      <div class="ctn">
-        <Searchbar/>
+        <!--    <AppButton text="" icon="show_chart_black_24dp.svg"/>-->
+        <!--    <div class="nav-button" @click="showNav">-->
+        <!--      <img src="@/assets/icons/chevron-right.svg"/>-->
+        <!--    </div>-->
+        <div class="ctn">
+          <Searchbar/>
+        </div>
+        <div class="icon-button" v-show="$route.path.includes('aircraftForm')">
+          <img alt="" :src="this.imageURL" @error="imageLoadError"/>
+        </div>
       </div>
-      <div class="icon-button">
-        <img alt="" :src="this.imageURL" @error="imageLoadError"/>
-      </div>
+      <router-view :coefficient="aircraftCoef" :aircraft="aircraft" :defaultSpeed="defaultSpeed"></router-view>
     </div>
 
 
-    <router-view :coefficient="aircraftCoef" :aircraft="aircraft" :defaultSpeed="defaultSpeed"></router-view>
+
+    <div class="sidebar-container" :class="{show : $route.path.includes('aircraftForm')}">
+          <transition name="side-in" appear>
+      <SideBar class="sidebar"  :aircraft="aircraft" :coefficient="aircraftCoef" :imageRef="imageRef"></SideBar>
+          </transition>
+    </div>
+
   </div>
 
 <!--  <div class="truc" @click="show=!show"></div>-->
@@ -48,6 +57,7 @@ import BackButton from "@/components/Nav/BackButton"
 // import AppButton from "@/components/appButton"
 // Vue.createApp(Demo).mount('#home')
 import Menu from "@/components/Nav/Menu"
+import SideBar from "@/components/SideBar"
 
 export default {
   name: 'PlanePage',
@@ -55,8 +65,8 @@ export default {
   data() {
     return {
       showMenu : false,
-      show: true
-
+      show: true,
+      imageRef : "",
     }
   },
 
@@ -65,13 +75,16 @@ export default {
     BackButton,
     HamburgerButton,
     Searchbar,
+    SideBar,
     // AppButton,
     // MenuButton,
     Background,
   },
 
 
-
+  // beforeMount() {
+  //   this.imageRef = imageData.find(AC => AC.ICAO === this.aircraft.ICAO)
+  // },
 
 
   beforeMount() {
@@ -140,6 +153,15 @@ export default {
 
 <style>
 
+.sidebar-container{
+  width: 0px;
+  transition: all ease-in-out 0.8s;
+}
+
+.sidebar-container.show{
+  width: auto;
+}
+
 .nav-button{
   width: 48px;
   height: 48px;
@@ -155,6 +177,21 @@ export default {
   height: 32px;
   /*margin-left: 20px;*/
   /*margin-right: 20px;*/
+}
+
+.sidebar{
+  flex : 0 0 auto;
+  padding-right: 20px;
+  padding-top: 20px;
+  box-sizing: border-box;
+  padding-bottom: 20px;
+}
+
+.ctn.form{
+  flex : 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .icon-button{
@@ -177,7 +214,9 @@ export default {
 .ctn.plane-page{
   display: flex;
   height: 100%;
-  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+  flex-direction: row;
 }
 
 .nav-bar.reduced .ctn{
@@ -193,12 +232,24 @@ export default {
     overflow-y: hidden !important;
   }
 
+  .ctn.form .nav-bar .button{
+    background: rgba(39, 35, 46, 0.27) !important;
+  }
+
+  .logo {
+    display: none;
+  }
+
   .nav-button{
     display: flex;
   }
 
   .icon-button{
     display: flex;
+  }
+
+  .ctn.form{
+    width: 100%;
   }
 
   .plane-view{
@@ -345,12 +396,8 @@ export default {
     display: none;
   }
 
-  #flight-profile{
-    display: flex !important;
-    flex-direction: column-reverse !important;
 
-  }
-  .current-frame{
+  .frame{
     display: flex !important;
     flex-direction: column-reverse !important;
 
@@ -480,7 +527,7 @@ export default {
 }
 
 .nav-bar{
-  z-index: 999999;
+  /*z-index: 999999;*/
   position: relative;
   display: flex;
   padding-top: 20px;

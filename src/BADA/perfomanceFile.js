@@ -236,6 +236,16 @@ export function maxFLAtROCD(FL, speed, loi, ROCD, coef) {
     return maxThrustFL
 }
 
+export function maxAltitude(coef, mass){
+    let plane = new PhysicalPlane(coef)
+    console.log(mass)
+
+    plane.setInitialState((100) * 100 / 3.28084, knotToMs(250), 0, 0,"" )
+    plane.setParameters(mass)
+    plane.updateConditions()
+    return plane.flightEnvelope.maxAlt
+}
+
 export function specificRange(coef){
     let plane = new PhysicalPlane(coef)
     plane.setParameters(80)

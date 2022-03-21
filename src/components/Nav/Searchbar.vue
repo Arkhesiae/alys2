@@ -3,7 +3,8 @@
     <div id="searchbar">
       <!--              STATIC-->
       <label for="search"></label>
-      <input autocomplete="off" placeholder="" id="search" v-model="search" @blur="focused = false" @focus="magic_flag = true; focused = true">
+      <input type="text" :value='search'
+             @input='evt=>search=evt.target.value' autocomplete="off" placeholder="" id="search"  @blur="focused = false" @focus="magic_flag = true; focused = true">
       <span class="placeholder" :class="{collapsed : collapse}">Type d'appareil</span>
       <div class="search-icon" @click="erase()"><img v-if="search!==''" src="../../assets/icons/clear_black_24dp.svg"
                                                      alt=""></div>
@@ -119,6 +120,7 @@ export default {
   flex-basis: auto;
   flex-grow: 1;
   min-width: 400px;
+  z-index: 999;
   position: relative;
 }
 
@@ -135,7 +137,7 @@ export default {
   /*display: inline;*/
   width: calc(100%);
   display: flex;
-  z-index: 400;
+  z-index: 100;
   border-radius: 8px;
 }
 
@@ -257,12 +259,13 @@ span.placeholder.collapsed {
   /*box-shadow: rgba(0, 0, 0, 0.117647) 0px 1px 6px, rgba(0, 0, 0, 0.117647) 0px 1px 4px;*/
   width: 100%;
   height: 60px;
-  /*transition: .3s all ease-in-out;*/
+  transition: .2s all ease-in-out;
 
 }
 
 .card:hover {
-  background: #292b32;
+  padding-left: 45px;
+  background: #433c4c;
 }
 
 .card .text-container {
@@ -279,12 +282,9 @@ span.placeholder.collapsed {
 }
 
 p.fullName {
-
-
   color: #5f5766;
- right: 0;
+  right: 0;
   text-align: right;
-
   position: absolute;
   padding-right: 20px;
   /*bottom: -15px;*/

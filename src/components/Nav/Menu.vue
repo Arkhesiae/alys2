@@ -1,5 +1,6 @@
 <template>
   <div class="ctn-menu">
+    <div class="alice-logo"><img src="@/assets/fullLogo.png" alt=""/></div>
     <ul class="menu-nav">
       <router-link style="text-decoration: none; color: inherit; position: relative" :to="'/'">
         <li>Accueil</li>
@@ -24,6 +25,18 @@ export default {
 </script>
 
 <style scoped>
+.alice-logo {
+  position: absolute;
+  left: 120px;
+  top: 20px
+  /*top: 40px;*/
+
+}
+
+.alice-logo img {
+  width: 60px;
+}
+
 .ctn-menu {
   position: absolute;
   width : 240px;
@@ -31,8 +44,9 @@ export default {
   z-index: 9999;
   height: calc(100%);
   top:0;
+  opacity: 0.8;
   transform: translateX(-240px);
-  transition: all ease-in-out 0.2s;
+  transition: all ease-in-out 0.4s;
   background: linear-gradient(183deg, rgb(32 30 37) 0%, #252327 100%);
 }
 
@@ -68,6 +82,7 @@ export default {
 }
 
 .ctn-menu.visible {
+  opacity: 1;
   transform: translateX(0px);
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div id="ctn-all">
+  <div class="ctn-apps">
     <div id="left-sidebar">
       <div id="ctn-apps">
         <router-link style="text-decoration: none; color: inherit"
@@ -46,9 +46,6 @@
         <!--      <router-view class="plane-view" :coefficient="aircraftCoef"></router-view>-->
         <router-view :defaultSpeed="defaultSpeed" :coefficient="coefficient"/>
 
-        <transition name="side-in" appear>
-          <SideBar class="sidebar" :aircraft="aircraft" :coefficient="coefficient" :imageRef="imageRef"></SideBar>
-        </transition>
 
       </div>
     </transition>
@@ -63,9 +60,6 @@
 // import MenuButton from "@/components/MenuButton"
 // import Background from "@/components/Background"
 
-import SideBar from "@/components/SideBar"
-import {imageData} from "@/BADA/Data/imagesRef"
-
 // import {profileSampling} from "@/BADA/sampling"
 
 require('fabric')
@@ -79,14 +73,12 @@ export default {
     }
   },
   components: {
-    SideBar,
+    // SideBar,
   },
 
 
 
-  beforeMount() {
-    this.imageRef = imageData.find(AC => AC.ICAO === this.aircraft.ICAO)
-  },
+
 
   mounted() {
   },
@@ -144,7 +136,7 @@ export default {
   /*opacity: 0;*/
 }
 
-html, html body, body #ctn-all {
+html, html body, body .ctn-apps {
   width: 100% !important;
   min-width: 0 !important;
   max-width: none !important;
@@ -152,7 +144,7 @@ html, html body, body #ctn-all {
 }
 
 @media (max-width: 1024px) and (min-width: 738px) {
-  html, html body, body #ctn-all {
+  html, html body, body .ctn-apps {
     width: 100% !important;
     min-width: 0 !important;
     max-width: none !important;
@@ -166,7 +158,7 @@ html, html body, body #ctn-all {
 }
 
 @media (max-width: 737px) and (min-width: 100px) {
-  html, html body, body #ctn-all {
+  html, html body, body .ctn-apps {
     width: 100% !important;
     min-width: 0 !important;
     max-width: none !important;
@@ -174,6 +166,11 @@ html, html body, body #ctn-all {
   }
 
 
+  .ctn-apps{
+    flex : 1 1 auto;
+    flex-direction: column-reverse;
+    width: 100%;
+  }
 
 
   .sidebar{
@@ -241,12 +238,23 @@ html, html body, body #ctn-all {
   margin-right: 20px;
 }
 
-#ctn-all {
+.frame-container {
+  position: relative;
+  /*padding-top: 104px;*/
+  /*width: 100%;*/
+  /*border: 1px blue solid;*/
+  box-sizing: border-box;
+  height: 100%;
+  flex: 1 1 auto;
+}
+
+.ctn-apps {
   width: 100%;
+  flex: 1 1 auto;
   /*background: #2c2b2e;*/
   display: flex;
   position: relative;
-  height: 100%
+  /*height: 100%*/
 }
 
 #left-sidebar{
@@ -279,6 +287,8 @@ html, html body, body #ctn-all {
   /*box-shadow: rgba(0, 0, 0, 0.49) -2px 0px 8px 1px;*/
   position: relative;
   align-items: center;
+  box-sizing: border-box;
+  padding-top: 40px;
   width: 100%;
   border-radius: 20px 0px 0px 20px;
   height: 100%;

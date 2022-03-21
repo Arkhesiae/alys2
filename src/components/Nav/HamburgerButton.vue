@@ -48,7 +48,7 @@ export default {
 }
 
 .button {
-
+  z-index: 999999;
   position: relative;
   overflow: hidden;
   cursor: pointer;

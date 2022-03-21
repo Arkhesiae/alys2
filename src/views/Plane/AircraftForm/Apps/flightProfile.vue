@@ -16,7 +16,7 @@
       </transition>
     </div>
 
-    <div id="flightProfile" class="current-frame frame">
+    <div id="flightProfile" class="frame">
       <transition name="pop-in" appear>
         <div class="ctn1">
           <div class="information-box-container">
@@ -290,9 +290,9 @@ export default {
     // letthis.marginHorizontalLeft = 300
     this.marginVertical = canvas.height / 3.5
 
-    if(canvas.width < 500){
-      this.marginHorizontalLeft = canvas.width/6
-      this.marginHorizontalRight = canvas.width/6
+    if(canvas.width < 740){
+      this.marginHorizontalLeft = canvas.width/10
+      this.marginHorizontalRight = canvas.width/10
     } else {
       this.marginHorizontalLeft = 300
       this.marginHorizontalRight = 50
@@ -404,7 +404,7 @@ export default {
       },
       colorStops: [
         {
-          color: 'rgba(192,135,211,0.051)',
+          color: 'rgba(192,135,211,0.0051)',
           offset: 0,
         },
         {
@@ -426,7 +426,7 @@ export default {
       },
       colorStops: [
         {
-          color: 'rgba(224,126,244,0.09)',
+          color: 'rgba(148,126,244,0.05)',
           offset: 0,
         },
         {
@@ -439,8 +439,8 @@ export default {
 
     // eslint-disable-next-line no-undef
     this.gphProfile = new fabric.Polyline(this.points, {
-      stroke: '#ca8ee3',
-      strokeWidth: 0.5,
+      stroke: 'rgba(186,178,218,0.49)',
+      strokeWidth: 2,
       // evented: false,
       // radius: 1,
       hoverCursor: 'pointer',
@@ -451,7 +451,7 @@ export default {
     canvas.add(this.gphProfile)
     // eslint-disable-next-line no-undef
     this.gphFollowLine = new fabric.Polyline([{x: 0, y: 0}, {x: canvas.width, y: canvas.height}], {
-      stroke: '#f5cbff',
+      stroke: '#d2cbff',
       strokeWidth: 1,
       evented: false,
       fill: 'rgba(0,0,0,0)',
@@ -463,7 +463,7 @@ export default {
 
     // eslint-disable-next-line no-undef
     this.gphMaxAlt = new fabric.Polyline(this.pointsMaxAlt, {
-      stroke: '#76d6ff',
+      stroke: '#e36c6c',
       strokeWidth: 1,
       strokeDashArray: [5, 5],
       // evented: false,
@@ -613,7 +613,7 @@ export default {
 
     // eslint-disable-next-line no-undef
     this.gphVScale = new fabric.Rect({
-      fill: 'rgba(100,100,100,1)',
+      fill: 'rgb(77,75,84)',
       width: 0.5,
       objectCaching : false,
       height: canvas.height - 2 * this.marginVertical,
@@ -665,7 +665,7 @@ export default {
     canvas.add(this.gphInnerCursor)
     // eslint-disable-next-line no-undef
     this.gphCursorLine = new fabric.Rect({
-      fill: '#85eac3',
+      fill: '#babbfb',
       width: 0.5,
       opacity: 0.2,
       objectCaching: false,
@@ -678,25 +678,27 @@ export default {
     canvas.add(this.gphCursorLine)
     // eslint-disable-next-line no-undef
     this.hpTrans = new fabric.Rect({
-      fill: 'rgba(205,189,246,0.98)',
-      height: 2,
-      width: 10,
-      left: canvas.width - 10,
+      stroke: 'rgba(246,233,189,0.98)',
+      height: 1,
+      fill : "rgba(0,0,0,0)",
+      strokeDashArray: [2, 5],
+      width: canvas.width,
+      left: this.marginHorizontalLeft,
       selectable: false,
       top: -this.flightProfile.full[0].hpTrans / 100 * (canvas.height - 2 * this.marginVertical) / 410 - this.marginVertical + canvas.height,
     })
     canvas.add(this.hpTrans)
     // eslint-disable-next-line no-undef
     this.hpTransText = new fabric.Text('CONJONCTION', {
-      fill: 'rgba(223,209,255,0.98)',
-      opacity: 0.6,
-      fontSize: 9,
+      fill: 'rgba(243,231,206,0.98)',
+      opacity: 0.8,
+      fontSize: 8,
       objectCaching: false,
       fontFamily: 'Product Sans',
       fontWeight: 'Bold',
       selectable: false,
-      left: canvas.width - 80,
-      top: -this.flightProfile.full[0].hpTrans / 100 * (canvas.height - 2 * this.marginVertical) / 410 - this.marginVertical + canvas.height + 2,
+      left: canvas.width - 60,
+      top: -this.flightProfile.full[0].hpTrans / 100 * (canvas.height - 2 * this.marginVertical) / 410 - this.marginVertical + canvas.height + 4,
     })
     canvas.add(this.hpTransText)
 
@@ -1079,6 +1081,7 @@ export default {
       lastAnchor = this.climbPoints[this.climbPoints.length - 1].x
 
       for (let point of profileObject.cruise) {
+
         let coords = this.toCanvas(point.dist, point.alt)
         this.cruisePoints.push({
           profilePoint: point,
@@ -1265,7 +1268,7 @@ export default {
 
 .pop-in-enter-active,
 .pop-in-leave-active {
-  transition: all 0.6s cubic-bezier(.52, .02, .44, 1.18) .7s;
+  transition: all 0.6s cubic-bezier(.52, .02, .44, 1.18) .1s;
 }
 
 .pop-in-enter-from,
@@ -1289,12 +1292,12 @@ export default {
 
 .appear-in-enter-active,
 .appear-in-leave-active {
-  transition: all 0.6s cubic-bezier(.72, .02, .44, 1.38) 1s;
+  transition: all 0.6s cubic-bezier(.72, .02, .44, 1.38) 0.3s;
 }
 
 .appear-in-enter-from,
 .appear-in-leave-to {
-  transition: all 0.6s ease-in-out 1s;
+  transition: all 0.6s ease-in-out 0.3s;
   /*transform: scale(0.8) translateY(20px);*/
   opacity: 0;
 }
@@ -1312,32 +1315,9 @@ export default {
 }
 
 
-.frame-container {
-  position: relative;
-  padding-top: 104px;
-  /*width: 100%;*/
-  /*border: 1px blue solid;*/
-  box-sizing: border-box;
-  height: 100%;
-  flex: 1 1 auto;
-}
 
-.current-frame {
-  position: absolute;
-  /*margin: 20px;*/
-  /*box-shadow: rgba(5, 5, 5, 0.1) 0px 1px 3px 1px;*/
-  width: calc(100% - 40px);
-  /*top: 0%;*/
-  height: max-content;
-  /*position: relative;*/
-  /*left: 1%;*/
-  /*background: rgba(10,10,10,0.1);*/
-  /*border: 1px solid rgba(169, 163, 163, 0.001);*/
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  flex-grow: inherit;
-}
+
+
 
 .add-box {
   width: 48px;
@@ -1415,6 +1395,10 @@ export default {
   overflow-y: auto;
   justify-content: flex-start;
   /*height: calc(100% - 160px)*/
+}
+
+.canvas-container{
+  width: 100%;
 }
 
 .unit-selector-container {
@@ -1734,7 +1718,7 @@ export default {
 .ctn-param {
   border-radius: 12px;
   /*background: linear-gradient(45deg, rgb(33, 30, 33) -0%, rgb(56, 54, 62) 110%);*/
-  background: linear-gradient(45deg, rgb(47, 44, 47) -0%, rgb(57, 55, 62) 110%);
+  background: linear-gradient(45deg, rgb(54, 50, 60) -0%, rgb(59, 56, 69) 110%);
   height: 100px;
   display: flex;
   justify-content: space-between;
@@ -1911,8 +1895,8 @@ export default {
 
 #flightProfile {
   /*display: none;*/
-  height: calc(100% - 104px);
-  width: 100%;
+  height: calc(100%);
+  /*width: 100%;*/
 }
 
 
@@ -1995,7 +1979,7 @@ export default {
 }
 
 canvas {
-  background: rgba(1, 1, 1, 0.001);
+  /*background: rgba(223, 75, 75, 0);*/
   box-sizing: border-box;
   /*border : 1px blue solid;*/
   height: 100%;

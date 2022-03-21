@@ -550,16 +550,6 @@ export default {
   /*border:1px solid white*/
 }
 
-.frame-container {
-  position: relative;
-  padding-top: 104px;
-  /*width: 100%;*/
-  /*border: 1px blue solid;*/
-  box-sizing: border-box;
-  height: 100%;
-  flex: 1 1 auto;
-}
-
 
 .ctn-all-section {
   display: flex;

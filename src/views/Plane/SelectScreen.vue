@@ -21,6 +21,10 @@
 
           </div>
         </div>
+        <div class="misc mobile">
+          <img src="@/assets/icons/aliceInfo.svg" alt="">
+          <span>{{ aircraftInfo.anecdote }}</span>
+        </div>
         <div class="ctn-information-simplified">
           <!--          <div class="nav">-->
           <!--            <ul class="nav-section-ctn">-->
@@ -55,10 +59,64 @@
                   <span>Vitesses usuelles</span>
                 </div>
               </div>
-              <div class="content">
-                <InfoTile label="Loi de vitesse" :info-icon="true" value="xxxx" unit="kts"></InfoTile>
-                <InfoTile label="Loi de vitesse" :info-icon="true" value="xxxx" unit="kts"></InfoTile>
-                <InfoTile label="Loi de vitesse" :info-icon="true" value="xxxx" unit="kts"></InfoTile>
+              <div class="content usual">
+                <div class="sub-content">
+                  <div class="info-tile-container speed climb">
+                    <img class="background climb" src="@/assets/icons/climb.svg">
+                    <div class="info-header">
+                      <span > Montée </span>
+                    </div>
+                    <div class="info-value speed">
+                      <div class="mach">
+                        <span :style="{color : color}">{{ this.defaultSpeed.climb.standardClimbMachNumber.averageMassMach }}</span>
+                        <!--                      <span :style="{color : color}" class="unit">kts</span>-->
+                      </div>
+                      <div class="sep"></div>
+                      <div class="speed">
+                        <span :style="{color : color}">{{ this.defaultSpeed.climb.highAltitudeClimbSpeed.averageMassSpeed }}</span>
+                        <span :style="{color : color}" class="unit">kts</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="info-tile-container speed">
+                    <img class="background cruise" src="@/assets/icons/cruise.svg">
+                    <div class="info-header">
+                      <span > Croisière </span>
+                    </div>
+                    <div class="info-value speed">
+                      <div class="mach">
+                        <span :style="{color : color}">{{ this.defaultSpeed.cruise.standardCruiseMachNumber.averageMassMach }}</span>
+                        <!--                      <span :style="{color : color}" class="unit">kts</span>-->
+                      </div>
+                      <div class="sep"></div>
+                      <div class="speed">
+                        <span :style="{color : color}">{{ this.defaultSpeed.cruise.highAltitudeCruiseSpeed.averageMassSpeed }}</span>
+                        <span :style="{color : color}" class="unit">kts</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="info-tile-container speed">
+                    <img class="background descent" src="@/assets/icons/descent.svg">
+                    <div class="info-header">
+                      <span > Descente </span>
+                    </div>
+                    <div class="info-value speed">
+                      <div class="mach">
+                        <span :style="{color : color}">{{ this.defaultSpeed.descent.standardDescentMachNumber.averageMassMach }}</span>
+                        <!--                      <span :style="{color : color}" class="unit">kts</span>-->
+                      </div>
+                      <div class="sep"></div>
+                      <div class="speed">
+                        <span :style="{color : color}">{{ this.defaultSpeed.descent.highAltitudeDescentSpeed.averageMassSpeed }}</span>
+                        <span :style="{color : color}" class="unit">kts</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+<!--                <InfoTile class="speed" label="Loi de vitesse" :info-icon="true" value="xxxx" unit="kts"></InfoTile>-->
+<!--                <InfoTile class="speed" label="Loi de vitesse" :info-icon="true" value="xxxx" unit="kts"></InfoTile>-->
+<!--                <InfoTile class="speed" label="Loi de vitesse" :info-icon="true" value="xxxx" unit="kts"></InfoTile>-->
                 <div class="more-info-tile">
                   <div>
                     <img src="@/assets/icons/alert-outline.svg"/>
@@ -89,17 +147,17 @@
                     <img src="@/assets/icons/information-outline.svg" v-show="true" alt="">
                   </div>
                   <div class="info-value">
-                    <span>41000</span>
+                    <span>{{ Math.floor(this.ceiling/100)*100 }}</span>
                     <span class="unit">ft</span>
 
                   </div>
                   <div class="mass-cursor">
                     <div class="label">MASSE</div>
                     <div class="slider-container">
-                      <input type="range" :min="0"
-                             :max="1000"
+                      <input type="range" :min="50"
+                             :max="100"
                              v-bind:style="{  }"
-                             step="10" class="slider" v-model="selectedMass">
+                             step="5" class="slider" v-model="cursorMass">
                     </div>
                   </div>
 
@@ -148,11 +206,14 @@
       </div>
 
       <div class="elmt-presentation">
-        <img class="main-img" :src="imageURL" alt=""/>
-        <div class="misc">
-          <img src="@/assets/icons/aliceInfo.svg" alt="">
-          <span>{{ aircraftInfo.anecdote }}</span>
+        <div class="bitebois">
+          <img class="main-img" :src="imageURL" alt=""/>
+          <div class="misc">
+            <img src="@/assets/icons/aliceInfo.svg" alt="">
+            <span>{{ aircraftInfo.anecdote }}</span>
+          </div>
         </div>
+
         <div class="elmt-explore">
           <div class="header">
             <div class="name">
@@ -171,6 +232,21 @@
               <Tile class="tile" type="Profil de vol"></Tile>
             </router-link>
           </div>
+        </div>
+
+        <div class="elmt-explore mobile">
+
+            <router-link :to="$route.fullPath+'aircraftForm/'+'sPerformances'">
+              <div class="tile-container" style="{opacity: 0}">
+                  <img class="rruaa" src="@/assets/icons/insert_chart_black_24dp.svg">
+              </div>
+            </router-link>
+            <router-link style="-webkit-user-drag: none; " :to="$route.fullPath+'aircraftForm/'+'dynamic'">
+              <div class="tile-container" style="{opacity: 0}">
+                <img class="rruaa" src="@/assets/icons/show_chart_black_24dp.svg">
+              </div>
+            </router-link>
+
         </div>
       </div>
     </div>
@@ -197,6 +273,7 @@ import {imageData} from "@/BADA/Data/imagesRef"
 // import {aircraftInfo} from "@/BADA/Data/imagesRef"
 import InfoTile from "@/components/Nav/InfoTile"
 import {acInfo} from "@/BADA/Data/acInfo"
+import {maxAltitude} from "@/BADA/perfomanceFile"
 
 
 // import * as aircraftInfo from "cheerio/lib/api/traversing"
@@ -225,6 +302,7 @@ export default {
       transformStyle: 'translateX(0)',
       transitionClass: 'transition-initial',
       maxIndex: 1,
+      cursorMass: 50,
       routeName: "static",
       show: true,
     };
@@ -237,6 +315,7 @@ export default {
   },
 
   beforeMount() {
+    console.log(this.defaultSpeed)
     // this.MMO = parseFloat(this.coefficient.aircraftFlightEnvelope.maxOperatingMachNumber)
     // this.aircraftInfo = acInfo.find(AC => AC.ICAO === this.aircraft.ICAO)
 
@@ -295,6 +374,10 @@ export default {
 
   },
   computed: {
+    ceiling: function (){
+      return maxAltitude(this.coefficient, this.cursorMass)
+    },
+
     aircraftInfo: function () {
       return acInfo.find(AC => AC.ICAO === this.aircraft.ICAO)
     },
@@ -356,7 +439,7 @@ export default {
 .more-info-tile {
   /*box-shadow: rgba(0, 0, 0, 0.19) 0px 2px 8px 1px;*/
   display: flex;
-  margin-top: 20px;
+  margin-top: 10px;
   color: rgba(255, 209, 238, 0.73);
   margin-right: 10px;
   align-items: center;
@@ -408,11 +491,11 @@ export default {
 .information-section {
   /*display: flex;*/
 
-  width: 320px;
+  max-width: 400Px;
 }
 
 .information-section.mass .info-tile-container{
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 
 }
 
@@ -437,6 +520,23 @@ export default {
   margin-right: 20px;
 }
 
+.info-value.speed{
+  height: 100%;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  box-sizing: border-box;
+  justify-content: space-evenly;
+  flex-direction: column;
+}
+
+
+.sep{
+  width: 80%;
+  height : 2px;
+  border-top : #464462 dashed 1px ;
+  /*background: #9e8fa1;*/
+}
+
 .info-value span{
   color: #ccc0fd;
   font-size: 28px;
@@ -444,9 +544,13 @@ export default {
   font-weight: bold;
 }
 
+.elmt-explore.mobile{
+  display: none;
+}
+
 span.unit{
   font-size: 20px;
-  margin-left: 10px;
+  margin-left: 6px;
   color: #7c7786;
 }
 
@@ -457,6 +561,10 @@ span.unit{
   display: flex;
   height: 60px;
   justify-content: space-between;
+}
+
+.info-tile-container.speed .info-header{
+  padding-left: 40px;
 }
 
 .info-header span {
@@ -480,9 +588,53 @@ span.unit{
   /*height: 110px;*/
   flex: 1 1 auto;
   min-width: 100px;
-  max-width: 300px;
+  /*max-width: 300px;*/
   border-radius: 14px;
   background: #2c2934;
+}
+
+.info-tile-container.speed {
+  /*box-shadow: rgba(0, 0, 0, 0.13) 0px 2px 8px 1px;*/
+  /*display: flex;*/
+  overflow: hidden;
+  /*margin-right: 10px;*/
+  /*align-items: flex-end;*/
+  /*justify-content: space-evenly;*/
+  position: relative;
+  margin-bottom: 10px;
+  flex-direction: row;
+  align-items: center;
+  height: 100px;
+  /*flex: 1 1 auto;*/
+  /*min-width: 100px;*/
+  /*max-width: 300px;*/
+  /*border-radius: 14px;*/
+  /*background: #2c2934;*/
+}
+
+.info-tile-container img.background{
+  position: absolute;
+  /*width: 100%;*/
+  height: 100%;
+  /*background: black;*/
+  /*background-image: url("/src/assets/icons/climb.svg");*/
+
+}
+
+.info-tile-container img.background.climb{
+  position: absolute;
+  right: 0;
+  /*background: black;*/
+  /*background-image: url("/src/assets/icons/climb.svg");*/
+
+}
+
+.info-tile-container.speed .info-value span{
+  color: #C4BAE8;
+}
+
+.info-tile-container.speed .info-value span.unit{
+  color: #746d8e;
 }
 
 .mass-cursor{
@@ -551,6 +703,12 @@ input[type=range] {
   position: relative;
   padding-left: 20px;
 }
+
+.misc.mobile{
+  display: none;
+}
+
+
 
 .information-section .header {
   margin-top: 30px;
@@ -633,7 +791,7 @@ input[type=range] {
 }
 
 .information-simplified-content {
-  /*flex: 1 0 auto;*/
+  flex: 1 0 auto;
   min-width: 300px;
   margin-top: 5px;
   /*height: 100%;*/
@@ -647,7 +805,7 @@ input[type=range] {
   /*padding-left: 20px;*/
   /*flex: 1 1 auto;*/
   /*overflow-y: auto;*/
-  padding-right: 40px;
+  padding-right: 20px;
 }
 
 .information-simplified-content{
@@ -686,18 +844,303 @@ input[type=range] {
   background: #555;
 }
 
-@media (max-width: 1024px) and (min-width: 738px) {
-  .information-simplified-content {
-    overflow-y: auto;
-    /*flex: 1 0 auto;*/
-    align-items: center;
-    min-width: 260px;
-    padding-left: 10px;
-    /*flex: 1 1 auto;*/
-    /*overflow-y: auto;*/
-    padding-right: 10px;
-    flex-wrap: nowrap;
+/*@media (max-width: 1024px) and (min-width: 738px) {*/
+/*  .information-simplified-content {*/
+/*    overflow-y: auto;*/
+/*    !*flex: 1 0 auto;*!*/
+/*    align-items: center;*/
+/*    min-width: 260px;*/
+/*    padding-left: 10px;*/
+/*    !*flex: 1 1 auto;*!*/
+/*    !*overflow-y: auto;*!*/
+/*    padding-right: 10px;*/
+/*    flex-wrap: nowrap;*/
 
+/*  }*/
+/*}*/
+
+@media (max-width: 2000px) and (min-width: 1624px) {
+
+
+  .ctn-all.aircraft-form{
+    margin-top: 20px;
+    padding-left: 100px !important;
+    padding-right: 100px !important;
+  }
+
+
+}
+
+@media (max-width: 1130px) and (min-width: 739px) {
+
+
+  .ctn-information-simplified {
+    flex-direction: column;
+    padding: 0 !important;
+    align-items: center;
+    overflow-y: auto;
+  }
+
+  .information-simplified-content{
+    flex: 1 0 100% !important;
+    width: 80%;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+
+
+}
+
+@media (max-width: 738px) and (min-width: 100px) {
+  .ctn-information-simplified {
+    flex-direction: column;
+    padding: 0 !important;
+    align-items: center;
+  }
+
+  .more-info-tile {
+    /*padding: 0 !important;*/
+    margin: 0 0 20px 0 !important;
+    max-width: 100%;
+  }
+
+
+  .information-simplified-content.speed  .more-info-tile {
+    /*padding: 0 !important;*/
+    margin: 0 20px 0px 0 !important;
+    max-width: 100%;
+  }
+
+
+
+  .elmt-presentation{
+    width: 100%;
+    position: relative;
+    box-sizing: border-box;
+    padding-bottom:  0px !important;
+    /*padding-left: 40px;*/
+    /*margin-bottom: 40px;*/
+
+    /*padding-right: 40px;*/
+  }
+
+  /*.elmt-presentation .{*/
+  /*  width: 100%;*/
+  /*  position: relative;*/
+  /*  box-sizing: border-box;*/
+  /*  padding-bottom:  0px !important;*/
+  /*  !*padding-left: 40px;*!*/
+  /*  !*margin-bottom: 40px;*!*/
+
+  /*  !*padding-right: 40px;*!*/
+  /*}*/
+
+  .ctn-context{
+    margin: 10px;
+  }
+
+  .elmt-presentation .main-img{
+    /*margin-bottom: 10px ;*/
+  }
+  .misc.mobile{
+    /*margin-top: 20px;*/
+    margin-left: 20px;
+    width: auto;
+    display: flex;
+    max-width: 100%;
+    margin-right: 20px;
+    margin-top: 20px !important;
+    /*padding: 0 !important;*/
+    /*margin-bottom: 10px ;*/
+  }
+
+  .elmt-presentation .misc{
+    /*margin-top: 20px;*/
+    /*margin-left: 20px;*/
+    /*width: auto;*/
+    display: none;
+    /*max-width: 100%;*/
+    /*margin-right: 20px;*/
+    /*margin-top: 0px !important;*/
+    /*padding: 0 !important;*/
+    /*margin-bottom: 10px ;*/
+  }
+
+  .elmt-presentation .elmt-explore{
+    /*margin-top: 20px;*/
+    /*display: none;*/
+    display: none;
+    /*padding: 0 !important;*/
+    /*margin-bottom: 10px ;*/
+  }
+
+  .elmt-explore.mobile {
+    display: flex;
+    position: absolute;
+    margin-right: 20px;
+    bottom: -20px;
+    right: 0;
+    flex-direction: row;
+  background: none;
+
+  }
+
+  .elmt-presentation .main-img {
+    height: calc(100% + 10px);
+    border-radius: 0;
+  }
+
+  .elmt-presentation .bitebois {
+    overflow: hidden;
+  }
+
+  .elmt-explore.mobile img{
+
+    width: 20px;
+    filter: invert(11%) sepia(20%) saturate(141%) hue-rotate(250deg) brightness(82%) contrast(88%);
+
+  }
+
+  .elmt-explore.mobile .tile-container{
+    /*display: flex;*/
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 1px 10px 2px;
+    margin-left: 20px;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    height: 48px;
+    width: 48px;
+    border-radius: 100%;
+    background: #b5b0de;
+
+  }
+
+
+  /*.elmt-presentation .elmt-explore .name{*/
+  /*  display: none;*/
+  /*}*/
+
+  /*.elmt-presentation .elmt-explore .tile-container .tile .tile-lower-container p{*/
+  /*  display: none;*/
+  /*}*/
+
+  /*.elmt-presentation .elmt-explore .tile-container .tile {*/
+  /*  width: 48px;*/
+  /*  height: 48px;*/
+  /*  border-radius: 100%;*/
+  /*}*/
+
+  /*.elmt-presentation .elmt-explore .tile-container .tile .tile-lower-container{*/
+  /*  width: 48px !important;*/
+  /*  height: 48px;*/
+  /*  border-radius: 100%;*/
+  /*}*/
+
+
+  /*.elmt-presentation .elmt-explore .details{*/
+  /*  display: none;*/
+  /*}*/
+
+  .information-simplified-content.speed .content.usual{
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    padding: 0px 0px 0 20px !important;
+    /*padding-left: 20px !important;*/
+    box-sizing: border-box;
+    /*padding-right: 20px;*/
+    overflow-y: auto;
+  }
+
+  .information-simplified-content.speed .sub-content{
+    display: flex;
+    width: 100%;
+    padding: 0px 0px 0 0px !important;
+    /*padding-left: 20px !important;*/
+    box-sizing: border-box;
+    /*padding-right: 20px;*/
+    overflow-y: auto;
+  }
+
+
+  .content.line .info-tile-container{
+    margin-right: 20px !important;
+  }
+
+  .elmt-presentation{
+    order: 1;
+  }
+
+  .information-simplified-content .content{
+    /*display: flex;*/
+    /*width: 100%;*/
+
+    margin-right: 20px;
+    /*padding: 0 !important;*/
+    /*margin-left: 30px;*/
+    /*overflow-y: auto;*/
+  }
+
+  .information-simplified-content .content.line{
+    /*display: flex;*/
+    /*width: 100%;*/
+    margin-right: 0px !important;
+    padding-right: 00px !important;
+    /*padding: 0 !important;*/
+    /*margin-left: 30px;*/
+    /*overflow-y: auto;*/
+  }
+
+  .ctn-large{
+    flex-direction: column;
+    overflow: auto;
+    transform: translateY(-88px);
+    height: calc(100% + 88px);
+    /*padding-bottom: 20px;*/
+    /*overflow-y: auto;*/
+    align-items: center;
+  }
+
+  .information-simplified-content {
+    padding: 0;
+    width: 100%;
+    margin: 0 !important;
+  }
+
+  .ctn-all.aircraft-form{
+    margin-top: 20px;
+    padding: 0 !important;
+  }
+
+  .ctn-tech{
+    width: 100%;
+    margin: 0;
+    padding-bottom: 20px;
+    order: 2;
+    box-sizing: border-box;
+    /*padding-left: 20px;*/
+    /*padding-right: 20px;*/
+  }
+
+  .information-section{
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .info-tile-container{
+    /*max-width: 500px;*/
+    margin-right: 0px !important;
+  }
+
+  .info-tile-container.speed{
+    min-width: 80%;
+    margin-right: 20px !important;
+  }
+
+  .header{
+    margin-right: 20px;
+    margin-left: 20px ;
   }
 }
 
@@ -714,6 +1157,8 @@ input[type=range] {
   /*flex-direction: column;*/
   /*flex: 1 0 min-content;*/
 }
+
+
 
 .nav {
   position: relative;
@@ -850,7 +1295,7 @@ input[type=range] {
   /*border: 2px #ff2525 solid;*/
   width: 20%;
   left: 40%;
-  z-index: 100;
+  /*z-index: 100;*/
   padding-top: 35px;
   position: absolute;
   height: 100px;
@@ -867,7 +1312,7 @@ input[type=range] {
   height: calc(100% - 80px);
   box-sizing: border-box;
   display: flex;
-  padding-bottom: 40px;
+  /*padding-bottom: 40px;*/
   padding-top: 40px;
   padding-left: 40px;
   padding-right: 40px;
@@ -898,6 +1343,7 @@ input[type=range] {
 .elmt-presentation {
   flex: 0 1 400px;
   display: flex;
+  padding-bottom: 40px;
   justify-content: space-between;
   flex-direction: column;
   /*width: 400px;*/
@@ -947,6 +1393,7 @@ input[type=range] {
   padding-top: 20px;
   padding-bottom: 20px;
   box-sizing: border-box;
+  margin-top: 20px;
   padding-right: 30px;
   border-radius: 12px;
   /*box-shadow: ;*/
